@@ -22,7 +22,7 @@ public class BhfOrderTest {
 	public void testStruct() {
 		BhfOrdVO vo = new BhfOrdVO();
 		vo.setBranchOfficeId("Yedam");
-		vo.setDueDate(new Date(2025-02-14));
+		vo.setDueDate((java.sql.Date) new Date(2025-02-14));
 		vo.setRemark("");
 		vo.setCompanyNum(14);
 		vo.setFiles(List.of(new BhfOrdDtlVO("g1","skin","o1","100ml","1b/6p",5),

@@ -9,8 +9,9 @@
     <!-- ✅ Bootstrap 5 CDN 추가 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- toast grid -->
+	<!-- ✅ Bootstrap 5 JS 파일이 포함되어 있는지 확인 -->
+
+	<!-- toast grid -->
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 
@@ -61,13 +62,13 @@
 	            <div class="col-md-6">
 	                <label class="form-label">브랜드</label>
 	                <div class="input-group">
-	                    <input type="text" class="form-control" name="brandName" id="brandName" th:value="${ProductDTO.brandName}" data-bs-toggle="modal" data-bs-target="#brandModal" readonly></input>
+	                    <input type="text" class="form-control" name="brandName" id="brandName" th:value="${ProductDTO.brandName}" onclick="openBrandModal()" readonly></input>
 	        			<input type="hidden" id="brandId" name="brandId" value="${ProductDTO.brandId}">
 	                	<!-- 공통 모달 호출 -->
 						
 						<!-- 브랜드 모달 -->
 						
-						    <div th:replace="purchs/ModalTemplate :: ModalTemplate (
+						    <div th:include="purchs/ModalTemplate :: ModalTemplate (
 						    	'brandModal', 
 						    	'modal-xl', 
 						    	'브랜드 조회', 
@@ -84,10 +85,10 @@
 	            <div class="col-md-6">
 	                <label class="form-label">공급처</label>
 	                <div class="input-group">
-	                    <input type="text" class="form-control" name="vendorName" id="vendorName" th:value="${ProductDTO.vendorName}" data-bs-toggle="modal" data-bs-target="#vendorModal"  readonly>
+	                    <input type="text" class="form-control" name="vendorName" id="vendorName" th:value="${ProductDTO.vendorName}" onclick="openVendorModal()"  readonly>
 	                	<input type="hidden" id="vendorId" name="vendorId" value="${ProductDTO.vendorId}">
 	                	<!-- 거래처 모달 -->
-						    <div th:replace="purchs/ModalTemplate :: ModalTemplate (
+						    <div th:include="purchs/ModalTemplate :: ModalTemplate (
 						    'vendorModal', 
 						    'modal-xl', 
 						    '거래처 조회', 
@@ -163,7 +164,7 @@
         <div id="myGrid" class="tui-grid-container" style="height: 200px;"></div>
         <div id="pagination" class="tui-pagination"></div>
           <!--  창고 모달 -->
-		    <div th:replace="purchs/ModalTemplate :: ModalTemplate (
+		    <div th:include="purchs/ModalTemplate :: ModalTemplate (
 		    'warehouseModal', 
 		    'modal-xl', 
 		    '창고 조회', 
@@ -182,10 +183,65 @@
 <script>
 let grid;
 
+function openBrandModal() {
+	const modalElement = document.getElementById('brandModal');
+	const modalInstance = new bootstrap.Modal(modalElement);
 
+	modalInstance.show();
+
+	if (typeof brandGrid !== 'undefined' && brandGrid !== null) {
+		brandGrid.readData(); // 모달이 열리면 데이터 다시 불러오기
+		setTimeout(() => {
+			brandGrid.refreshLayout();
+		}, 500)
+
+	} else {
+		console.warn(" brandGrid가 정의되지 않았습니다.");
+	}
+}
+
+function openVendorModal() {
+	const modalElement = document.getElementById('vendorModal');
+	const modalInstance = new bootstrap.Modal(modalElement);
+
+	modalInstance.show();
+
+	if (typeof vendorGrid !== 'undefined' && vendorGrid !== null) {
+		vendorGrid.readData(); // 모달이 열리면 데이터 다시 불러오기
+
+		setTimeout(() => {
+			vendorGrid.refreshLayout();
+		}, 500)
+
+	} else {
+		console.warn(" brandGrid가 정의되지 않았습니다.");
+	}
+}
+
+function closeModal() {
+
+	const myModal1 = new bootstrap.Modal(document.getElementById('brandModal'));
+	// const myModal1 = bootstrap.Modal.getInstance(document.getElementById('brandModal'));
+	console.log("VVVVV", myModal1)
+	document.getElementById('brandModal').classList.remove('show');
+	document.getElementsByClassName('modal-backdrop')[0].style.display = 'none'
+	// myModal1.dispose(); // ✅ 기존 모달 완전히 제거
+	// setTimeout(() => {
+	// 	myModal1.hide(); // ✅ 기존 모달 완전히 제거
+	//
+	// }, 500)
+	// myModal1._hideModal();
+	// myModal1._removeBackdrop();
+	// myModal1._config.backdrop = false
+	// myModal1._config.show = false
+	// const myModal2 = new bootstrap.Modal(document.getElementById('vendorModal'));
+	// myModal2.hide();  // 모달 닫기
+	// const myModal3 = new bootstrap.Modal(document.getElementById('warehouseModal'));
+	// myModal3.hide();  // 모달 닫기
+}
 
  document.addEventListener("DOMContentLoaded", function(){
-    	
+
     	var Grid = tui.Grid;
         //입력 창의 경우 
         const dataSource = [];
@@ -214,7 +270,7 @@ let grid;
                 {header : "옵션명" , name:"optionName" , editor: "text"},
                 {header : "현재재고" , name:"currentAmount",className: "tui-grid-cell-readonly"},
                 {header : "안전재고" , name:"optionSafetyInvoice" , className: "tui-grid-cell-readonly"},
-                {header : "상품위치" , name:"warehouseName" },
+                {header : "상품위치" , name:"warehouseName"},
                 {header : "창고id" , name:"warehouseId" , hidden: true},
                 {
                     header : "삭제"
@@ -228,6 +284,24 @@ let grid;
             ],
             data: dataSource
         });
+
+
+	 grid.on('click', (event) => {
+		 console.log("aaaaaaaaaaaaaa")
+		 if (event.columnName === 'warehouseName') {
+			 openWarehouseModal(event.rowKey);  // 클릭한 행의 rowKey 전달
+		 }
+	 });
+
+// 실행할 함수 정의
+	 function openWarehouseModal(rowKey) {
+		 console.log(`📢 창고 선택 모달 열기! 선택된 rowKey: ${rowKey}`);
+
+		 // 모달 열기 (Bootstrap 사용 시)
+		 const modalElement = document.getElementById('warehouseModal');
+		 const modalInstance = new bootstrap.Modal(modalElement);
+		 modalInstance.show();
+	 }
         
         
         const singleRegister = document.getElementById("singleRegister");
@@ -274,16 +348,16 @@ let grid;
                 bttAdd.disabled = false; // 다시 bttAdd 버튼 활성화
             }
         });
-	
-     // Toast Grid 셀 클릭 시 이벤트 추가
-        grid.on('click', function(ev) {
-            const { rowKey, columnName } = ev;
 
-            // "상품위치" 컬럼 클릭 시 모달 열기
-            if (columnName === "warehouseName") {
-                openWarehouseModal(rowKey);
-            }
-        });
+     // Toast Grid 셀 클릭 시 이벤트 추가
+     //    grid.on('click', function(ev) {
+     //        const { rowKey, columnName } = ev;
+	 //
+     //        // "상품위치" 컬럼 클릭 시 모달 열기
+     //        if (columnName === "warehouseName") {
+     //            openWarehouseModal(rowKey);
+     //        }
+     //    });
 
         // 버튼 이벤트 핸들러
         // 행추가
@@ -307,6 +381,8 @@ let grid;
 	        console.warn(" brandGrid가 정의되지 않았습니다.");
 	    }
 	});
+
+
 
     document.getElementById('brandModal').addEventListener('hidden.bs.modal', function () {
    	    console.log("📢 모달이 닫힘. 선택된 브랜드를 input에 반영.");
@@ -403,114 +479,113 @@ let grid;
    
  //창고 모달 작업
 
-function openWarehouseModal(rowKey) {
-   	    sessionStorage.setItem("selectedRowKey", rowKey); // 클릭한 행(rowKey) 저장
-   	
-   	    // 모달 요소 가져오기
-   	    const modalElement = document.getElementById('warehouseModal');
-   	    if (!modalElement) {
-   	        console.error("warehouseModal 요소를 찾을 수 없습니다.");
-   	        return;
-   	    }
-   	    
-
-   	    // 창고 그리드가 정의되어 있는지 확인 후 데이터 갱신
-   	    if (typeof warehouseGrid !== 'undefined' && warehouseGrid !== null) {
-   	        console.log("📢 창고 모달: 데이터 초기화 및 새로고침 시작");
-   	
-   	        // 기존 데이터 초기화
-   	    
-   	        let Data = warehouseGrid.getData();
-   	        console.log("그리드데이터",Data)
-   	        console.log(bootstrap.Version);
-
-   	        
-   			 warehouseGrid.readData();
-   	        
-   	        setTimeout(() => {
-   		        warehouseGrid.refreshLayout();  // 기존 데이터 초기화
-   	        	
-   			}, 500);
-   	        
-
-   	  
-      
-
-   	        // 데이터를 다 불러온 후 모달 열기 (onGridUpdated 이벤트 활용)
-   	         warehouseGrid.on("onGridUpdated", function () {
-   	            console.log("창고 모달: 데이터 새로고침 완료");
-   	            
-
-   	            // 데이터 로드 완료 후 모달 열기
-   	            const modalInstance = new bootstrap.Modal(modalElement);
-   	            modalInstance.show(); // 모달 열기
-   	            
-   	            
-   	            console.log("창고 모달 열림:", rowKey);
-   	        }); 
-   	    } else {
-   	        console.warn("warehouseGrid가 정의되지 않았습니다.");
-   	    } 
-   	}
+// function openWarehouseModal(rowKey) {
+//    	    sessionStorage.setItem("selectedRowKey", rowKey); // 클릭한 행(rowKey) 저장
+//
+//    	    // 모달 요소 가져오기
+//    	    const modalElement = document.getElementById('warehouseModal');
+//    	    if (!modalElement) {
+//    	        console.error("warehouseModal 요소를 찾을 수 없습니다.");
+//    	        return;
+//    	    }
+//
+//
+//    	    // 창고 그리드가 정의되어 있는지 확인 후 데이터 갱신
+//    	    if (typeof warehouseGrid !== 'undefined' && warehouseGrid !== null) {
+//    	        console.log("📢 창고 모달: 데이터 초기화 및 새로고침 시작");
+//
+//    	        // 기존 데이터 초기화
+//
+//    	        let Data = warehouseGrid.getData();
+//    	        console.log("그리드데이터",Data)
+//    	        console.log(bootstrap.Version);
+//
+//
+//    			 warehouseGrid.readData();
+//
+//    	        setTimeout(() => {
+//    		        warehouseGrid.refreshLayout();  // 기존 데이터 초기화
+//
+//    			}, 500);
+//
+//
+//
+//
+//
+//    	        // 데이터를 다 불러온 후 모달 열기 (onGridUpdated 이벤트 활용)
+//    	         warehouseGrid.on("onGridUpdated", function () {
+//    	            console.log("창고 모달: 데이터 새로고침 완료");
+//
+//
+//    	            // 데이터 로드 완료 후 모달 열기
+//    	            const modalInstance = new bootstrap.Modal(modalElement);
+//    	            modalInstance.show(); // 모달 열기
+//
+//
+//    	            console.log("창고 모달 열림:", rowKey);
+//    	        });
+//    	    } else {
+//    	        console.warn("warehouseGrid가 정의되지 않았습니다.");
+//    	    }
+//    	}
  
-document.getElementById('warehouseModal').addEventListener('shown.bs.modal', function () {
-	    console.log(" 창고 모달이 열렸습니다. 그리드 새로고침 실행");
-
-	    if (typeof warehouseGrid !== 'undefined' && warehouseGrid !== null) {
-	        warehouseGrid.readData();       // 🚀 데이터 새로고침
-	  
-	        console.log("창고 그리드 데이터 새로고침 완료");
-	    } else {
-	        console.warn("warehouseGrid가 정의되지 않았습니다.");
-	    }
-	}); 
-	
+// document.getElementById('warehouseModal').addEventListener('shown.bs.modal', function () {
+// 	    console.log(" 창고 모달이 열렸습니다. 그리드 새로고침 실행");
+//
+// 	    if (typeof warehouseGrid !== 'undefined' && warehouseGrid !== null) {
+// 	        warehouseGrid.readData();       // 🚀 데이터 새로고침
+//
+// 	        console.log("창고 그리드 데이터 새로고침 완료");
+// 	    } else {
+// 	        console.warn("warehouseGrid가 정의되지 않았습니다.");
+// 	    }
+// 	});
+//
 
 
 		//✅ 닫기 버튼이 존재하는지 확인 후 이벤트 추가
-		const btnClose = document.querySelector("#warehouseModal #btn-close");
-		if (btnClose) {
-		    btnClose.addEventListener("click", function () {
-		        console.log("✅ 닫기 버튼 클릭됨!");
-		
-		        // Bootstrap Modal 인스턴스 가져오기 또는 생성
-		        const modalInstance = new bootstrap.Modal(warehouseModal);
-		        
-		        console.log("모달인스턴스",modalInstance)
-		        modalElement.classList.remove("show");
-		        modalInstance.hide();
-		        
-		    });
-		} else {
-		    console.warn("❌ btn-close 버튼이 존재하지 않음!");
-		}
+		// const btnClose = document.querySelector("#warehouseModal #btn-close");
+		// if (btnClose) {
+		//     btnClose.addEventListener("click", function () {
+		//         console.log("✅ 닫기 버튼 클릭됨!");
+		//
+		//         // Bootstrap Modal 인스턴스 가져오기 또는 생성
+		//         const modalInstance = new bootstrap.Modal(warehouseModal);
+		//
+		//         console.log("모달인스턴스",modalInstance)
+		//         // modalElement.classList.remove("show");
+		//         modalInstance.hide();
+		//
+		//     });
+		// } else {
+		//     console.warn("❌ btn-close 버튼이 존재하지 않음!");
+		// }
 
    // 모달이 닫힐 때 선택된 값 그리드에 반영
-   document.getElementById('warehouseModal').addEventListener('hidden.bs.modal', function () {
-       console.log("📢 상품 위치 모달 닫힘. 선택된 위치를 그리드에 반영.");
- 
-
-       let selectedWarehouseId = sessionStorage.getItem("selectedWarehouseId"); // 창고 ID 가져오기
-       let selectedWarehouseName = sessionStorage.getItem("selectedWarehouseName"); // 창고명 가져오기
-       let selectedRowKey = sessionStorage.getItem("selectedRowKey"); // 클릭한 행 정보 가져오기
-       
-       console.log("넘어온 데이터",selectedWarehouseId,selectedWarehouseName,selectedRowKey)
-
-       if (selectedWarehouseId && selectedWarehouseName && selectedRowKey) {
-           grid.setValue(selectedRowKey, "warehouseId", selectedWarehouseId);
-           grid.setValue(selectedRowKey, "warehouseName", selectedWarehouseName);
-       } else {
-           console.warn("📢 저장된 상품 위치 정보가 없습니다.");
-       }
-
-       sessionStorage.removeItem("selectedWarehouseId");
-       sessionStorage.removeItem("selectedWarehouseName");
-       sessionStorage.removeItem("selectedRowKey");
-   });
+   // document.getElementById('warehouseModal').addEventListener('hidden.bs.modal', function () {
+   //     console.log("📢 상품 위치 모달 닫힘. 선택된 위치를 그리드에 반영.");
+   //
+   //
+   //     let selectedWarehouseId = sessionStorage.getItem("selectedWarehouseId"); // 창고 ID 가져오기
+   //     let selectedWarehouseName = sessionStorage.getItem("selectedWarehouseName"); // 창고명 가져오기
+   //     let selectedRowKey = sessionStorage.getItem("selectedRowKey"); // 클릭한 행 정보 가져오기
+   //
+   //     console.log("넘어온 데이터",selectedWarehouseId,selectedWarehouseName,selectedRowKey)
+   //
+   //     if (selectedWarehouseId && selectedWarehouseName && selectedRowKey) {
+   //         grid.setValue(selectedRowKey, "warehouseId", selectedWarehouseId);
+   //         grid.setValue(selectedRowKey, "warehouseName", selectedWarehouseName);
+   //     } else {
+   //         console.warn("📢 저장된 상품 위치 정보가 없습니다.");
+   //     }
+   //
+   //     sessionStorage.removeItem("selectedWarehouseId");
+   //     sessionStorage.removeItem("selectedWarehouseName");
+   //     sessionStorage.removeItem("selectedRowKey");
+   // });
         
     });
-    
-    
+
 </script>
 
 </body>

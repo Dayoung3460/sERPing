@@ -2,6 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8"></head>
 <body>
-    <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">닫기</button>
+    <button type="button" class="btn btn-secondary"  onclick="closeModal()">닫기</button>
 </body>
+<script>
+    function closeModal() {
+        console.log(222222)
+        const myModal1 = new bootstrap.Modal(document.getElementById('brandModal'));
+        myModal1.hide();  // 모달 닫기
+        const myModal2 = new bootstrap.Modal(document.getElementById('vendorModal'));
+        myModal2.hide();  // 모달 닫기
+        const myModal3 = new bootstrap.Modal(document.getElementById('warehouseModal'));
+        myModal3.hide();  // 모달 닫기
+    }
+</script>
 </html>
