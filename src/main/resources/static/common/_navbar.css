@@ -13,9 +13,6 @@ nav {
     padding: 20px;
     display: flex;
     justify-content: center;
-    > div {
-        width: 80%;
-    }
     .nav {
         width: 200px;
         &:hover {
