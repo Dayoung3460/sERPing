@@ -31,11 +31,11 @@
             </div>
             <h4>안녕하세요 서핑입니다! 🌊</h4>
 
-            <div th:if="${param.error}">
-              Invalid username and password.
+            <div th:if="${param.error}" class="text-danger">
+                회사코드와 ID, 비밀번호를 확인해주세요
             </div>
             <div th:if="${param.logout}">
-              You have been logged out.
+              로그아웃 되었습니다.
             </div>
 
             <form class="pt-3" th:action="@{/login}" method="post">
