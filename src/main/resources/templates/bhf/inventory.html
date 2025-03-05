@@ -6,30 +6,44 @@
 <head>
 <meta charset="UTF-8">
 <title>재고 조회</title>
+<style>
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
+		<h3 class="mt-2 mb-2"><b>재고 관리</b></h3>
+		<hr>
 		<div class="row">
-			<h3 class="mt-2 mb-2">재고 관리</h3>
-			<hr>
-			<div class="col-md-6 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-4">상품명</label> 
-					<input type="text"class="col-sm-5" id="goodsName"> 
-					<button type="button" class="col-sm-2 btn btn-primary" style=" margin: 0px 10px" onclick="search()">검색</button>
+			<div id="custom-container">
+				<div class="row ">
+					<div class="col-md-6 mt-1 mb-1">
+						<div class="row">
+							<label class="col-sm-3" style="margin: 10px 0px;">상품명</label> 
+							<input type="text"class="col-sm-6" style=" border-radius:8px; border: 1px solid #dee2e6;" id="goodsName"> 
+							<button type="button" class="col-sm-2 btn btn-primary" style=" margin: 0px 25px" onclick="search()">검색</button>
+						</div>
+					</div>
+					<div class="col-md-6 mt-1 mb-1">
+						<div class="row">
+							<div class="col-sm-2"></div>
+							<label class="col-sm-3" style="margin: 10px 0px;">지점명</label> 
+							<input type="text" class="col-sm-6" style=" border-radius:8px; border: 1px solid #dee2e6; background-color: #e9ecef; height: 44px;" id="branchOfficeId" readonly>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-4">지점명</label> 
-					<input type="text"class="col-sm-7" id="branchOfficeId" readonly>
-				</div>
-			</div>
+			</div>			
 			<div class="col-md-12 stretch-card mt-2 mb-5">
 				<div class="card">
 					<div class="card-body">
 						<div id="rayout-container" class="row mb-3">
-							<h6 class=" col-sm-9">창고 재고 조회</h6>
+							<h5 class=" col-sm-9"><b>창고 재고 조회</b></h5>
 							<span class="label-search col-sm-1" style="font-size: 1em">표시수량</span>
 							<select name="display_amount" id="display_amount" class="col-sm-1 input-box" onchange="changeDisplay()">
 								<option value="5" selected>5</option>
@@ -40,9 +54,8 @@
 							</select>
 						</div>
 						<div id="inventory"></div>
-						<div id="pagination" class="tui-pagination"></div>
 						<div style="text-align : right">
-							<button type="button" class="btnExcel btn btn-success">EXCEL</button>
+							<button type="button" class="btnExcel btn btn-dark">EXCEL</button>
 						</div>
 					</div>
 				</div>
@@ -50,7 +63,7 @@
 			<div class="col-md-12 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">재고 조정 등록</h6>
+						<h5 class="mb-4"><b>재고 조정 등록</b></h5>
 						<div id="mediation"></div>
 						<div id="pagination" class="tui-pagination"></div>
 						<div style="text-align : center">
@@ -102,7 +115,7 @@
 		// 상품 조회 쿼리 호출
 		const dataSource = {
 			api: {
-				readData: { url: 'http://localhost:81/bhf/rest/inventory/list', method: 'GET', initParams: { page: 1 }},
+				readData: { url: '/bhf/rest/inventory/list', method: 'GET', initParams: { page: 1 }},
 			},
 			contentType: 'application/json'
 			
@@ -116,14 +129,14 @@
 			},
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", align: 'center'},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "옵션코드", name : "optionCode", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ header : "규격", name : "goodsStandard", align: 'center', width: 150},
 				{ 
 					header : "수량", 
 					name : "stockQuantity", 
-					align: 'center', 
+					align: 'right', 
 					width: 150, 
 					formatter: function(ev){
 						return numberFormat(ev.value);
@@ -172,13 +185,13 @@
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", hidden : 1},
 				{ header : "옵션코드", name : "optionCode", hidden : 1},
-				{ header : "상품명", name : "goodsName", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ header : "규격", name : "goodsStandard", align: 'center'},
 				{ 
 					header : "수량", 
 					name : "stockQuantity", 
-					align: 'center',
+					align: 'right',
 					width: 130,
 					formatter: function(ev){
 						return numberFormat(ev.value);
@@ -187,7 +200,7 @@
 				{ 
 					header : "플러스 수량", 
 					name : "quantity",
-					align: 'center',
+					align: 'right',
 					editor: 'text',
 					width: 130,
 					formatter: function(ev){
@@ -212,7 +225,7 @@
 				{ 
 					header : "마이너스 수량", 
 					name : "mediationQuantity", 
-					align: 'center',
+					align: 'right',
 					editor: 'text',
 					width: 130,
 					formatter: function(ev){
@@ -234,7 +247,7 @@
 		                }
 		            }
 				},
-				{ header : "조정사유",  name : "mediationReason", align: 'center', editor: 'text', width: 316}
+				{ header : "조정사유",  name : "mediationReason", align: 'left', editor: 'text', width: 316}
 			],
 			data: ""
 		});
@@ -283,7 +296,7 @@
 		    };
 		
 		    // 서버에 요청 보내기
-		    fetch("http://localhost:81/bhf/rest/insert/update", {
+		    fetch("/bhf/rest/insert/update", {
 		        method: "POST",
 		        headers: {
 		            "Content-Type": "application/json",
