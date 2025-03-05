@@ -198,6 +198,7 @@
 		<p class="nomargin">※품목의 월은 작성일자의 월이 표시되고 변경은 작성일자 수정시 자동 반영됨</p>
 		<div class="row">
 			<button type="button" onclick="addgrid()" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2">품목추가</button>
+			<button type="button" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2" data-bs-toggle="modal" data-bs-target="#closingSearchModal">정산 선택</button>
 		</div>
 		<!-- 그리드로 정보 입력 -->
 		<div id="taxgrid"></div>
@@ -214,9 +215,18 @@
 						    	'optSearchModal', 
 						    	'', 
 						    	'상품 검색', 
-						    	'accnut/modal/optSearchBody', 
-						    	'accnut/modal/optSearchFooter'
+						    	'accnut/optSearchBody', 
+						    	'accnut/optSearchFooter'
 						    )"></div>
+						    
+		<!-- 정산 검색 모달 -->
+		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+						    	'closingSearchModal', 
+						    	'modal-xl', 
+						    	'상품 검색', 
+						    	'accnut/closingSearchBody', 
+						    	'accnut/closingSearchFooter'
+						    )"></div>						    
 		
 	</div>
 	
@@ -259,7 +269,7 @@
 		})
 	}
 	
-	const grid = new tui.Grid({
+	var grid = new tui.Grid({
 		el : document.querySelector('#taxgrid'),
 		columns: [
 			{ header : "월", name : "month", width: 10, align:"center"},
@@ -427,10 +437,10 @@
 		})
 		 .then(response => response.json())
 		 .then(data => { 
-			// console.log(data);
+			 console.log(data);
 			 	if(data.status == "success"){
 			 		showAlert('지급 처리 되었습니다.', 'success');				 		
-				 	
+			 		resetBtn();
 			 	} else {
 			 		showAlert('지급 처리에 실패하였습니다. 다시 시도해주세요.', 'danger');
 			 	}
