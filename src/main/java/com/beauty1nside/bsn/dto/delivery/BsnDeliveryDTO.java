@@ -26,5 +26,6 @@ public class BsnDeliveryDTO extends BsnDeliverySearchDTO {
 	private String deliveryStatus;
 	private String remark;
 	private int employeeNum;
+	private String employeeName;
 	private int companyNum;
 }
