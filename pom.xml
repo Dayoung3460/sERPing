@@ -143,12 +143,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <!-- 제스퍼사용 
+        <!-- 제스퍼사용 -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>6.4.0</version>
-		</dependency>-->
+		</dependency>
 		<!--재스퍼 바코드 생성-->
 		<dependency>
 		    <groupId>net.sourceforge.barbecue</groupId>
