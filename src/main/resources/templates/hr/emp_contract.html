@@ -342,14 +342,6 @@ document.addEventListener("DOMContentLoaded", function() {
             { header: "직급", name: "position", align: "center" },
             { header: "회사번호", name: "companyNum", align: "center" },
             { header: "회사명", name: "companyName", align: "center" },
-            { 
-                header: "연봉", 
-                name: "annualSalary", 
-                align: "right",
-                formatter: function({ value }) {
-                    return formatNumberWithCommas(value);
-                }
-            }
         ]
     });
 
