@@ -714,4 +714,21 @@ th.rgdate, th.note, th.total, th.supply, th.tax,
 td.tax_detail_num, td.month, td.day, td.option_code, td.standard, td.quantity, td.amount, td.total, td.supply_price, td.tax, td.note
 FROM accnut_tax_header th JOIN accnut_tax_detail td
 ON (th.tax_num = td.tax_num)
-WHERE th.tax_num = #{pk}
+WHERE th.tax_num = #{pk};
+
+
+select * from accnut_tax_header;
+
+select * from accnut_tax_detail;
+
+select * from purchse_option
+where company_num = 1
+;
+
+select * from bhf_closing;
+
+SELECT TO_CHAR(closing_date, 'YYYY-MM-DD') AS "day", closing_code AS "code"
+FROM bhf_closing
+WHERE company_num = #{companyNum}
+AND branch_office_id = #{bhfId}
+AND TO_CHAR(closing_date,'YYYY-MM') = #{month}
