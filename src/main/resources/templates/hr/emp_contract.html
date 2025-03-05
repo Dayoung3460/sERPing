@@ -11,6 +11,15 @@
   <script src="https://uicdn.toast.com/tui.grid/latest/tui-grid.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+		.custom-swal-popup {
+		    word-wrap: break-word;  /* 긴 문장 자동 줄바꿈 */
+		    white-space: pre-line;  /* \n도 줄바꿈 적용 */
+		    padding: 24px;          /* 적당한 패딩 */
+		    max-height: 80vh;       /* 내용이 많으면 스크롤 */
+		    overflow-y: auto;       /* 세로 스크롤 자동 */
+		}
+  </style>
 </head>
 
 <body layout:fragment="content">
@@ -36,15 +45,15 @@
 
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <label class="form-label">사원 번호</label>
+                        <label class="form-label">사원명</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="employeeNum" required readonly>
+                            <input type="text" class="form-control" id="employeeName" required readonly>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#employeeSelectModal">사원 선택</button>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">사원명</label>
-                        <input type="text" class="form-control" id="employeeName" readonly>
+                        <label class="form-label">사원번호</label>
+                        <input type="number" class="form-control" id="employeeNum" readonly>
                     </div>
                 </div>
             </div>
@@ -62,14 +71,25 @@
 						    <option value="ET002">계약직</option>
 						</select>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">계약 기간 (기간제일 경우 입력)</label>
-                        <div class="d-flex">
-                            <input type="date" class="form-control" id="contractStartDate" required>
-                            <span class="mx-2">~</span>
-                            <input type="date" class="form-control" id="contractEndDate">
-                        </div>
-                    </div>
+					<div class="col-md-6">
+					    <label class="form-label pb-3 pe-3">계약 기간</label>
+					    
+				    	<!-- ✅ 버튼 그룹을 오른쪽 끝으로 정렬 -->
+				        <div class="btn-group ms-auto" role="group">
+				            <button type="button" class="btn btn-outline-primary " onclick="setContractPeriod(3)">3개월</button>
+				            <button type="button" class="btn btn-outline-primary " onclick="setContractPeriod(6)">6개월</button>
+				            <button type="button" class="btn btn-outline-primary " onclick="setContractPeriod(12)">1년</button>
+				        </div>
+				        
+					    <div class="d-flex align-items-center">
+					        <input type="date" class="form-control" id="contractStartDate" required>
+					        <span class="mx-2">~</span>
+					        <input type="date" class="form-control" id="contractEndDate">
+					
+
+					    </div>
+					</div>
+
                 </div>
 
                 <div class="row mt-3">
@@ -449,7 +469,16 @@ function getSelectedInsurance() {
 function submitContract(event) {
 	
     if (!selectedEmployee || !selectedEmployee.employeeNum) {
-        alert("⚠️ 먼저 사원을 선택해주세요!");
+        Swal.fire({
+            icon: 'warning',
+            title: '사원 선택 필요',
+            html: '먼저 사원을 선택해주세요!',
+            confirmButtonText: 'OK',
+            width: '450px', // 📌 적당한 너비 유지
+            customClass: {
+                popup: 'custom-swal-popup' // 📌 커스텀 스타일 적용
+            }
+        });
         return;
     }
 	
@@ -484,7 +513,16 @@ function submitContract(event) {
     
     // 유효성 검사 (필수 필드 체크)
     if (!contractData.employeeNum || !contractData.companyNum || !contractData.contractStartDate || !contractData.annualSalary) {
-        alert("⚠️ 필수 정보를 입력해주세요.");
+        Swal.fire({
+            icon: 'error',
+            title: '입력 오류',
+            text: '필수 정보를 모두 입력해주세요!',
+            width: '450px', // 📌 적당한 너비 유지
+            customClass: {
+                popup: 'custom-swal-popup' // 📌 커스텀 스타일 적용
+            }
+            
+        });
         return;
     }
 
@@ -500,23 +538,81 @@ function submitContract(event) {
     .then(response => {
         if (!response.ok) {
             return response.text().then(text => {
+                console.error("❌ 서버 응답 오류:", text);
                 throw new Error("❌ 서버 응답 오류: " + text);
             });
         }
-        return response.json().catch(() => ({ success: true })); // JSON 파싱 실패 시 성공 처리
+
+        // 응답이 JSON인지 확인
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return response.json();
+        } else {
+            return response.text().then(text => ({
+                success: false, 
+                message: "⚠️ JSON이 아닌 응답을 받았습니다.",
+                rawResponse: text
+            }));
+        }
     })
     .then(data => {
         if (data.success) {
-            alert("근로계약이 성공적으로 등록되었습니다!");
-            window.location.reload();
+            Swal.fire({
+                icon: 'success',
+                title: '근로계약 등록 완료!',
+                text: '사원 조회 페이지로 이동하시겠습니까?',
+                showCancelButton: true,
+                confirmButtonText: '네, 이동할게요',
+                cancelButtonText: '아니요, 계속 등록할게요',
+                width: '450px',
+                customClass: { popup: 'custom-swal-popup' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/hr/employee";
+                } else {
+                    window.location.reload();
+                }
+            });
         } else {
-            alert("❌ 계약 등록 실패: " + (data.message || "알 수 없는 오류"));
+            Swal.fire({
+                icon: 'error',
+                title: '근로계약 등록 실패',
+                text: data.message || '다시 시도해주세요!',
+                width: '450px',
+                customClass: { popup: 'custom-swal-popup' }
+            });
         }
     })
     .catch(error => {
         console.error("❌ 계약 등록 오류:", error);
-        alert("서버 오류로 인해 계약을 등록할 수 없습니다.");
+        Swal.fire({
+            icon: 'error',
+            title: '서버 오류 발생',
+            text: '근로계약 등록 중 문제가 발생했습니다.',
+            width: '450px',
+            customClass: { popup: 'custom-swal-popup' }
+        });
     });
+}
+
+
+
+function setContractPeriod(months) {
+    let startDateInput = document.getElementById("contractStartDate");
+    let endDateInput = document.getElementById("contractEndDate");
+
+    // ✅ 시작일이 비어있다면 오늘 날짜 자동 입력
+    if (!startDateInput.value) {
+        let today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 포맷
+        startDateInput.value = today;
+    }
+
+    let startDate = new Date(startDateInput.value);
+    startDate.setMonth(startDate.getMonth() + months); // ✅ 개월 수 더하기
+    startDate.setDate(startDate.getDate() - 1); // ✅ 하루 빼기 (종료일은 전날)
+
+    let formattedEndDate = startDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식 변환
+    endDateInput.value = formattedEndDate;
 }
 
 
