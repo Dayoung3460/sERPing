@@ -732,3 +732,43 @@ FROM bhf_closing
 WHERE company_num = #{companyNum}
 AND branch_office_id = #{bhfId}
 AND TO_CHAR(closing_date,'YYYY-MM') = #{month}
+
+;
+
+
+
+
+SELECT fn_get_option_price(option_code) AS "amount", 
+	        goods_name || '-' || option_name AS "optionCode", 
+	        bnf_sle_qy AS "quantity",
+	        option_code AS "optCode", 
+	        TO_CHAR(closing_date, 'MM') AS "month",
+	        TO_CHAR(closing_date, 'DD') AS "day",
+	        bnf_sle_qy * fn_get_option_price(option_code) AS "total",
+	        bnf_sle_qy * fn_get_option_price(option_code) * 0.9 AS "supplyPrice",
+	        bnf_sle_qy * fn_get_option_price(option_code) * 0.1 AS "total",
+	        fn_get_standard(option_code) AS "standard"
+		FROM bhf_closing_detail bcd JOIN bhf_closing bc
+		ON (bcd.closing_code = bc.closing_code);
+        
+select * from purchse_goods;
+select * from purchse_option;
+select pg.*, po.* from purchse_goods pg join purchse_option po on (pg.goods_num = po.goods_num);
+
+create or replace function fn_get_standard(p_option_code varchar2)
+return varchar2
+is
+    v_result varchar2(1000);
+begin
+    select pg.goods_standard
+    into v_result
+    from purchse_goods pg join purchse_option po
+    on (pg.goods_num = po.goods_num)
+    where option_code = p_option_code;
+    
+    return v_result;
+end;
+/
+
+select * from accnut_tax_header;
+select * from accnut_tax_detail;
