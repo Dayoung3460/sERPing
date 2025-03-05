@@ -15,6 +15,17 @@ label {
     display: none;
 }
 
+.search-grid {
+    .search {
+        > div {
+            width: 20%;
+        }
+        .date {
+            width: 500px;
+        }
+    }
+}
+
 .approval {
     .search-grid > .row {
         display: flex;
@@ -28,38 +39,20 @@ label {
         align-items: center;
         margin: 20px 0;
     }
-    .btn {
-        display: inline-block;
-        border: 0;
-        padding: 4px 8px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: bold;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        margin: 5px;
-    }
-
-    /* 승인 버튼 스타일 */
-    .btn-approve {
-        background-color: green;
-        border-color: blue;
-    }
-
-    .btn-approve:hover {
-        background-color: darkgreen;
-    }
-
-    /* 반려 버튼 스타일 */
-    .btn-reject {
-        background-color: red;
-        border-color: darkred;
-    }
-
-    .btn-reject:hover {
-        background-color: darkred;
+    .search-btn {
+        .btn {
+            display: inline-block;
+            border: 0;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px;
+        }
     }
 
     .download-btn {

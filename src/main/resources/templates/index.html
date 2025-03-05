@@ -32,7 +32,7 @@
       <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" aria-selected="false">결재</button>
     </li>
   </ul>
-  <div class="tab-content" id="myTabContent">
+  <div class="tab-content">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
       <div class="row">
         <p id="clicked-event"></p>
@@ -46,27 +46,28 @@
         <div class="container">
           <div class="search-grid" id="custom-container">
             <div class="d-flex flex-wrap align-items-center gap-3">
-              <div class="row w-100">
-                <div class="d-flex align-items-center w-50">
-                  <label class="label-search me-2" for="documentType">요청 구분</label>
-                  <select name="documentType" id="documentType" class="form-control w-75">
+              <div class="row w-100 search">
+                <div class="">
+                  <label class="label-search me-2 form-label" for="documentType">요청 구분</label>
+                  <select name="documentType" id="documentType" class="form-control ">
                     <option value="" selected>선택</option>
                   </select>
                 </div>
-                <div class="d-flex align-items-center w-50">
-                  <label for="inApprovalRequestDateStart" class="label-search me-2">요청 날짜</label>
-                  <input type="date" id="inApprovalRequestDateStart" class="form-control w-25"/>~
-                  <input type="date" id="inApprovalRequestDateEnd" class="form-control w-25"/>
+                <div class="w-25">
+                  <label for="inApprovalRequestDateStart" class="label-search me-2 form-label">요청 날짜</label>
+                  <div class="d-flex align-items-center">
+                    <input type="date" id="inApprovalRequestDateStart" class="form-control "/>~
+                    <input type="date" id="inApprovalRequestDateEnd" class="form-control "/>
+                  </div>
+
                 </div>
-              </div>
-              <div class="row w-100">
-                <div class="d-flex align-items-center w-50">
-                  <label class="label-search me-2" for="employeeName">요청자</label>
-                  <input type="text" name="employeeName" id="employeeName" class="form-control w-75">
+                <div class="">
+                  <label class="label-search me-2 form-label" for="employeeName">요청자</label>
+                  <input type="text" name="employeeName" id="employeeName" class="form-control">
                 </div>
-                <div class="d-flex align-items-center w-50">
-                  <label class="label-search me-2" for="display_amount">표시수량</label>
-                  <select name="display_amount" id="display_amount" class="form-control w-75" onchange="changeDisplay()">
+                <div class="">
+                  <label class="label-search me-2 form-label" for="display_amount">표시수량</label>
+                  <select name="display_amount" id="display_amount" class="form-control " onchange="changeDisplay()">
                     <option value="5">5</option>
                     <option value="10" selected>10</option>
                     <option value="20">20</option>
@@ -75,9 +76,12 @@
                   </select>
                 </div>
               </div>
+<!--              <div class="row w-100">-->
+<!--                -->
+<!--              </div>-->
 
             </div>
-            <div class="mt-4 d-flex justify-content-center">
+            <div class="mt-4 d-flex justify-content-center search-btn">
               <button type="button" class="btn btn-primary px-3 py-2" onclick="search()">검색</button>
               <button type="button" class="btn btn-secondary px-3 py-2" onclick="reset()">초기화</button>
             </div>
