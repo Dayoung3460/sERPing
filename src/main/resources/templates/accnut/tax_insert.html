@@ -214,8 +214,8 @@
 						    	'optSearchModal', 
 						    	'', 
 						    	'상품 검색', 
-						    	'accnut/optSearchBody', 
-						    	'accnut/optSearchFooter'
+						    	'accnut/modal/optSearchBody', 
+						    	'accnut/modal/optSearchFooter'
 						    )"></div>
 		
 	</div>
@@ -238,7 +238,7 @@
 		const header = document.querySelector('meta[name="_csrf_header"]').content;
 		const token = document.querySelector('meta[name="_csrf"]').content;
 		
-		fetch(`http://localhost:81/accnut/rest/company/info?companyNum=${coNum}`, {
+		fetch(`/accnut/rest/company/info?companyNum=${coNum}`, {
 			method: "GET",
 			headers: {
 				'header': header,
@@ -416,7 +416,7 @@
 		const header = document.querySelector('meta[name="_csrf_header"]').content;
         const token = document.querySelector('meta[name="_csrf"]').content;
 		
-		fetch("http://localhost:81/accnut/rest/tax/insert", {
+		fetch("/accnut/rest/tax/insert", {
 			method: "POST",
 			headers: {
 					 	'header': header,
@@ -442,7 +442,7 @@
 		const header = document.querySelector('meta[name="_csrf_header"]').content;
         const token = document.querySelector('meta[name="_csrf"]').content;
 		
-		fetch(`http://localhost:81/accnut/rest/bhf/list?companyNum=${session.companyNum}`, {
+		fetch(`/accnut/rest/bhf/list?companyNum=${session.companyNum}`, {
 			method: "GET",
 			headers: {
 					 	'header': header,
