@@ -418,8 +418,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	if(sessionData.authority != "AU001"){
 		//부서에대한 권한처리
-		console.log("현재주소 : "+currentUrl);
-		console.log("사용할세션 : ",sessionData);
+		//console.log("현재주소 : "+currentUrl);
+		//console.log("사용할세션 : ",sessionData);
 		const url = `/erp/rest/userDepartmentName/`+sessionData.departmentNum;
 					
 		fetch(url, {
@@ -430,7 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		})
 		.then(response => response.json())  // JSON 변환
 		.then(result => {
-		    console.log("API 응답:", result);  // API 응답을 확인
+		    //console.log("API 응답:", result);  // API 응답을 확인
 		    
 		    //인사부서 링크제거 처리
 		   	if (result.childDepartmentName && result.childDepartmentName.includes("인사")) {
@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
 			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
 			    if (branchLink) branchLink.removeAttribute("href");
-			    if (bsnLink) bsnLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
 			    if (purchsLink) purchsLink.removeAttribute("href");
 			    //if (hrLink) hrLink.removeAttribute("href");
 			    if (accnutLink) accnutLink.removeAttribute("href");
@@ -451,6 +451,19 @@ document.addEventListener("DOMContentLoaded", function () {
 					document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
 				        let href = link.getAttribute("href");
 				        if (href.includes("/hr/emp_contract?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
 				            link.removeAttribute("href");
 				            link.style.pointerEvents = "none";
 				            link.style.color = "#aaa";
@@ -473,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    if (accnutLink) accnutLink.removeAttribute("href");
 			    
-			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사부서)
 			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
 				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
 				        let href = link.getAttribute("href");
@@ -507,16 +520,29 @@ document.addEventListener("DOMContentLoaded", function () {
 			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
 			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
 			    if (branchLink) branchLink.removeAttribute("href");
-			    if (bsnLink) bsnLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
 			    //if (purchsLink) purchsLink.removeAttribute("href");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    if (accnutLink) accnutLink.removeAttribute("href");
 			    
-			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사)
 			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
 				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
 				        let href = link.getAttribute("href");
 				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
 				            link.removeAttribute("href");
 				            link.style.pointerEvents = "none";
 				            link.style.color = "#aaa";
@@ -534,16 +560,29 @@ document.addEventListener("DOMContentLoaded", function () {
 			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
 			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
 			    if (branchLink) branchLink.removeAttribute("href");
-			    if (bsnLink) bsnLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
 			    if (purchsLink) purchsLink.removeAttribute("href");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    //if (accnutLink) accnutLink.removeAttribute("href");
 			    
-			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사)
 			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
 				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
 				        let href = link.getAttribute("href");
 				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
 				            link.removeAttribute("href");
 				            link.style.pointerEvents = "none";
 				            link.style.color = "#aaa";
@@ -561,16 +600,29 @@ document.addEventListener("DOMContentLoaded", function () {
 			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
 			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
 			    //if (branchLink) branchLink.removeAttribute("href");
-			    if (bsnLink) bsnLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
 			    if (purchsLink) purchsLink.removeAttribute("href");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    if (accnutLink) accnutLink.removeAttribute("href");
 			    
-			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사)
 			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
 				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
 				        let href = link.getAttribute("href");
 				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
 				            link.removeAttribute("href");
 				            link.style.pointerEvents = "none";
 				            link.style.color = "#aaa";

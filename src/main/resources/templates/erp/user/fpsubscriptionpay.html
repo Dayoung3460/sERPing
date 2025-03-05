@@ -20,12 +20,19 @@
       lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<style>
+		h3, h5 {
+			font-weight: bold;
+		}
+	</style>
+</head>
 <body layout:fragment="content">
     <div class="container">
-        <h3>구독 결제</h3>
+        <h3>구독 결제</h3><hr/>
         <nav class="p-0 m-0 d-flex justify-content-start">
 		    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-		        <button class="nav-link border active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
+		        <button class="nav-link border active fw-bold" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
 		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">기간구독</button>
 		        <!-- 
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-rg"
@@ -38,9 +45,9 @@
         <div class="tab-content border" id="nav-tabContent" style="background-color: #ffffff;">
             <!-- 기간 구독 -->
             <div class="tab-pane fade show active" id="nav-fp" role="tabpanel" aria-labelledby="nav-fp-tab" tabindex="0">
-                <h3>기간 구독 결제 서비스</h3>
+                <!-- <h5>기간 구독 결제 서비스</h5> -->
                 <div class="d-flex">
-					<div style="width: 900px;" class="me-5">
+					<div style="width: 920px;" class="me-5 ms-2">
 		                <div class="section-title subperiod">▷ sERPing 기간구독</div>
 		                <table>
 						    <tr>
@@ -52,22 +59,22 @@
 						    <tr class="subscribe-options">
 						        <td>
 						            <label for="erp-sub-30">
-						                <input type="radio" id="erp-sub-30" data-day="30_60000" name="erp-subscription" value="1">60,000원
+						                <input type="radio" class="form-controller" id="erp-sub-30" data-day="30_60000" name="erp-subscription" value="1">60,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="erp-sub-90">
-						                <input type="radio" id="erp-sub-90" data-day="90_174600" name="erp-subscription" value="2">174,600원
+						                <input type="radio" class="form-controller" id="erp-sub-90" data-day="90_174600" name="erp-subscription" value="2">174,600원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="erp-sub-180">
-						                <input type="radio" id="erp-sub-180" data-day="180_338400" name="erp-subscription" value="3">338,400원
+						                <input type="radio" class="form-controller" id="erp-sub-180" data-day="180_338400" name="erp-subscription" value="3">338,400원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="erp-sub-360">
-						                <input type="radio" id="erp-sub-360" data-day="360_648000" name="erp-subscription" value="4">648,000원
+						                <input type="radio" class="form-controller" id="erp-sub-360" data-day="360_648000" name="erp-subscription" value="4">648,000원
 						            </label>
 						        </td>
 						    </tr>
@@ -83,17 +90,17 @@
 						    <tr class="subscribe-options">
 						        <td>
 						            <label for="group-sub-50">
-						                <input type="radio" id="group-sub-50" data-day="0_0" name="group-subscription" value="5">0원
+						                <input type="radio" class="form-controller" id="group-sub-50" data-day="0_0" name="group-subscription" value="5">0원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="group-sub-100">
-						                <input type="radio" id="group-sub-100" data-day="0_0" name="group-subscription" value="6">
+						                <input type="radio" class="form-controller" id="group-sub-100" data-day="0_0" name="group-subscription" value="6">
 						            </label>
 						        </td>
 						        <td>
 						            <label for="group-sub-limit">
-						                <input type="radio" id="group-sub-limit" data-day="0_0" name="group-subscription" value="7">
+						                <input type="radio" class="form-controller" id="group-sub-limit" data-day="0_0" name="group-subscription" value="7">
 						            </label>
 						        </td>
 						    </tr>
@@ -113,27 +120,27 @@
 						        <td>인사관리</td>
 						        <td>
 						            <label for="hr-sub-30">
-						                <input type="radio" id="hr-sub-30" data-day="30_15000" name="hr-subscription" value="8"> 15,000원
+						                <input type="radio" class="form-controller" id="hr-sub-30" data-day="30_15000" name="hr-subscription" value="8"> 15,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="hr-sub-90">
-						                <input type="radio" id="hr-sub-90" data-day="90_27000" name="hr-subscription" value="9"> 27,000원
+						                <input type="radio" class="form-controller" id="hr-sub-90" data-day="90_27000" name="hr-subscription" value="9"> 27,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="hr-sub-180">
-						                <input type="radio" id="hr-sub-180" data-day="180_54000" name="hr-subscription" value="10"> 54,000원
+						                <input type="radio" class="form-controller" id="hr-sub-180" data-day="180_54000" name="hr-subscription" value="10"> 54,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="hr-sub-360">
-						                <input type="radio" id="hr-sub-360" data-day="360_108000" name="hr-subscription" value="11"> 108,000원
+						                <input type="radio" class="form-controller" id="hr-sub-360" data-day="360_108000" name="hr-subscription" value="11"> 108,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="hr-sub-custom">
-						                <input type="radio" id="hr-sub-custom" data-day="0_0" name="hr-subscription" value="30"> 
+						                <input type="radio" class="form-controller" id="hr-sub-custom" data-day="0_0" name="hr-subscription" value="30"> 
 						            </label>
 						        </td>
 						    </tr>
@@ -141,27 +148,27 @@
 						        <td>지점관리</td>
 						        <td>
 						            <label for="branch-sub-30">
-						                <input type="radio" id="branch-sub-30" data-day="30_15000" name="branch-subscription" value="12"> 15,000원
+						                <input type="radio" class="form-controller" id="branch-sub-30" data-day="30_15000" name="branch-subscription" value="12"> 15,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="branch-sub-90">
-						                <input type="radio" id="branch-sub-90" data-day="90_27000" name="branch-subscription" value="13"> 27,000원
+						                <input type="radio" class="form-controller" id="branch-sub-90" data-day="90_27000" name="branch-subscription" value="13"> 27,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="branch-sub-180">
-						                <input type="radio" id="branch-sub-180" data-day="180_54000" name="branch-subscription" value="14"> 54,000원
+						                <input type="radio" class="form-controller" id="branch-sub-180" data-day="180_54000" name="branch-subscription" value="14"> 54,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="branch-sub-360">
-						                <input type="radio" id="branch-sub-360" data-day="360_108000" name="branch-subscription" value="15"> 108,000원
+						                <input type="radio" class="form-controller" id="branch-sub-360" data-day="360_108000" name="branch-subscription" value="15"> 108,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="branch-sub-custom">
-						                <input type="radio" id="branch-sub-custom" data-day="0_0" name="branch-subscription" value="31"> 
+						                <input type="radio" class="form-controller" id="branch-sub-custom" data-day="0_0" name="branch-subscription" value="31"> 
 						            </label>
 						        </td>
 						    </tr>
@@ -169,27 +176,27 @@
 						        <td>회계관리</td>
 						        <td>
 						            <label for="account-sub-30">
-						                <input type="radio" id="account-sub-30" data-day="30_15000" name="account-subscription" value="16"> 15,000원
+						                <input type="radio" class="form-controller" id="account-sub-30" data-day="30_15000" name="account-subscription" value="16"> 15,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="account-sub-90">
-						                <input type="radio" id="account-sub-90" data-day="90_27000" name="account-subscription" value="17"> 27,000원
+						                <input type="radio" class="form-controller" id="account-sub-90" data-day="90_27000" name="account-subscription" value="17"> 27,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="account-sub-180">
-						                <input type="radio" id="account-sub-180" data-day="180_54000" name="account-subscription" value="18"> 54,000원
+						                <input type="radio" class="form-controller" id="account-sub-180" data-day="180_54000" name="account-subscription" value="18"> 54,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="account-sub-360">
-						                <input type="radio" id="account-sub-360" data-day="360_108000" name="account-subscription" value="19"> 108,000원
+						                <input type="radio" class="form-controller" id="account-sub-360" data-day="360_108000" name="account-subscription" value="19"> 108,000원
 						            </label>
 						        </td>
 						        <td>
 						            <label for="account-sub-custom">
-						                <input type="radio" id="account-sub-custom" data-day="0_0" name="account-subscription" value="32"> 
+						                <input type="radio" class="form-controller" id="account-sub-custom" data-day="0_0" name="account-subscription" value="32"> 
 						            </label>
 						        </td>
 						    </tr>
@@ -211,7 +218,7 @@
 					            <td class="total-price">0원</td>
 					        </tr>
 					        <tr>
-					            <td colspan="2"><button class="periodpaygo">결제</button></td>
+					            <td colspan="2"><button type="button" class="btn btn-primary btn-lg fs-3 pt-2 pb-2 periodpaygo">결제</button></td>
 					        </tr>
 					    </table>
 		            </div>
@@ -311,7 +318,7 @@
 					            <td class="regular-total-price">0원</td>
 					        </tr>
 					        <tr>
-					            <td colspan="2"><button class="regular-periodpaygo">등록</button></td>
+					            <td colspan="2"><button class="btn btn-primary regular-periodpaygo">등록</button></td>
 					        </tr>
 					    </table>
 		            </div>
@@ -323,7 +330,7 @@
     <!-- JavaScript -->
     <script th:inline="javascript"> 
         setTimeout(async () => {
-            console.log("여기는 사용하는곳:", window.subscriptionState);
+            //console.log("여기는 사용하는곳:", window.subscriptionState);
             
             if(window.subscriptionState.subObjdate <= -10){
             	showAlert('고객센터에 문의후 사용 해주세요', 'danger');
@@ -432,7 +439,7 @@
      	// 구독기간에 맞게 가격을 변경
         function remake_date(redate) {
 	    let baseDate = window.subscriptionState.subObjdate + redate;
-	    console.log("현재구독기간:", baseDate);
+	    //console.log("현재구독기간:", baseDate);
 	
 	    // 가격 변경 대상 및 배수 설정
 	    const elementsToUpdate = [
@@ -716,6 +723,7 @@ document.querySelector(".periodpaygo").addEventListener("click", async function 
             return;
         }
 		if(formattedTotalPrice != "0"){
+			console.log(sessionData);
 	        // 이니시스 결제 요청 실행
 	        IMP.init(data.impKey); // 고객사 식별코드 사용
 	        IMP.request_pay({
@@ -724,9 +732,9 @@ document.querySelector(".periodpaygo").addEventListener("click", async function 
 	            merchant_uid: orderId, // 주문번호 (선택한 구독 옵션 value 조합)
 	            name: "기간 구독서비스", // 결제 상품명
 	            amount: formattedTotalPrice, // 결제 금액 (formattedTotalPrice 사용하지 않고 정수로 전달)
-	            buyer_email: "test@example.com",
-	            buyer_name: "홍길동",
-	            buyer_tel: "01012345678",
+	            buyer_email: "your@email.com",
+	            buyer_name: sessionData.employeeId,
+	            buyer_tel: "010-4874-5698",
 	            buyer_addr: "서울특별시 강남구",
 	            buyer_postcode: "12345"
 	        }, function (rsp) {
@@ -787,7 +795,7 @@ document.querySelector(".periodpaygo").addEventListener("click", async function 
 	<style>
         table {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
