@@ -107,30 +107,29 @@
 	    <div class="d-flex flex-wrap align-items-center gap-3">
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-2">상품명</span>
-	            <input type="text" name="goodsName" id="searchGoodsName" class="form-control w-auto">
+	            <input type="text" name="goodsName" id="searchGoodsNumName" class="form-control w-auto">
 	        </div>
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-2">브랜드명</span>
-	            <input type="text" name="brandName" id="searchBrandName" class="form-control w-auto">
+	            <input type="text" name="brandName" id="searchBrandNumName" class="form-control w-auto">
 	        </div>
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-2">표시수량</span>
-	            <select name="display_amount" id="product_display_amount" class="form-control w-auto" onchange="changeProductDisplay()">
+	            <select name="display_num_amount" id="product_num_display_amount" class="form-control w-auto" onchange="changeProductDisplay()">
 	                <option value="10" selected>10</option>
 	                <option value="20">20</option>
 	                <option value="50">50</option>
 	                <option value="100">100</option>
 	            </select>
 	        </div>
-	        <button type="button" class="btn btn-primary ms-auto" onclick="productSearch()">검색</button>
-	        <button type="button" class="btn btn-secondary" onclick="resetFilters()">초기화</button>
+	        <button type="button" class="btn btn-primary ms-auto" onclick="productNumSearch()">검색</button>
+	        <button type="button" class="btn btn-secondary" onclick="resetNumFilters()">초기화</button>
 	    </div>
 	</div>
 	
 	<!-- 상품별 그리드 -->
 	<div id="table-container" class="mt-3">
-	    <div id="productGrid"></div>
-	    <div id="pagination" class="tui-pagination"></div>
+	    <div id="productNumGrid"></div>
 	</div>
 	
 
@@ -139,10 +138,17 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOMContentLoaded 이벤트 실행");
-    initProductGrid();  // 상품 그리드 초기화
-});
+    console.log("✅ DOMContentLoaded 실행됨");
 
+    // ✅ productNumGrid가 있는지 확인
+    console.log("📌 productNumGrid 엘리먼트 존재 여부: ", document.getElementById('productNumGrid'));
+
+    if (document.getElementById('productNumGrid')) {
+        initProductNumGrid();
+    } else {
+        console.warn("❌ productNumGrid 요소를 찾을 수 없습니다.");
+    }
+});
 // ✅ 텍스트를 굵게하고 정렬하는 렌더러
 class CustomTextRenderer {
     constructor(props) {
@@ -158,12 +164,11 @@ class CustomTextRenderer {
     }
 }
 
-let productGrid;
-let lotGrid;
-let selectedOptionNum = null;
+let productNumGrid;
+
 let selectedCompanyNum = [[${session.companyNum}]];
 
-function initProductGrid() {
+function initProductNumGrid() {
     console.log("✅ initProductGrid() 실행");
 
     
@@ -174,7 +179,7 @@ function initProductGrid() {
 
     console.log("✅ 설정된 companyNum:", selectedCompanyNum);
 
-    const productDataSource = {
+    const productNumDataSource = {
         api: {  
             readData: { 
                 url: '/purchs/rest/goods/nums', 
@@ -194,9 +199,9 @@ function initProductGrid() {
         serverSidePagination: true
     };
 
-    productGrid = new tui.Grid({
-        el: document.getElementById('productGrid'),
-        data: productDataSource, 
+    productNumGrid = new tui.Grid({
+        el: document.getElementById('productNumGrid'),
+        data: productNumDataSource, 
         scrollX :true,
         scrollY : false,
         rowHeight: 40,  // ✅ 행 크기 고정 (기본값: auto → 40px로 지정)
@@ -227,39 +232,39 @@ function initProductGrid() {
 
 
 // ✅ 표시 수량 변경
-function changeProductDisplay() {
-    let gap = parseInt(document.querySelector('#product_display_amount').value);
-    productGrid.setPerPage(gap);
-    productGrid.reloadData();
+function changeProductNumDisplay() {
+    let gap = parseInt(document.querySelector('#product_num_display_amount').value);
+    productNumGrid.setPerPage(gap);
+    productNumGrid.reloadData();
 }
 
 // ✅ 검색 실행
-function productSearch() {
-    let goodsName = document.querySelector('#searchGoodsName').value;
-    let brandName = document.querySelector('#searchBrandName').value;
+function productNumSearch() {
+    let goodsName = document.querySelector('#searchGoodsNumName').value;
+    let brandName = document.querySelector('#searchBrandNumName').value;
 
-    productGrid.setRequestParams({
+    productNumGrid.setRequestParams({
         "companyNum": [[${session.companyNum}]],
         "goodsName": goodsName,
         "brandName": brandName
     });
 
-    productGrid.reloadData();
+    productNumGrid.reloadData();
 }
 
 // ✅ 필터 초기화
-function resetFilters() {
-    document.querySelector('#searchGoodsName').value = '';
-    document.querySelector('#searchBrandName').value = '';
-    document.querySelector('#product_display_amount').value = '10';
+function resetNumFilters() {
+    document.querySelector('#searchGoodsNumName').value = '';
+    document.querySelector('#searchBrandNumName').value = '';
+    document.querySelector('#product_num_display_amount').value = '10';
 
-    productGrid.setRequestParams({
+    productNumGrid.setRequestParams({
         "companyNum": [[${session.companyNum}]],
         "goodsName": '',
         "brandName": ''
     });
 
-    productGrid.reloadData();
+    productNumGrid.reloadData();
 }
 
 </script>
