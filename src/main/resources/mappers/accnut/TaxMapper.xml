@@ -7,7 +7,41 @@
 		FROM accnut_tax_header
 	</select>
 	
+	<insert id="insertHeader">
+		INSERT INTO accnut_tax_header(
+			tax_num, 
+			from_rgno, from_co_name, from_name, from_address, from_status, from_cate, from_email, 
+			to_rgno, to_co_name, to_name, to_address, to_status, to_cate, to_email1, to_email2, 
+			rgdate, note, total, supply, tax, company_num
+		)
+		VALUES (
+			#{pk},
+			#{from.bsnNum}, #{from.coName}, #{from.representor}, #{from.address}, #{from.status}, #{from.cate}, #{from.email},     
+			#{to.id}, #{to.name}, #{to.manager}, #{to.address}, #{to.status}, #{to.cate}, #{to.email2}, #{to.email3},
+			#{total.date}, #{total.note}, #{total.total}, #{total.supply}, #{total.tax}, #{total.companyNum}
+		)
+	</insert>
 	
+	<insert id="insertDetail">
+		INSERT INTO accnut_tax_detail(
+			tax_detail_num, tax_num, 
+			month, day, option_code, standard, quantity, amount, total, supply_price, tax, note
+		)
+		VALUES (
+			accnut_tax_detail_seq.nextval, #{pk},
+			#{detail.month}, #{detail.day}, #{detail.optionCode}, #{detail.standard}, #{detail.quantity}, #{detail.amount}, #{detail.total}, #{detail.supplyPrice}, #{detail.tax}, #{detail.note}
+		)
+	</insert>
+	
+	<select id="info" resultType="map">
+		SELECT  th.tax_num, th.from_rgno, th.from_co_name, th.from_name, th.from_address, th.from_status, th.from_email, 
+				th.to_rgno, th.to_co_name, th.to_name, th.to_address, th.to_status, th.to_cate, th.to_email1, th.to_email2, 
+				th.rgdate, th.note, th.total, th.supply, th.tax,
+				td.tax_detail_num, td.month, td.day, td.option_code, td.standard, td.quantity, td.amount, td.total, td.supply_price, td.tax, td.note
+		FROM accnut_tax_header th JOIN accnut_tax_detail td
+				ON (th.tax_num = td.tax_num)
+		WHERE th.tax_num = #{pk}	
+	</select>
 
 
 

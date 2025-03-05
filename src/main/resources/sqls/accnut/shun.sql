@@ -632,3 +632,86 @@ SELECT -- option_code AS "optionCode", option_name AS "optionName"
 		FROM bsn_bhf
 		-- WHERE company_num = #{companyNum}
 		ORDER BY 2;
+        
+        
+-- 2025-03-04
+
+select * from accnut_salary_account_book;
+
+insert into accnut_salary_account_book
+select ACCNUT_SALARY_BOOK_SEQ.nextval, employee_code, employee_name, department, salary,  excess_allowance, bonus, incidental_cost, deduction_item, payment_amount, payment_prearranged_date, payment_alternative, payer, company_num
+from accnut_salary_account_book;
+commit;
+
+select * from hr_department;
+select * from bsn_bhf;
+select * from hr_employee;
+
+SELECT department_num AS "departmentNum", department_name AS "departmentName"
+FROM hr_department
+WHERE company_num = #{companyNum}
+AND parent_department_num IS NOT NULL
+;
+
+create or replace function fn_get_dept_name(p_dept varchar2, p_com number)
+return varchar2
+is
+    v_result varchar(1000);
+begin
+    select department_name
+    into v_result
+    from hr_department
+    where company_num = p_com
+    and department_num = p_dept;
+
+    return v_result;
+end;
+/
+
+
+SELECT assets_code, assets_name, section, financial_institution, finance_information, owner, amount, register_date, quantity, fixtures_amount, rgno
+		FROM accnut_assets
+		WHERE assets_name Like '%' || '±Þ¿©' || '%'
+		AND company_num = 1
+		and rownum = 1;
+        
+        
+        
+select * from hr_department;
+
+select * from accnut_assets;
+
+SELECT NVL(MAX(tax_num), 0)
+FROM accnut_tax_header;
+
+select * from bsn_bhf;
+
+
+
+select * from accnut_tax_header;
+
+SELECT option_code AS "optionCode", option_name AS "optionName", ROUND(goods_price / SUBSTR(REGEXP_REPLACE(goods_standard, '[^0-9]', ''), 2)) AS "goodsPrice", goods_standard AS "goodsStandard", goods_name AS "goodsName"
+		FROM purchse_option po JOIN purchse_goods pg
+		            ON (po.goods_num = pg.goods_num)
+		WHERE pg.company_num = 45
+		AND pg.goods_name LIKE '%' || '' || '%'
+		ORDER BY 2
+        ;
+SELECT REGEXP_REPLACE('A123B456C', '[^0-9]', '') AS only_numbers FROM DUAL;
+SELECT SUBSTR('123ABC456', 2) AS result FROM DUAL;
+
+
+create sequence accnut_tax_detail_seq;
+
+select accnut_tax_detail_seq.nextval from dual;
+
+select * from accnut_tax_header;
+select * from accnut_tax_detail;
+
+SELECT th.tax_num, th.from_rgno, th.from_co_name, th.from_name, th.from_address, th.from_status, th.from_email, 
+th.to_rgno, th.to_co_name, th.to_name, th.to_address, th.to_status, th.to_cate, th.to_email1, th.to_email2, 
+th.rgdate, th.note, th.total, th.supply, th.tax,
+td.tax_detail_num, td.month, td.day, td.option_code, td.standard, td.quantity, td.amount, td.total, td.supply_price, td.tax, td.note
+FROM accnut_tax_header th JOIN accnut_tax_detail td
+ON (th.tax_num = td.tax_num)
+WHERE th.tax_num = #{pk}

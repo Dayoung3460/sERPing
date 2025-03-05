@@ -64,7 +64,7 @@ public class DeptServiceImpl implements DeptService {
             .mapToInt(DeptDTO::getTotalEmployeeCount)
             .sum() + noDeptEmployees;
 
-        companyInfo.setTotalEmployeeCount(departments.size());
+        //companyInfo.setTotalEmployeeCount(departments.size());
         
         // ✅ 로그 출력 (디버깅)
         System.out.println("📌 최종 totalEmployeeCount 값: " + totalEmployeeCount);
@@ -75,6 +75,7 @@ public class DeptServiceImpl implements DeptService {
         result.put("departments", departments);
         return result;
     }
+    
     /**
      * 🔥 하위 부서 직원 수를 상위 부서에 재귀적으로 추가하는 메서드 (중복 방지)
      */

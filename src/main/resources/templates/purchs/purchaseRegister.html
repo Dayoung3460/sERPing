@@ -4,9 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <body layout:fragment="content">
-<!-- ✅ JS 파일 로드 순서 조정 (defer 적용) -->
-	 <script src="/js/purchs/purchseResgister.js"></script>
-	 
+
     <style>
         .form-control { width: 100%; }
         
@@ -127,7 +125,9 @@
 
 
 
-	
+<!-- ✅ JS 파일 로드 순서 조정 (defer 적용) -->
+ <script src="/js/purchs/purchseResgister.js"></script>
+	 
 	 
 <!-- 상품 모달 -->
  <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (

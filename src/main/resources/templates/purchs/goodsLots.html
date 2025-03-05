@@ -219,12 +219,13 @@ function initProductGrid() {
             { header: "상품명", name: "goodsName", rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
             { header: "상품코드", name: "goodsCode", rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
             { header: "옵션명", name: "optionName" },
-            { header: "옵션번호", name: "optionCode" },
+            { header: "옵션코드", name: "optionCode" },
             { header: "브랜드", name: "brandName" },
             { header: "규격", name: "goodsStandard"},
-            { header: "입고수량", name: "totalInputQuantity"},
-            { header: "출고수량", name: "totalOutputQuantity"},
-            { header: "총재고", name: "totalQuantity"},
+            { header: "입고수", name: "totalInputQuantity"},
+            { header: "출고수", name: "totalOutputQuantity"},
+            { header: "재입고수", name: "totalRestockQuantity"},
+            { header: "총재고수", name: "totalQuantity"},
             { header: "안전재고", name: "optionSafetyInvoice"},
         ]
     });

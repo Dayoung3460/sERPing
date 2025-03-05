@@ -516,22 +516,29 @@ public class ProductRestController {
 		
 	
 		// ✅ 발주 취소 요청 API
-	    @PostMapping("/purchase/cancel")
-	    public ResponseEntity<Map<String, String>> cancelPurchase(@RequestBody Map<String, Integer> requestData) {
-	        int companyNum = requestData.get("companyNum");
-	        int purchaseNum = requestData.get("purchaseNum");
+	  
+		@PostMapping("/purchase/cancel")
+		public ResponseEntity<?> cancelPurchase(@RequestBody PurchaseDTO request) {
+		    Long purchaseNum = request.getPurchaseNum();
+		    Integer companyNum = request.getCompanyNum();
 
-	        boolean isCanceled = purchaseService.cancelPurchase(companyNum, purchaseNum);
+		    System.out.println("📢 요청 받은 purchaseNum: " + purchaseNum);
+		    System.out.println("📢 요청 받은 companyNum: " + companyNum);
 
-	        Map<String, String> response = new HashMap<>();
-	        if (isCanceled) {
-	            response.put("status", "success");
-	            return ResponseEntity.ok(response);
-	        } else {
-	            response.put("status", "fail");
-	            return ResponseEntity.badRequest().body(response);
-	        }
-	    }
+		    if (purchaseNum == null || companyNum == null) {
+		        return ResponseEntity.badRequest().body(Map.of("status", "error", "message", "필수 값이 없습니다."));
+		    }
+
+		    boolean success = purchaseService.cancelPurchase(companyNum, purchaseNum);
+
+		    if (success) {
+		        return ResponseEntity.ok(Map.of("status", "success", "message", "발주 취소 완료"));
+		    } else {
+		        return ResponseEntity.badRequest().body(Map.of("status", "error", "message", "발주 취소 실패"));
+		    }
+		}
+
+
 
 			
 			

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.beauty1nside.accnut.mapper.OtherMapper">
 	<select id="optionList" resultType="map">
-		SELECT option_code AS "optionCode", option_name AS "optionName", goods_price AS "goodsPrice", goods_standard AS "goodsStandard", goods_name AS "goodsName"
+		SELECT option_code AS "optionCode", option_name AS "optionName", ROUND(goods_price / SUBSTR(REGEXP_REPLACE(goods_standard, '[^0-9]', ''), 2)) AS "goodsPrice", goods_standard AS "goodsStandard", goods_name AS "goodsName"
 		FROM purchse_option po JOIN purchse_goods pg
 		            ON (po.goods_num = pg.goods_num)
 		WHERE pg.company_num = #{companyNum}

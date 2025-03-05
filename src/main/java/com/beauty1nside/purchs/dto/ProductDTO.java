@@ -68,6 +68,7 @@ public class ProductDTO {
 	private int totalInputQuantity; //입고수량(개당)
 	private int totalOutputQuantity; //출고수량(개당)
 	private int totalQuantity;//총재고수량(개당)
+	private int totalRestockQuantity;
 	
 	private String goodsLotNum;
 	private Date goodsConsumptionDate;

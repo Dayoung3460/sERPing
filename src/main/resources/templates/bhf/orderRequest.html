@@ -61,17 +61,16 @@
 				<div class="card">
 					<div class="card-body">
 						<div class="row mb-3">
-							<label class="col-sm-2">상품명</label> 
+							<label class="col-sm-2" style=" margin: 10px 0px">상품명</label> 
 							<input type="text" class="col-sm-7" id="goodsName">
-							<div class="col-sm-1"></div>
-							<button type="button" class="col-sm-2 btn btn-primary" onclick="search()">검색</button>
+							<button type="button" class="col-sm-2 btn btn-primary" style=" margin: 0px 25px " onclick="search()">검색</button>
 						</div>
 						<div id="goods"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-6 stretch-card mt-2">
+			<div class="col-md-6 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
 						<h6 class="mb-4">상품별 옵션</h6>
@@ -87,8 +86,8 @@
 						<div id="order"></div>
 						<div id="pagination" class="tui-pagination"></div>
 						<div style="text-align : center">
-							<button onclick="orderInsert()">등록</button>
-							<button onclick="orderReset()">초기화</button>
+							<button class="btn btn-primary" onclick="orderInsert()">등록</button>
+							<button class="btn btn-secondary" onclick="orderReset()">초기화</button>
 						</div>
 					</div>
 				</div>

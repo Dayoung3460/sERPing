@@ -340,8 +340,9 @@ GROUP BY
 </insert>
 
 <!-- 상품재고갯수 -->
+<!-- 상품재고갯수 -->
 <select id="goodsNum" resultType="ProductDTO">
-	WITH AggregatedData AS (
+    WITH AggregatedData AS (
         SELECT 
             g.goods_name,
             g.goods_code,
@@ -351,15 +352,19 @@ GROUP BY
             o.option_code,
             o.option_num,
             b.brand_name,
-            -- ✅ 정확한 입고 수량 합산 (option_num 기준)
+            -- ✅ 입고 수량 합산
             COALESCE((SELECT SUM(wb.warehousing_total_quantity) 
-                     FROM purchs_warehousing_body wb
-                     WHERE wb.option_num = o.option_num), 0) AS total_input_quantity, 
-            -- ✅ 출고 수량을 OPTION_CODE 기준으로 SUM()
+                      FROM purchs_warehousing_body wb
+                      WHERE wb.option_num = o.option_num), 0) AS total_input_quantity, 
+            -- ✅ 출고 수량 합산
             COALESCE((SELECT SUM(d.DELIVERY_TOTAL_QNT * TO_NUMBER(REGEXP_SUBSTR(d.GOODS_STANDARD, '\d+', 1, 2))) 
-                     FROM bsn_delivery_detail d
-                     WHERE d.OPTION_CODE = o.OPTION_CODE
-                     AND d.SUFFICIENCY_STATUS = 2), 0) AS total_output_quantity,
+                      FROM bsn_delivery_detail d
+                      WHERE d.OPTION_CODE = o.OPTION_CODE
+                      AND d.SUFFICIENCY_STATUS = 2), 0) AS total_output_quantity,
+            -- ✅ 재입고 수량 (option_code 기준)
+            COALESCE((SELECT SUM(rg.warehousing_qnt)
+                      FROM bsn_cs_returning_goods rg
+                      WHERE rg.option_code = o.option_code), 0) AS total_restock_quantity,
             o.option_safety_invoice
         FROM purchse_goods g 
         JOIN purchse_option o 
@@ -385,7 +390,9 @@ GROUP BY
                brand_name,
                total_input_quantity,
                total_output_quantity,
-               total_input_quantity - total_output_quantity AS total_quantity,
+               total_restock_quantity,
+               -- ✅ 총 재고량: (입고 - 출고 + 재입고)
+               (total_input_quantity - total_output_quantity + total_restock_quantity) AS total_quantity,
                option_safety_invoice
         FROM AggregatedData
         ORDER BY goods_code DESC, option_code DESC 
@@ -394,6 +401,7 @@ GROUP BY
 </select>
 
 
+<!-- 상품 수 카운트 -->
 <!-- 상품 수 카운트 -->
 <select id="goodsNumcount" resultType="int">
     WITH AggregatedData AS (
@@ -406,8 +414,12 @@ GROUP BY
             o.option_code,
             o.option_num,
             b.brand_name,
+            -- ✅ 입고 수량
             COALESCE(SUM(wb.warehousing_total_quantity), 0) AS total_input_quantity, 
+            -- ✅ 출고 수량
             COALESCE(SUM(d.delivery_total_qnt * TO_NUMBER(REGEXP_SUBSTR(g.goods_standard, '\d+', 1, 2))), 0) AS total_output_quantity,
+            -- ✅ 재입고 수량 (option_code 기준)
+            COALESCE(SUM(rg.warehousing_qnt), 0) AS total_restock_quantity,
             o.option_safety_invoice
         FROM purchse_goods g 
         JOIN purchse_option o 
@@ -418,8 +430,10 @@ GROUP BY
             ON o.option_num = wb.option_num
         LEFT JOIN bsn_delivery_detail d
             ON o.option_code = d.option_code
-        WHERE g.company_num = #{companyNum}  <!-- ✅ 기본 WHERE 조건 -->
-        <include refid="searchgoodsNumInfo"/>  <!-- ✅ 추가 검색 조건 -->
+        LEFT JOIN bsn_cs_returning_goods rg
+            ON o.option_code = rg.option_code
+        WHERE g.company_num = #{companyNum}  
+        <include refid="searchgoodsNumInfo"/>
         GROUP BY 
             g.goods_name, g.goods_code, g.goods_standard, g.company_num,
             o.option_name, o.option_code, o.option_num,
@@ -427,6 +441,7 @@ GROUP BY
     )
     SELECT COUNT(*) FROM AggregatedData
 </select>
+
 
 <!-- 검색 조건 쿼리 -->
 <sql id="searchgoodsNumInfo">

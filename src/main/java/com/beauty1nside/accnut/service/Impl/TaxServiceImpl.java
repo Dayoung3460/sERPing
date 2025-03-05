@@ -1,5 +1,9 @@
 package com.beauty1nside.accnut.service.Impl;
 
+import java.util.List;
+import java.util.List;
+import java.util.List;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -30,18 +34,20 @@ public class TaxServiceImpl implements TaxService{
 		Map<String, Object> total = (Map<String, Object>) dto.get("total");
 		Map<String, Object> to = (Map<String, Object>) dto.get("to");
 		Map<String, Object> from = (Map<String, Object>) dto.get("from");
-		Map<String, Object> detail = (Map<String, Object>) dto.get("detail");
+		List<Map<String, Object>> detail = (List<Map<String, Object>>) dto.get("detail");
 		
 		total.put("taxNum", pk);
-		
-		
-		
-		taxMapper.insertHeader(from, to, total);
-		taxMapper.insertDetail(pk, detail);
-		
-		
-		
 		log.info(total);
+		log.info(detail);
+		
+		taxMapper.insertHeader(from, to, total, pk);
+		
+		detail.forEach(info -> {
+			taxMapper.insertDetail(pk, info);
+		});
+		
+		
+		
 		
 		return 0;
 	}

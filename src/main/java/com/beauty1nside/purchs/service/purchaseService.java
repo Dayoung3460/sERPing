@@ -27,5 +27,5 @@ public interface purchaseService {
 	public void purchUpdate(PurchUpdateVO vo);
 	
 	 // 발주 취소 메서드
-    boolean cancelPurchase(int companyNum, int purchaseNum);
+    boolean cancelPurchase(int companyNum, Long purchaseNum);
 }

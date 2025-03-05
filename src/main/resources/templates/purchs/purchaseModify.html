@@ -206,10 +206,12 @@ function initPurchaseGrid(optionsData) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    'header': header,
-                    'X-CSRF-Token': token
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="_csrf"]').content
                 },
-                body: JSON.stringify({ purchaseNum, companyNum })
+                body: JSON.stringify({ 
+                	purchaseNum: Number(purchaseNum),
+                    companyNum: Number(companyNum)
+                })
             });
 
             const result = await response.json();

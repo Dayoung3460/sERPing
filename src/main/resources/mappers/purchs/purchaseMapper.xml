@@ -216,7 +216,7 @@ and h.purchase_num = #{purchaseNum}
 </insert>
 
 <!-- 발주서 취소 -->
-<update id="purchscancle" parameterType="PurchaseDTO" >
+<update id="cancelPurchase" parameterType="PurchaseDTO" >
 update purchs_purchase_header
 set purchase_status = fn_get_cmmn_name('VS003')
 where company_num = #{companyNum}

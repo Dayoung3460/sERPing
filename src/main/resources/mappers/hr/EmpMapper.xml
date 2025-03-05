@@ -29,7 +29,7 @@
 		parameterType="com.beauty1nside.hr.dto.EmpSearchDTO">
 		SELECT * FROM (
 			SELECT ROWNUM rn, employeeNum, employeeId, employeeName, email, phone,
-			hireDate, position, status, employmentType, departmentName, contractStatus
+			hireDate, position, status, employmentType,authority, departmentName, contractStatus
 			FROM (
 				SELECT
 				e.employee_num AS employeeNum,
@@ -41,6 +41,7 @@
 				fn_get_cmmn_name(e.position) AS position,
 				fn_get_cmmn_name(e.status) AS status,
 				fn_get_cmmn_name(e.employment_type) AS employmentType,
+				fn_get_cmmn_name(e.authority) AS authority,
 				COALESCE(d.department_name, '부서 없음') AS departmentName,
 				
 	            CASE 

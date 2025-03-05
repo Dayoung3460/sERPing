@@ -352,7 +352,7 @@ function purchaseRegister() {
                 employeeNum: parseInt(document.getElementById("employeeNum").value) || 0,
                 companyNum: parseInt(document.getElementById("companyNum").value) || 0,
                 purchaseDate: document.getElementById("purchaseDate").value,
-                purchaseDueDate: document.getElementById("puchaseDueDate").value,
+                purchaseDueDate: document.getElementById("purchaseDueDate").value,
                 purchaseVatFlag: vatFlag,
                 vendorId: vendorId,
                 files: []
@@ -368,10 +368,10 @@ function purchaseRegister() {
 		    goodsStandard: item.goodsStandard,
 		    optionNum: parseInt(item.optionNum.replace(/,/g, '')) || 0,  // ✅ 정수 변환
 		    orderPlanBodyNum: orderPlanBodyNum ? parseInt(orderPlanBodyNum.replace(/,/g, '')) : null , // ✅ 정수 변환 (nullable)
-		    purchaseQuantity: parseInt(item.puchaseQuantity.replace(/,/g, '')) || 0,  // ✅ 정수 변환
+		    purchaseQuantity: parseInt(item.purchaseQuantity.replace(/,/g, '')) || 0,  // ✅ 정수 변환
 		    purchaseSupplyPrice: parseFloat(item.purchaseSupplyPrice.replace(/,/g, '')) || 0,  // ✅ 실수 변환 (문자열 제거)
-		    purchaseUnitPrice: parseFloat(item.puchaseUnitPrice.replace(/,/g, '')) || 0,  // ✅ 실수 변환
-		    purchaseVat: parseFloat(item.puchaseVat.replace(/,/g, '')) || 0,  // ✅ 실수 변환 (문자열 제거)
+		    purchaseUnitPrice: parseFloat(item.purchaseUnitPrice.replace(/,/g, '')) || 0,  // ✅ 실수 변환
+		    purchaseVat: parseFloat(item.purchaseVat.replace(/,/g, '')) || 0,  // ✅ 실수 변환 (문자열 제거)
 		});
 
 

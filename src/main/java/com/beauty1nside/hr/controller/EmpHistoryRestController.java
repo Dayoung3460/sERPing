@@ -50,9 +50,6 @@ public class EmpHistoryRestController {
             return ResponseEntity.status(403).body("❌ 해당 회사의 인사발령만 등록 가능합니다.");
         }
 
-        // 기본값 설정
-        historyDTO.setApprovalStatus("AP001"); // 기본 승인 상태: 대기
-        historyDTO.setProcessedBy(null); // 승인자 정보는 등록 시 없음
 
         empHistoryService.insertHistory(historyDTO);
         return ResponseEntity.ok("인사발령 등록 완료!");

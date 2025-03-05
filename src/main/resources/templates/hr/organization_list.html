@@ -264,16 +264,16 @@
         	    nodes: nodes
         	});
             
-            // ✅ AI 정렬 기능 추가
+            // AI 정렬 기능 추가
             chart.on('init', function(){
                 chart.AI("Rearrange the chart to optimize hierarchy");
             });
             
-            // ✅ PDF 다운로드 기능 추가
+            // PDF 다운로드 기능 추가
             document.getElementById("downloadPdfBtn").addEventListener("click", function() {
                 chart.exportPDF({
                     format: "A4",
-                    landscape: true,  // ✅ 가로 모드 설정
+                    landscape: true,  // 가로 모드 설정
                     padding: 20,
                     filename: "organization_chart.pdf"
                 });
