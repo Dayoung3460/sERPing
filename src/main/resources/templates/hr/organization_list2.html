@@ -73,17 +73,10 @@
     object-fit: contain; /* 이미지 비율 유지 */
 }
 
-
-
-.employee-table {
-    width: 100%;
-    height: 100vh; /* 화면 전체 높이 */
-    overflow: hidden; /* 스크롤이 아니라 화면 크기에 맞추도록 */
-    display: flex;
-    flex-direction: column;
+.content-section{
+  width: 1200px;
+  height: 1100px;
 }
-
-
   </style>
 </head>
 
@@ -238,59 +231,50 @@
  const header = document.querySelector('meta[name="_csrf_header"]').content;
  const token = document.querySelector('meta[name="_csrf"]').content;
  
-//✅ 회사(Company) 템플릿 (사각형 스타일)
+//✅ 회사(Company) 템플릿
  OrgChart.templates.company = Object.assign({}, OrgChart.templates.ana);
- OrgChart.templates.company.size = [260, 130]; // 🔹 크기 조정
+ OrgChart.templates.company.size = [200, 200];
  OrgChart.templates.company.node =
-     `<rect x="0" y="0" width="260" height="130" fill="#FFD700" stroke-width="2" stroke="#aeaeae" rx="10" ry="10"></rect>`;
- OrgChart.templates.company.field_0 =
-     `<text style="font-size: 22px; font-weight: bold; font-family: 'Inter', sans-serif;" 
-          fill="#333" x="130" y="65" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
- OrgChart.templates.company.field_1 =
-     `<text style="font-size: 18px; font-weight: 600; font-family: 'Inter', sans-serif;" 
-          fill="#555" x="130" y="85" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
-
+     `<circle cx="100" cy="100" r="100" fill="#ffffff" stroke-width="1" stroke="#aeaeae"></circle>
+     <g transform="matrix(3.5,0,0,3.5,20,20)">
+         <circle cx="12" cy="22" r="12" fill="#039BE5"></circle>
+         <circle cx="33" cy="14" r="10" fill="#FFCA28"></circle>
+         <circle cx="30" cy="32" r="8" fill="#F57C00"></circle>
+     </g>`;
  OrgChart.templates.company.ripple = {
-     radius: 0,
-     color: "#FFD700",
+     radius: 100,
+     color: "#039BE5",
      rect: null
  };
 
- // ✅ 상위 부서(TopDepartment) 템플릿 (강조된 스타일)
+ // ✅ 상위 부서(TopDepartment) 템플릿
  OrgChart.templates.topDepartment = Object.assign({}, OrgChart.templates.ana);
- OrgChart.templates.topDepartment.size = [240, 70]; // 🔹 크기 조정
+ OrgChart.templates.topDepartment.size = [330, 50];
  OrgChart.templates.topDepartment.node =
-     `<rect x="0" y="0" width="240" height="70" fill="#2E86C1" stroke-width="2" stroke="#ffffff" rx="5" ry="5"></rect>`;
- OrgChart.templates.topDepartment.field_0 =
-     `<text style="font-size: 20px; font-weight: bold; font-family: 'Inter', sans-serif;" 
-          fill="#fff" x="120" y="35" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
- OrgChart.templates.topDepartment.field_1 =
-     `<text style="font-size: 18px; font-weight: 600; font-family: 'Inter', sans-serif;" 
-          fill="#fff" x="120" y="50" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
-
+     `<rect x="0" y="0" width="330" height="50" fill="#ffffff" stroke-width="1" stroke="#aeaeae"></rect>`;
+ OrgChart.templates.topDepartment.field_0 = 
+     `<text style="font-size: 24px;" fill="#aeaeae" x="165" y="30" text-anchor="middle">{val}</text>`;
  OrgChart.templates.topDepartment.ripple = {
-     radius: 0,
-     color: "#2E86C1",
-     rect: null
- };
-
- // ✅ 하위 부서(SubDepartment) 템플릿 (가로 정렬)
- OrgChart.templates.subDepartment = Object.assign({}, OrgChart.templates.ana);
- OrgChart.templates.subDepartment.size = [200, 60]; // 🔹 크기 조정
- OrgChart.templates.subDepartment.node =
-     `<rect x="0" y="0" width="200" height="60" fill="#F57C00" stroke-width="2" stroke="#ffffff" rx="5" ry="5"></rect>`;
- OrgChart.templates.subDepartment.field_0 =
-     `<text style="font-size: 18px; font-weight: bold; font-family: 'Inter', sans-serif;" 
-          fill="#fff" x="100" y="30" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
- OrgChart.templates.subDepartment.field_1 =
-     `<text style="font-size: 16px; font-weight: 600; font-family: 'Inter', sans-serif;" 
-          fill="#fff" x="100" y="45" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
-
- OrgChart.templates.subDepartment.ripple = {
      radius: 0,
      color: "#F57C00",
      rect: null
  };
+
+ // ✅ 하위 부서(SubDepartment) 템플릿
+OrgChart.templates.subDepartment = Object.assign({}, OrgChart.templates.ana);
+OrgChart.templates.subDepartment.size = [50, 300];
+OrgChart.templates.subDepartment.node =
+    `<rect x="0" y="0" width="50" height="300" fill="#ffffff" stroke-width="1" stroke="#aeaeae"></rect>`;
+OrgChart.templates.subDepartment.field_0 = 
+    `<text transform="rotate(90)" style="font-size: 20px;" fill="#aeaeae" x="150" y="-15" text-anchor="middle">{val}</text>`; // 🔹 글씨 90도 회전
+
+OrgChart.templates.subDepartment.ripple = {
+    radius: 0,
+    color: "#FFCA28",
+    rect: null
+};
+
+
  
     // 백엔드 API에서 데이터 가져오기 (Spring Boot API 연결)
     fetch("/hr/rest/dept/list?companyNum="+companyNum, {
@@ -344,36 +328,35 @@
     console.log("📌 조직도 노드 데이터:", nodes);
 
     // ✅ 5. OrgChart 생성
-	let chart = new OrgChart(document.getElementById("orgChartList"), {
-	    orientation: OrgChart.orientation.left,
-	    compact: true, 
-	    mouseScrool: OrgChart.action.scroll,
-	    enableSearch: false,
-	    enableAI: false,    
-	    enableDragDrop: true,
-	    nodeBinding: {
-	        field_0: "name",  // ✅ 도형에는 부서명만 표시
-	    },
-	    tags: {
-	        "Company": { template: "company" }, 
-	        "TopDepartment": { template: "topDepartment" },
-	        "SubDepartment": { template: "subDepartment" }
-	    },
-	    nodes: nodes
-	});
-    
-    
-    // ✅ 데이터 반영
-    chart.load(nodes);
-    chart.fit();
-    
+    let chart = new OrgChart(document.getElementById("orgChartList"), {
+        compact: true, 
+        mouseScrool: OrgChart.action.scroll,
+        enableSearch: false,
+        enableAI: false,    
+        enableDragDrop: true,
+        nodeBinding: {
+            field_0: "name",
+            field_1: "title"
+        },
+        tags: {
+            "Company": { template: "company" }, // ✅ 회사 템플릿 적용
+            "TopDepartment": { template: "topDepartment" },
+            "SubDepartment": { template: "subDepartment" }
+        },
+        nodes: nodes
+    });
+
+    // ✅ AI 정렬 기능 추가
+    chart.on('init', function() {
+        chart.AI("Rearrange the chart to optimize hierarchy");
+    });
+
     // ✅ PDF 다운로드 기능 추가
     document.getElementById("downloadPdfBtn").addEventListener("click", function() {
         chart.exportPDF({
-            scale: 50,
             format: "A4",
             landscape: true,
-            padding: 30,
+            padding: 20,
             filename: "organization_chart.pdf"
         });
     });
