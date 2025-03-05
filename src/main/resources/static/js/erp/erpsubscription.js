@@ -383,6 +383,14 @@ function subManagement(data) {
 document.addEventListener("DOMContentLoaded", function () {
     //관리자이면서 마이페이지이면 메뉴 생기게
     var currentUrl = window.location.href;
+    if ( currentUrl.includes("/mypage/") || currentUrl.includes("/erp/erpsubinfo") || currentUrl.includes("/erp/usercontact") || currentUrl.includes("/erp/fppay") ) {
+		if(sessionData.authority != "AU001"){
+			 document.querySelectorAll(".nav-item.autag").forEach(li => {
+			    li.remove();
+			});
+		}
+	}
+    /*
     if(sessionData.authority == "AU001"){
 		if ( currentUrl.includes("/mypage/") || currentUrl.includes("/erp/erpsubinfo") || currentUrl.includes("/erp/usercontact") 
 		 || currentUrl.includes("/erp/fppay") ) {
@@ -406,6 +414,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.querySelector(".admin").insertAdjacentHTML("beforeend", adminDomTag);
 		}
 	}
+	*/
 	
 	if(sessionData.authority != "AU001"){
 		//부서에대한 권한처리
@@ -435,6 +444,20 @@ document.addEventListener("DOMContentLoaded", function () {
 			    if (purchsLink) purchsLink.removeAttribute("href");
 			    //if (hrLink) hrLink.removeAttribute("href");
 			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //부서내부 등급 권한
+			    if(sessionData.authority === "AU002" || sessionData.authority === "AU001"){
+				}else{
+					document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/hr/emp_contract?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
 			}
 			
 			//영업부서 링크제거 처리
@@ -446,9 +469,34 @@ document.addEventListener("DOMContentLoaded", function () {
 			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
 			    if (branchLink) branchLink.removeAttribute("href");
 			    //if (bsnLink) bsnLink.removeAttribute("href");
-			    if (purchsLink) purchsLink.removeAttribute("href");
+			    if (purchsLink) purchsLink.setAttribute("href", "/purchs/goodsLots?menu=inventory");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				//재고부서에 영업팀이 접근 가능
+				if (currentUrl.includes("/purchs/") || currentUrl.includes("menu=inventory")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/purchs/goodsLots")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
 			}
 			
 			//재고부서 링크제거 처리
@@ -463,6 +511,19 @@ document.addEventListener("DOMContentLoaded", function () {
 			    //if (purchsLink) purchsLink.removeAttribute("href");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
 			}
 			
 			//회계부서 링크제거 처리
@@ -477,10 +538,23 @@ document.addEventListener("DOMContentLoaded", function () {
 			    if (purchsLink) purchsLink.removeAttribute("href");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    //if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
 			}
 			
 			//지점부서 링크제거 처리
-		   	if (result.childDepartmentName && result.childDepartmentName.includes("지점")) {
+		   	if (result.childDepartmentName && result.parentDepartmentName.includes("지점")) {
 			    let branchLink = document.querySelector('nav.menu a[data="branch"]');
 			    let bsnLink = document.querySelector('nav.menu a[data="sales"]');
 			    let purchsLink = document.querySelector('nav.menu a[data="inventory"]');
@@ -491,6 +565,26 @@ document.addEventListener("DOMContentLoaded", function () {
 			    if (purchsLink) purchsLink.removeAttribute("href");
 			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
 			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+			}
+			
+			//관리자 권한만 접근 가능
+		    if(sessionData.authority === "AU002" || sessionData.authority === "AU001"){
+			}else{
+				let standardLink = document.querySelector('nav.menu a[data="standard"]')
+			    if (standardLink) standardLink.removeAttribute("href");
 			}
 		});
 	}
