@@ -33,9 +33,15 @@
 	        c.representation_name AS representationName, 
 	        (
 	            SELECT COUNT(*) 
-	            FROM hr_employee he 
-	            WHERE he.department_num = d.department_num 
-	            AND he.company_num = #{companyNum}  
+	            FROM hr_employee he
+	            WHERE he.company_num = #{companyNum}
+	            AND he.department_num IN (
+	                SELECT department_num 
+	                FROM hr_department 
+	                WHERE company_num = #{companyNum}
+	                START WITH department_num = d.department_num
+	                CONNECT BY PRIOR department_num = parent_department_num
+	            )
 	        ) AS employeeCount  
 	     FROM HR_DEPARTMENT d
 	        LEFT JOIN CMMN dt on d.department_type = dt.cmmn_code  
@@ -43,8 +49,9 @@
 	        LEFT JOIN hr_employee e on d.manager_num = e.employee_num and e.authority = 'au002' 
 	        LEFT JOIN ERP_COMPANY c on d.company_num = c.company_num
 	    WHERE d.company_num = #{companyNum} 
-	    ORDER BY e.employee_num,COALESCE(d.parent_department_num, d.department_num), d.department_num
+	    ORDER BY e.employee_num, COALESCE(d.parent_department_num, d.department_num), d.department_num
 	</select>
+
 	
 	
 	<!-- 부서 추가 -->
@@ -90,5 +97,31 @@
 	    WHERE company_num = #{companyNum} 
 	    AND department_num IS NULL
 	</select>
+	
+	<!-- 선택한 부서 + 하위 부서 포함한 직원 수 조회 -->
+	<select id="countTotalEmployeesByDepartment" parameterType="long" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM HR_EMPLOYEE 
+	    WHERE DEPARTMENT_NUM IN (
+	        SELECT DEPARTMENT_NUM 
+	        FROM HR_DEPARTMENT 
+	        START WITH DEPARTMENT_NUM = #{departmentNum} 
+	        CONNECT BY PRIOR DEPARTMENT_NUM = PARENT_DEPARTMENT_NUM
+	    )
+	</select>
+
+    <!-- 하위 부서 포함 상태 변경 -->
+    <update id="updateDepartmentStatus" parameterType="com.beauty1nside.hr.dto.DeptDTO">
+        UPDATE HR_DEPARTMENT
+        SET DEPARTMENT_STATUS = #{departmentStatus}, 
+            UPDATE_DATE = SYSDATE
+        WHERE DEPARTMENT_NUM IN (
+            SELECT DEPARTMENT_NUM 
+            FROM HR_DEPARTMENT 
+            START WITH DEPARTMENT_NUM = #{departmentNum} 
+            CONNECT BY PRIOR DEPARTMENT_NUM = PARENT_DEPARTMENT_NUM
+        )
+    </update>
+
 
 </mapper>

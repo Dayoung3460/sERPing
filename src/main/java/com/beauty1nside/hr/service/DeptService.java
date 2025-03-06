@@ -24,8 +24,8 @@ public interface DeptService {
     // 특정 부서 조회 (부모 부서 존재 여부 확인용)
     DeptDTO getDepartmentByNum(Long departmentNum);
     
-    // 부서 수정 (새롭게 추가)
-    int updateDepartment(DeptDTO dept);
+    // 부서 수정
+    void updateDepartment(DeptDTO dto);
     
     // 부서에 속한 직원 수 조회
     int getEmployeeCountByDept(Long departmentNum);
@@ -33,5 +33,8 @@ public interface DeptService {
 
     // 부서가 없는 직원 수 조회
     int countEmployeesWithoutDepartment(Long companyNum);
+    
+    // 하위부서까지 포함한 직원 수 조회
+    int  getTotalEmployeeCountByDept(Long departmentNum);
 
 }
