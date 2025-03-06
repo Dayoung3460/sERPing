@@ -81,16 +81,16 @@
 		<nav class="p-0 m-0 d-flex justify-content-start">
 		    <div class="nav nav-tabs" id="nav-tab" role="tablist">
 		        <button class="nav-link border active fw-bold" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
-		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">지점별 판매 통계(막대)</button>
+		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">지점별 판매 통계(원형)</button>
 		            
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-rg"
-		            type="button" role="tab" aria-controls="#nav-rg" aria-selected="false">상품별 판매 통계(막대)</button>
+		            type="button" role="tab" aria-controls="#nav-rg" aria-selected="false">상품별 판매 통계(원형)</button>
 		            
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-st"
-		            type="button" role="tab" aria-controls="#nav-st" aria-selected="false">지점별 판매 통계(원형)</button>
+		            type="button" role="tab" aria-controls="#nav-st" aria-selected="false">지점별 일자별 통계(원형)</button>
 		            
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-sv"
-		            type="button" role="tab" aria-controls="#nav-sv" aria-selected="false">상품별 판매 통계(원형)</button>
+		            type="button" role="tab" aria-controls="#nav-sv" aria-selected="false">상품별 일자별 통계(원형)</button>
 		    </div>
 		</nav>
 		 <div class="tab-content border" id="nav-tabContent" style="background-color: #ffffff;">
@@ -155,9 +155,9 @@
         let formattedDate = yesterday.toISOString().split('T')[0]; // YYYY-MM-DD 형식 변환
         document.getElementById("startDate").value = formattedDate;
         document.getElementById("endDate").value = formattedDate;
-        
 		charting(formattedDate);
 	});
+	
 	function charting(formattedDate){
 		const url = `/accnut/rest/selling/chartinfo?companyNum=${session.companyNum}&startDate=${formattedDate}&endDate=${formattedDate}`;
 		console.log(url);
@@ -183,16 +183,40 @@
 			        officeTotalPriceMap[officeId] = totalPrice;
 			    }
 			});
-			let series = [{
+			
+			let series = categories.map(officeId => ({
+	            name: officeId,
+	            data: officeTotalPriceMap[officeId] || 0
+	        }));
+			
+			
+			/* let series = [{
 			    name: '총액',
 			    data: categories.map(officeId => officeTotalPriceMap[officeId] || 0)
-			}];
+			}]; */
 			console.log("categories:", categories);
 			console.log("series:", series);
 
 			// 차트 업데이트
-			renderChart(categories, series);
+			//renderChart(categories, series);
+			// 차트 업데이트 (원형)
+			renderroundChart(series);
 		});
+		
+		function renderroundChart(series){
+		    const el = document.getElementById('chart-area');
+		    el.innerHTML = ''; // 기존 차트 제거
+		    const data = {
+		        series: series // PIE 차트 형식 (label, data 형태)
+		    };
+		    const options = {
+		        chart: { title: '지점별 매출 통계', width: 800, height: 600 },
+		        tooltip: {
+		            formatter: (value) => value.toLocaleString() + ' 원' // 툴팁에서 천 단위 쉼표 추가
+		        }
+		    };
+		    toastui.Chart.pieChart({ el, data, options });
+		}
 		
 		function renderChart(categories, series) {
 		    const el = document.getElementById('chart-area');
@@ -202,25 +226,10 @@
 		        series: series           // API에서 받은 price 합산 데이터
 		    };
 		    const options = {
-		        chart: { title: '지점별 매출 통계', width: 1000, height: 600 },
+		        chart: { title: '지점별 매출 통계', width: 1250, height: 600 },
 		    };
 		    toastui.Chart.columnChart({ el, data, options });
 		}
-	/* 	const el = document.getElementById('chart-area');
-	      const data = {
-	        categories: ['값없음'],
-	        series: [
-	          {
-	            name: '값없음',
-	            data: [5000],
-	          },
-	        ],
-	      };
-	      const options = {
-	    	chart: { title: '지점별 매출 통계', width: 1000, height: 600 },
-	      };
-	      const chart = toastui.Chart.columnChart({ el, data, options }); */
-	      
 	}
 </script>
 	
