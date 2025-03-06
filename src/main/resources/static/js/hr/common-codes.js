@@ -144,7 +144,7 @@ function populateStatusButtons(statuses) {
     statusGroup.innerHTML += `
 
 	        <input type="radio" class="btn-check" name="searchStatus" id="statusAll" checked value="">
-	        <label class="btn btn-outline-primary" for="statusAll">전체</label>
+	        <label class="btn btn-outline-primary rounded-start" for="statusAll">전체</label>
     `;
     
     // 상태 버튼 추가 (예상 데이터: ["재직", "퇴직", "휴직"])
@@ -198,7 +198,7 @@ function populateEmploymentButtons(employmentTypes) {
     // ✅ "전체" 버튼 추가 (검색 필터용만 필요)
     searchEmploymentGroup.innerHTML += `
         <input type="radio" class="btn-check" name="employmentType" id="employmentTypeAll" checked value="">
-        <label class="btn btn-outline-primary" for="employmentTypeAll">전체</label>
+        <label class="btn btn-outline-primary rounded-start" for="employmentTypeAll">전체</label>
     `;
 
     // ✅ 근무 유형 목록을 검색 필터 & 모달용에 각각 추가
@@ -216,6 +216,7 @@ function populateEmploymentButtons(employmentTypes) {
 
         // 🔹 검색 필터에 추가
         searchEmploymentGroup.innerHTML += radioTag;
+
 
         // 🔹 모달에도 추가 (별도 `name="modalEmploymentType"` 설정)
         let modalRadioTag = `
