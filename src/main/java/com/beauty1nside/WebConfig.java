@@ -14,8 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/image/**")
-      .addResourceLocations("file:///"+imgUrl)
-      .setCacheControl(CacheControl.noCache());
-    
+      .addResourceLocations("file:///"+imgUrl) // 업로드 경로 설정
+      .setCacheControl(CacheControl.noCache()); // 캐시 없이 즉시 반영
+
   }
 }

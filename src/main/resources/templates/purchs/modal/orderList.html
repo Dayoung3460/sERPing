@@ -1,0 +1,179 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+ 
+   <style>
+	    #custom-container{
+			background-color: #f8f9fa; /* 연한 회색 배경 */
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+			margin-bottom: 20px;
+		
+		}
+    
+
+</style>
+
+
+<div class="container mt-4">
+	   <!-- 검색창 -->
+	<div class="search-grid" id="custom-container">
+	    <div class="d-flex flex-wrap align-items-center gap-3">
+	        <div class="col-auto">
+		        <label class="form-label">납기일자</label>
+		        <div class="input-group">
+			          <input type="date" id="searchStartDate" class="form-control">
+			          <span class="input-group-text">~</span>
+			          <input type="date" id="searchEndDate" class="form-control">
+		        </div>
+		     </div>
+	        <div class="d-flex align-items-center">
+	            <span class="label-search me-2">표시수량</span>
+	            <select name="display_num_amount" id="product_order_display_amount" class="form-control w-auto" onchange="changeOrderDisplay()">
+	                <option value="10" selected>10</option>
+	                <option value="20">20</option>
+	                <option value="50">50</option>
+	                <option value="100">100</option>
+	            </select>
+	        </div>
+	        <button type="button" class="btn btn-primary ms-auto" onclick="orderlistSearch()">검색</button>
+	        <button type="button" class="btn btn-secondary" onclick="resetOrderFilters()">초기화</button>
+	    </div>
+	</div>
+	
+	<!-- 상품별 그리드 -->
+	<div id="table-container" class="mt-3">
+	    <div id="orderListGrid"></div>
+	</div>
+	
+
+
+</div>
+
+ <script>
+
+console.log("갯수그리드")
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ DOMContentLoaded 실행됨");
+
+    // ✅ orderListGrid가 있는지 확인
+    console.log("📌 productNumGrid 엘리먼트 존재 여부: ", document.getElementById('productNumGrid'));
+
+    if (document.getElementById('orderListGrid')) {
+        initOrderListGrid();
+    } else {
+        console.warn("❌ productNumGrid 요소를 찾을 수 없습니다.");
+    }
+});
+
+
+let orderListGrid;
+
+
+
+function initOrderListGrid() {
+    console.log("✅ initProductGrid() 실행");
+
+    
+    if (!selectedCompanyNum) {
+        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        return;
+    }
+
+    console.log("✅ 설정된 companyNum:", selectedCompanyNum);
+
+    const orderListDataSource = {
+        api: {  
+            readData: { 
+                url: '/purchs/rest/orderlist', 
+                method: 'GET',
+                requestOptions: {
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin'
+                },
+                initParams: { 
+                    page: 1,
+                    perPage: 10,
+                    companyNum: selectedCompanyNum
+                }
+            }
+        },
+        contentType: 'application/json',
+        serverSidePagination: true
+    };
+
+    orderListGrid = new tui.Grid({
+        el: document.getElementById('orderListGrid'),
+        data: orderListDataSource, 
+        scrollX :true,
+        scrollY : false,
+        rowHeight: 40,  // ✅ 행 크기 고정 (기본값: auto → 40px로 지정)
+        pageOptions: {
+            useClient: false,
+            perPage: 5,
+        },
+        bodyHeight: 'auto', 
+        columns: [
+            { header: "주문번호", name: "orderId", rowSpan: true },
+            { header: "주문명", name: "orderName", rowSpan: true },
+            { header: "상품코드", name: "goodsCode" },
+            { header: "상품명", name: "goodsName" },
+            { header: "옵션명", name: "optionName" },
+            { header: "규격", name: "goodsStandard"},
+            { header: "주문수", name: "quantity"},
+            { header: "주문일", name: "orderDate"},
+            { header: "납기일", name: "dueDate"},
+            
+        ]
+    });
+
+    console.log("✅ 상품 그리드 초기화 완료");
+    
+ 
+    
+}
+
+
+
+// ✅ 표시 수량 변경
+function changeOrderDisplay() {
+    let gap = parseInt(document.querySelector('#product_order_display_amount').value);
+    orderListGrid.setPerPage(gap);
+    orderListGrid.reloadData();
+}
+
+// ✅ 검색 실행
+function orderlistSearch() {
+    let startDate = document.querySelector('#searchStartDate').value;
+    let endDate = document.querySelector('#searchEndDate').value;
+
+    orderListGrid.setRequestParams({
+        "companyNum": [[${session.companyNum}]],
+        "startDate": startDate,
+        "endDate": endDate
+    });
+
+    orderListGrid.reloadData();
+}
+
+// ✅ 필터 초기화
+function resetOrderFilters() {
+    document.querySelector('#searchStartDate').value = '';
+    document.querySelector('#searchEndDate').value = '';
+    document.querySelector('#product_order_display_amount').value = '10';
+
+    orderListGrid.setRequestParams({
+        "companyNum": [[${session.companyNum}]],
+        "startDate": '',
+        "endDate": ''
+    });
+
+    orderListGrid.reloadData();
+}
+
+</script>
+</body>
+
+
+

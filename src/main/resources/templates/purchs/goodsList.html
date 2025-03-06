@@ -6,7 +6,7 @@
 
 <body layout:fragment="content">
  
-    <style>
+  <!-- <style>
 	    #custom-container{
 			background-color:white; /* 연한 회색 배경 */
 			padding: 20px;
@@ -101,21 +101,96 @@
 		    background-color: #f9f9f9 !important;
 	}
 	
-	.btn-register a {
+	
+    
+    
+    /* 그리드 선택하면 생기는 색상 */
+		.tui-grid-row-highlight {
+		    background-color: #d7fffe !important; /* f0f8ff 연한 하늘색 */
+		}
+
+</style> -->
+
+<style>
+    /* 전체 컨테이너의 최대 너비 조정 */
+    .container {
+        max-width: 1200px; /* 화면이 너무 커지는 것 방지 */
+        margin: 0 auto; /* 가운데 정렬 */
+    }
+
+    /* 검색 필터 및 버튼 박스 */
+    #custom-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        max-width: 100%;
+    }
+
+    /* Toast Grid 크기 조정 */
+    #productGrid, #myGrid {
+        max-width: 100%;
+        overflow-x: auto; /* 가로 스크롤 가능하도록 설정 */
+        min-width: 100%;
+    }
+
+    /* Toast Grid 내부 요소 크기 조정 */
+    .tui-grid-container {
+        max-width: 100%;
+        overflow-x: auto; /* 가로 스크롤 가능하도록 설정 */
+        border-radius: 5px;
+    }
+
+    /* 버튼 크기 조정 */
+    .btn-custom {
+        width: auto;
+        min-width: 120px;
+        padding: 10px 20px;
+    }
+
+    /* 반응형 조정 */
+    @media (max-width: 1024px) {
+        .container {
+            max-width: 95%;
+        }
+        .tui-grid-container {
+            max-width: 95%;
+            min-width: auto;
+            overflow-x: auto;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            max-width: 100%;
+        }
+        .tui-grid-container {
+            max-width: 100%;
+            min-width: auto;
+            overflow-x: auto;
+        }
+        .btn-custom {
+            min-width: 100px;
+            padding: 8px 16px;
+        }
+    }
+    
+   /*  .btn-register a {
         text-decoration: none; /* 밑줄 제거 */
         color: inherit; /* 버튼의 기본 색상 상속 */
         display: block; /* a 태그가 버튼 내부에서 꽉 차게 */
         
-    }
-
+    } */
 </style>
+
 
 
 <div class="container mt-4">
 	<h2 class="mb-4">상품 조회</h2>
 	<hr>
 	   <!-- 검색창 -->
-	<div class="search-grid" id="custom-container">
+	<div id="custom-container">
 	    <div class="d-flex align-items-center gap-3 flex-nowrap w-100">
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-3">상품명</span>
@@ -163,8 +238,9 @@
 
     <!-- 제품 등록 버튼 -->
     <div class="text-end">
-        <button class="btn btn-register"><a th:href="@{/purchs/goodsRegister(menu='inventory')}">상품등록</a></button>
-    </div>
+    	<a th:href="@{/purchs/goodsRegister(menu='inventory')}" class="btn btn-success btn-custom">상품등록</a>
+	</div>
+
 </div>
 
 
@@ -195,7 +271,7 @@ class CustomTextRenderer {
         el.style.textAlign = 'center';
         
         if (props.value) {
-            el.innerHTML = `<img src="${props.value}" 
+            el.innerHTML = `<img src="/image/${props.value}" 
                             alt="상품 이미지" width="100" height="100" 
                             style="border-radius: 5px; object-fit: cover;">`;
         } else {
@@ -212,6 +288,8 @@ class CustomTextRenderer {
 }
 
 let productGrid;
+//현재 그리드에 강조된행을 기록할 변수
+let selectedRowKey = null;
 
 function initProductGrid() {
 	
