@@ -6,103 +6,111 @@
 <head>
 <meta charset="UTF-8">
 <title>채무관리</title>
+<style>
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		<div>
-			<h2>채무관리</h2>
-		</div>
-
-    <!-- 검색창 -->
-		<div class="search-grid">
-			<div class="row 1row">
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">채무명</span>
-					<input type="text" name="debtName" id="debtName" class="col-8 input-box">
-				</div>
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">구분</span>
-					<select name="section" id="section" class="col-8 input-box">
-						<option value="" selected>선택</option>
-						<option value="AC07">대출금</option>
-						<option value="AC08">미지급금</option>
-
-					</select>
-				</div>
-			</div>
-			<div class="row 2row">
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">채권자</span>
-					<input type="text" name="creditor" id="creditor" class="col-8 input-box">
-				</div>
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">표시수량</span>
-					<select name="display_amount" id="display_amount" class="col-8 input-box" onchange="changeDisplay()">
-						<option value="5" selected>5</option>
-						<option value="10">10</option>
-						<option value="20">20</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
-					</select>
+		<h3 class="mt-2 mb-2"><b>채무관리</b></h3>
+		<hr>
+		<div class="row">
+	    	<!-- 검색창 -->
+			<div id="custom-container">
+				<div class="row">
+					<div class="col-md-3 mt-1 mb-1">
+						<label class="form-label">채권자</label>
+						<input type="text" name="creditor" id="creditor" class="form-control input-box">
+					</div>
+					<div class="col-md-3 mt-1 mb-1">
+						<label class="form-label">채무명</label>
+						<input type="text" name="debtName" id="debtName" class="form-control input-box">
+					</div>
+					<div class="col-md-3 mt-1 mb-1">
+						<label class="form-label">구분</label>
+						<select name="section" id="section" class="form-control input-box">
+							<option value="" selected>선택</option>
+							<option value="AC07">대출금</option>
+							<option value="AC08">미지급금</option>
+						</select>
+					</div>
+					<div class="col-md-1"></div>
+					<div class="col-md-2 mt-4 mb-2">
+						<button type="button" class="btn btn-primary " onclick="search()">검색</button>
+						<button type="button" class="btn btn-secondary " style=" margin: 0px 10px" onclick="reset()">초기화</button>
+					</div>
 				</div>
 			</div>
-			<div class="row 3row">
-				<div class="col-4"></div>
-				<button type="button" class="btn btn-primary col-1" onclick="search()">검색</button>
-				<div class="col-1"></div>
-				<button type="button" class="btn btn-secondary col-1" onclick="reset()">초기화</button>
-			</div>
-
-		</div>
-		<!-- 그리드 -->
-		<div id="table-container">
-			<div id="grid"></div>
-			<div id="pagination" class="tui-pagination"></div>
-		</div>
-    <!-- 하부 버튼 -->
-		<div class="button-bar row">
-			<div class="col-1"></div>
-			<button type="button" class="btn btn-primary col-1 btnExcel">Excel</button>
-			<button type="button" class="btn btn-secondary col-1">PDF</button>
-			<div class="col-7"></div>
-			<div class="btn-group dropup col-2">
-				<button type="button" class="btn btn-success unpay" data-bs-toggle="modal" data-bs-target="#debtaddModal">미지급금등록</button>
-				<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" id="dropupMenuSplitButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<span class="sr-only"></span>
-				</button>
-				<div class="dropdown-menu" aria-labelledby="dropupMenuSplitButton3">
-					<h6 class="dropdown-header">채무 등록</h6>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#debtaddModal">외상매입금 등록</a>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#debtaddModal">대출금 등록</a>
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#debtaddModal">미지급금 등록</a>
+			<div class="col-md-12 stretch-card mt-2 mb-5">
+				<div class="card">
+					<div class="card-body">	
+						<div id="rayout-container" class="row mb-3">
+							<div class="col-9"></div>
+							<!-- 그리드 표시 수량 인풋 -->
+							<div class="col-3 row ">
+								<div class="col-3"></div>
+								<span class="label-search col-5" style="font-size: 1em">표시수량</span>
+								<select name="display_amount" id="display_amount" class="col-4 input-box" onchange="changeDisplay()">
+									<option value="5" selected>5</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="50">50</option>
+									<option value="100">100</option>
+								</select>
+							</div>
+						</div>
+						<!-- 그리드 -->
+						<div id="table-container">
+							<div id="grid"></div>
+							<div id="pagination" class="tui-pagination"></div>
+						</div>
+				    	<!-- 하부 버튼 -->
+						<div class="button-bar row">
+							<button type="button" class="btn btn-dark col-1 btnExcel">Excel</button>
+							<div class="col-9"></div>
+							<div class="btn-group dropup col-2">
+								<button type="button" class="btn btn-success unpay" data-bs-toggle="modal" data-bs-target="#debtaddModal">미지급금등록</button>
+								<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" id="dropupMenuSplitButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="sr-only"></span>
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropupMenuSplitButton3">
+									<h6 class="dropdown-header">채무 등록</h6>
+									<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#debtaddModal">외상매입금 등록</a>
+									<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#debtaddModal">대출금 등록</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#debtaddModal">미지급금 등록</a>
+								</div>
+							</div>
+						</div>
+						
+						<!-- 채무 등록 -->
+						<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+										    	'debtaddModal', 
+										    	'modal-xl', 
+										    	'채무 등록', 
+										    	'accnut/modal/debtForm',
+										    	'accnut/modal/debtFooter'
+										    )"></div>
+										    
+						<!-- 상세 보기 -->
+						<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+										    	'debtdetailModal', 
+										    	'modal-xl', 
+										    	'상세 보기', 
+										    	'accnut/modal/debtDetail', 
+										    	'accnut/modal/debtFooter'
+										    )"></div>
+					</div>
 				</div>
 			</div>
 		</div>
-		
-		<!-- 채무 등록 -->
-		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
-						    	'debtaddModal', 
-						    	'modal-xl', 
-						    	'채무 등록', 
-						    	'accnut/modal/debtForm',
-						    	'accnut/modal/debtFooter'
-						    )"></div>
-						    
-		<!-- 상세 보기 -->
-		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
-						    	'debtdetailModal', 
-						    	'modal-xl', 
-						    	'상세 보기', 
-						    	'accnut/modal/debtDetail', 
-						    	'accnut/modal/debtFooter'
-						    )"></div>
-		
 	</div>
 <script>
 
@@ -157,13 +165,13 @@
 			perPage: 5,
 		},
 		columns: [
-			{ header : "채무코드", name : "debtCode",  sortable : true},
+			{ header : "채무코드", name : "debtCode",  sortable : true, align: 'center'},
 			{ header : "채무명", name : "debtName",  sortable : true},
 			{ header : "구분", name : "section",  sortable : true},
 			{ header : "채권자", name : "creditor",  sortable : true},
-			{ header : "금액", name : "amount",  sortable : true},
-			{ header : "이자", name : "interest",  sortable : true},
-			{ header : "등록일", name : "registerDate",  sortable : true},
+			{ header : "금액", name : "amount",  sortable : true, align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+			{ header : "이자", name : "interest",  sortable : true, align: 'right'},
+			{ header : "등록일", name : "registerDate",  sortable : true, align: 'center'},
 			{ header : "상세보기", name : "detail", formatter : () => '<button class="btn btn-warning btn-sm btnInfo" data-bs-toggle="modal" data-bs-target="#debtdetailModal">상세보기</button>', align: 'center'},
 			
 		],
