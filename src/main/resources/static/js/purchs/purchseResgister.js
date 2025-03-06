@@ -81,7 +81,7 @@ function initPurchaseGrid() {
         columns: [
             { header: '상품코드', name: 'goodsCode' },
             { header: '상품명', name: 'goodsName' },
-            { header: '옵션코드', name: 'optionCode' },
+            { header: '옵션코드', name: 'optionCode' ,hidden: true},
             { header: '옵션명', name: 'optionName' },
 			{ header: '옵션번호', name: 'optionNum' , hidden: true},
             { header: '거래처명', name: 'vendorName' },

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,12 +50,13 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 //@AllArgsConstructor
 @RequiredArgsConstructor
-
 @RequestMapping("/purchs/rest/*")
 public class ProductRestController {
 	final productService productService;
 	final purchaseService purchaseService;
 	final warehouseService warehouseService;
+	
+   
 	
 	// ✅ 카테고리 목록 조회 (companyNum 기준)
 	@GetMapping("/product/catelist")
@@ -154,58 +156,6 @@ public class ProductRestController {
 		}
 		
 		
-	//이미지 업로드
-		@PostMapping("/product/uploadGoodsImages")
-		public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file , ProductDTO dto ) {
-		    Map<String, Object> response = new HashMap<>();
-		    //String UPLOAD_DIR = "C:/atest/";
-		    //String UPLOAD_DIR = dto.getImgUpload(); //저장경로
-		    String UPLOAD_DIR ="src/main/resources/static/file/image/purchs/product/";
-		    
-		    log.info("컨트롤러 이미지 저장 경로=====>={}",UPLOAD_DIR);
-
-		    try {
-		        if (file.isEmpty()) {
-		            response.put("success", false);
-		            response.put("message", "업로드할 파일이 없습니다.");
-		            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		        }
-
-		        // 1️ 원본 파일명에서 확장자 추출 (.jpg, .png 등)
-		        String originalFileName = file.getOriginalFilename();
-		        String fileExtension = "";
-		        if (originalFileName != null && originalFileName.contains(".")) {
-		            fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")); 
-		        }
-
-		        // 2️ UUID를 이용한 고유한 파일명 생성
-		        String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
-
-		        // 3️ 파일 저장 경로 설정
-		        Path savePath = Paths.get(UPLOAD_DIR + uniqueFileName);
-		        Files.write(savePath, file.getBytes());
-		        //file.transferTo(savePath.toFile());
-
-		        // 4️ 응답 데이터 설정
-		        response.put("success", true);
-		        response.put("message", "파일 업로드 성공");
-		        response.put("fileName", uniqueFileName);  // 고유한 파일명 반환
-
-		        return ResponseEntity.ok(response);
-		        
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        response.put("success", false);
-		        response.put("message", "파일 저장 중 오류 발생: " + e.getMessage());
-		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		        response.put("success", false);
-		        response.put("message", "예상치 못한 오류 발생: " + e.getMessage());
-		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		    }
-		}
-		
 	
 		
 		//상품 등록
@@ -230,32 +180,7 @@ public class ProductRestController {
 			
 		}
 		
-		//상품 리스트 데이터 조회 
-				@GetMapping("/product/list")
-				public Object productList(@RequestParam(name="perPage",defaultValue="2", required = false) int perPage,
-										@RequestParam(name="page", defaultValue = "1" ,required = false) int page,
-										 @RequestParam(name="companyNum", required=true) int companyNum,  // ✅ 회사번호 필수
-										@ModelAttribute ProductSearchDTO dto, Paging paging) throws JsonMappingException, JsonProcessingException {
-					// 회사 번호를 DTO에 설정 (필수)
-				    dto.setCompanyNum(companyNum); 
-					
-					//페이징 유닛 수 
-					paging.setPageUnit(perPage);
-					paging.setPage(page);
-					
-					//페이징 조건
-					dto.setStart(paging.getFirst());
-					dto.setEnd(paging.getLast());
-					
-					//페이징 처리 
-					paging.setTotalRecord(productService.productcount(dto));
-					
-					//grid배열 처리 
-					GridArray grid = new GridArray();
-					Object result = grid.getArray(paging.getPage(), productService.productcount(dto), productService.getProductlist(dto));
-					return result;
-				
-				}
+		
 				
 		//발주서등록
 		@PostMapping("/purchase/insert")
