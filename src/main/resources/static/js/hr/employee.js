@@ -273,8 +273,11 @@ function initializeGrid() {
         },
         contentType: 'application/json',
     };
-
-    Grid.applyTheme('stripe');
+    
+	Grid.applyTheme('stripe', {
+	    row: { fontSize: '16px' },
+	    cell: { fontSize: '16px' }
+	});
 
     grid = new Grid({
         el: document.getElementById('grid'),

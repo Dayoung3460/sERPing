@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.beauty1nside.common.FileConfig;
 import com.beauty1nside.common.GridArray;
 import com.beauty1nside.common.Paging;
 import com.beauty1nside.hr.dto.EmpDTO;
@@ -39,8 +40,7 @@ import lombok.extern.log4j.Log4j2;
 	public class HrRestController {
 		final EmpService empService;
 		final PasswordEncoder passwordEncoder;
-		
-		private static final String UPLOAD_DIR = "src/main/resources/static/file/image/mypage/profile/";
+		final FileConfig fileConfig;
 		
 		@GetMapping("/emp/list")
 		public Object empList(@RequestParam(name = "perPage", defaultValue = "2", required = false) int perPage, 
@@ -151,12 +151,13 @@ import lombok.extern.log4j.Log4j2;
 	        // ✅ 파일이 존재하는 경우에만 업로드 수행
 	        if (file != null && !file.isEmpty()) {
 	            try {
+	            	String imgPath = fileConfig.getUpload();
 	                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-	                Path uploadPath = Paths.get("src/main/resources/static/file/image/mypage/profile/" + fileName);
+	                Path uploadPath = Paths.get(imgPath + fileName);
 	                Files.createDirectories(uploadPath.getParent());
 	                Files.write(uploadPath, file.getBytes());
 	                
-	                String imageUrl = "/file/image/mypage/profile/" + fileName;
+	                String imageUrl = imgPath + fileName;
 	                empDTO.setProfileImage(imageUrl);
 	            } catch (Exception e) {
 	                log.error("❌ 파일 업로드 실패:", e);

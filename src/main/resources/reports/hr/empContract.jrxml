@@ -129,7 +129,7 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<imageExpression><![CDATA["reports/contractBG.jpg"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement style="han_font" x="36" y="88" width="121" height="33" uuid="0e56a082-69db-4241-bfc9-22744b737683"/>
+				<reportElement style="han_font" x="36" y="88" width="114" height="28" uuid="0e56a082-69db-4241-bfc9-22744b737683"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
 			</textField>
@@ -139,7 +139,8 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{EMPLOYEE_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="167" y="141" width="100" height="20" uuid="9237f792-e33d-4a01-8cf0-124d5154ca87"/>
+				<reportElement style="han_font" x="161" y="138" width="100" height="20" uuid="9237f792-e33d-4a01-8cf0-124d5154ca87"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{CONTRACT_START_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -183,12 +184,14 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<reportElement style="han_font" x="137" y="220" width="67" height="16" uuid="bde0c189-4e3c-4e14-a3b0-2f82d1492fb6"/>
 				<textFieldExpression><![CDATA[$F{WORK_DAYS}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement style="han_font" x="194" y="278" width="80" height="22" uuid="e99ef00e-1b60-493c-b14c-761291accd46"/>
+			<textField pattern="#,###">
+				<reportElement style="han_font" x="137" y="273" width="158" height="22" uuid="e99ef00e-1b60-493c-b14c-761291accd46"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{BONUS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="312" y="141" width="95" height="20" uuid="41305a33-68de-4046-8ad9-6586fab762af"/>
+				<reportElement style="han_font" x="295" y="137" width="112" height="20" uuid="41305a33-68de-4046-8ad9-6586fab762af"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{CONTRACT_END_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -196,7 +199,8 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{WORK_LOCATION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="295" y="313" width="35" height="20" uuid="3c1773ec-57ed-4b73-8d7f-2469c2a4452b"/>
+				<reportElement style="han_font" x="280" y="311" width="50" height="16" uuid="3c1773ec-57ed-4b73-8d7f-2469c2a4452b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{SALARY_PAYMENT_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -208,15 +212,18 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{WORK_END_TIME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="350" y="203" width="50" height="18" uuid="01e3bf85-6949-4f49-8ff0-5c13e61fc171"/>
+				<reportElement style="han_font" x="349" y="199" width="50" height="18" uuid="01e3bf85-6949-4f49-8ff0-5c13e61fc171"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{BREAK_START_TIME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="406" y="202" width="54" height="20" uuid="88101283-6080-4970-ace8-3235d95cff13"/>
+				<reportElement style="han_font" x="402" y="198" width="54" height="20" uuid="88101283-6080-4970-ace8-3235d95cff13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{BREAK_END_TIME}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement style="han_font" x="200" y="256" width="64" height="22" uuid="49f07dd0-d8f8-44ac-9cd5-83ddbcc9f6f1"/>
+			<textField pattern="#,###">
+				<reportElement style="han_font" x="173" y="256" width="122" height="22" uuid="49f07dd0-d8f8-44ac-9cd5-83ddbcc9f6f1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{MONTHLY_SALARY}]]></textFieldExpression>
 			</textField>
 			<textField>
