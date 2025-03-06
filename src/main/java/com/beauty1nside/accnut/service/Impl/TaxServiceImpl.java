@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.beauty1nside.accnut.dto.TaxSearchDTO;
 import com.beauty1nside.accnut.mapper.TaxMapper;
 import com.beauty1nside.accnut.service.TaxService;
 
@@ -46,10 +47,19 @@ public class TaxServiceImpl implements TaxService{
 			taxMapper.insertDetail(pk, info);
 		});
 		
-		
-		
-		
 		return pk;
+	}
+	
+	@Override
+	public List<Map<String, Object>> list(TaxSearchDTO dto) {
+		// TODO Auto-generated method stub
+		return taxMapper.list(dto);
+	}
+	
+	@Override
+	public int count(TaxSearchDTO dto) {
+		// TODO Auto-generated method stub
+		return taxMapper.count(dto);
 	}
 	
 }
