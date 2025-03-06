@@ -81,16 +81,16 @@
 		<nav class="p-0 m-0 d-flex justify-content-start">
 		    <div class="nav nav-tabs" id="nav-tab" role="tablist">
 		        <button class="nav-link border active fw-bold" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
-		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">지점별 판매 통계(원형)</button>
+		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">지점별 판매 통계</button>
 		            
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-rg"
-		            type="button" role="tab" aria-controls="#nav-rg" aria-selected="false">상품별 판매 통계(원형)</button>
+		            type="button" role="tab" aria-controls="#nav-rg" aria-selected="false">상품별 판매 통계</button>
 		            
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-st"
-		            type="button" role="tab" aria-controls="#nav-st" aria-selected="false">지점별 일자별 통계(원형)</button>
+		            type="button" role="tab" aria-controls="#nav-st" aria-selected="false">지점별 일자별 통계(막대)</button>
 		            
 		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-sv"
-		            type="button" role="tab" aria-controls="#nav-sv" aria-selected="false">상품별 일자별 통계(원형)</button>
+		            type="button" role="tab" aria-controls="#nav-sv" aria-selected="false">상품별 일자별 통계(막대)</button>
 		    </div>
 		</nav>
 		 <div class="tab-content border" id="nav-tabContent" style="background-color: #ffffff;">
@@ -100,13 +100,19 @@
 				</div>
             </div>
             <div class="tab-pane fade" id="nav-rg" role="tabpanel" aria-labelledby="nav-rg-tab" tabindex="0">
-            	<h1>ddd</h1>
+            	<div id="table-container">
+					<div id="chart-goods-round"></div>
+				</div>
             </div>
             <div class="tab-pane fade" id="nav-st" role="tabpanel" aria-labelledby="nav-rg-tab" tabindex="0">
-            	<h1>123</h1>
+            	<div id="table-container">
+					<div id="chart-point-bar"></div>
+				</div>
             </div>
             <div class="tab-pane fade" id="nav-sv" role="tabpanel" aria-labelledby="nav-rg-tab" tabindex="0">
-            	<h1>sddfsdf</h1>
+            	<div id="table-container">
+					<div id="chart-goods-bar"></div>
+				</div>
             </div>
         </div>
 <script th:inline="javascript">
@@ -155,24 +161,27 @@
         let formattedDate = yesterday.toISOString().split('T')[0]; // YYYY-MM-DD 형식 변환
         document.getElementById("startDate").value = formattedDate;
         document.getElementById("endDate").value = formattedDate;
+        //차트 생성
 		charting(formattedDate);
 	});
 	
 	function charting(formattedDate){
 		const url = `/accnut/rest/selling/chartinfo?companyNum=${session.companyNum}&startDate=${formattedDate}&endDate=${formattedDate}`;
 		console.log(url);
-		fetch(`/accnut/rest/selling/chartinfo?companyNum=${session.companyNum}&startDate=${formattedDate}&endDate=${formattedDate}`, {
+		fetch(`/accnut/rest/selling/chartinfo?companyNum=${session.companyNum}&startDate=2025-03-01`, {
 		    method: 'GET',
 		    headers: { 'Content-Type': 'application/json' }
 		})
 		.then(response => response.json())
 		.then(responseData  => {
 			console.log("API 응답 데이터:", responseData);
-
+			//사용할 객체 배열
 			let contents = responseData.data.contents;
+			
+			//==========================
+			// 지점별 판매통계(원형) 차트 생성
+			//==========================
 			let categories = [...new Set(contents.map(item => item.officeId))];
-			console.log("categories:", categories);
-
 			let officeTotalPriceMap = {};
 			contents.forEach(ele => {
 			    let officeId = ele.officeId;
@@ -183,50 +192,216 @@
 			        officeTotalPriceMap[officeId] = totalPrice;
 			    }
 			});
-			
 			let series = categories.map(officeId => ({
 	            name: officeId,
 	            data: officeTotalPriceMap[officeId] || 0
 	        }));
-			
-			
-			/* let series = [{
-			    name: '총액',
-			    data: categories.map(officeId => officeTotalPriceMap[officeId] || 0)
-			}]; */
 			console.log("categories:", categories);
 			console.log("series:", series);
-
-			// 차트 업데이트
-			//renderChart(categories, series);
-			// 차트 업데이트 (원형)
 			renderroundChart(series);
+			//==========================
+			// 지점별 판매통계(원형) 차트 생성 끝
+			//==========================
+			
+			//==========================
+			// 상품별 판매통계(원형) 차트 생성
+			//==========================
+			let goodsCategories = [...new Set(contents.map(item => item.goodsName))]; // 상품 기준 카테고리
+			let goodsTotalPriceMap = {}; // 상품별 totalPrice 저장
+			
+			contents.forEach(ele => {
+			    let goodsName = ele.goodsName; // optionName → goodsName으로 변경
+			    let totalPrice = ele.totalPrice || 0;
+			    if (goodsTotalPriceMap[goodsName]) {
+			        goodsTotalPriceMap[goodsName] += totalPrice;
+			    } else {
+			        goodsTotalPriceMap[goodsName] = totalPrice;
+			    }
+			});
+			
+			// 상품별 판매 통계 데이터 생성
+			let goodsSeries = goodsCategories.map(goodsName => ({
+			    name: goodsName,
+			    data: goodsTotalPriceMap[goodsName] || 0
+			}));
+			
+			console.log("goodsCategories:", goodsCategories);
+			console.log("goodsSeries:", goodsSeries);
+			optionRoundChart(goodsSeries);
+			//==========================
+			// 상품별 판매통계(원형) 차트 생성 끝
+			//==========================
+				
+				
+			//==========================
+			// 기간 및 지점별 판매통계(막대) 차트 생성
+			//==========================
+			const salesDates = [...new Set(contents.map(item => item.resultDate))]; 
+			const branchIds = [...new Set(contents.map(item => item.officeId))]; 
+			let branchSalesMap = {};
+			branchIds.forEach(branchId => {
+			    branchSalesMap[branchId] = Array(salesDates.length).fill(0); // 각 날짜별 초기값 0 설정
+			});
+			contents.forEach(item => {
+			    let dateIndex = salesDates.indexOf(item.resultDate);
+			    if (dateIndex !== -1) {
+			        branchSalesMap[item.officeId][dateIndex] += item.totalPrice || 0;
+			    }
+			});
+			const branchSeries = branchIds.map(branchId => ({
+			    name: branchId,
+			    data: branchSalesMap[branchId]
+			}));
+			const salesData = {
+			    categories: salesDates, // resultDate 목록
+			    series: branchSeries // officeId별 totalPrice 데이터
+			};
+			console.log(salesData);
+			renderChart(salesDates, branchSeries);
+			//==========================
+			// 기간 및 지점별 판매통계(막대) 차트 끝
+			//==========================
+				
+			//==========================
+			// 기간 및 상품별 판매통계(막대) 차트 생성
+			//==========================
+			const productSalesDates = [...new Set(contents.map(item => item.resultDate))]; 
+
+			// 상품별(goodsName) 목록 생성
+			const productNames = [...new Set(contents.map(item => item.goodsName))]; 
+			
+			// 상품별 totalPrice를 저장할 객체 초기화
+			let productSalesMap = {};
+			productNames.forEach(goodsName => {
+			    productSalesMap[goodsName] = Array(productSalesDates.length).fill(0); // 각 날짜별 초기값 0 설정
+			});
+			
+			// 데이터 매핑 (resultDate 기준 상품별 매출 합산)
+			contents.forEach(item => {
+			    let dateIndex = productSalesDates.indexOf(item.resultDate);
+			    if (dateIndex !== -1) {
+			        productSalesMap[item.goodsName][dateIndex] += item.totalPrice || 0;
+			    }
+			});
+			
+			// series 배열 생성 (상품별 데이터)
+			const productSeries = productNames.map(goodsName => ({
+			    name: goodsName,
+			    data: productSalesMap[goodsName]
+			}));
+			
+			// 최종 변환된 데이터
+			const productSalesData = {
+			    categories: productSalesDates, // resultDate 목록
+			    series: productSeries // 상품별 totalPrice 데이터
+			};
+			
+			console.log("상품별 판매 차트 데이터:", productSalesData);
+			
+			// 상품별 판매 차트 렌더링
+			rendergoodsChart(productSalesDates, productSeries);
+			//==========================
+			// 기간 및 상품별 판매통계(막대) 차트 끝
+			//==========================
+				//rendergoodsChart
+
+			
 		});
 		
-		function renderroundChart(series){
+		// 원형 그래프용 (지점별 판매통계)
+		function renderroundChart(series) {
+		    console.log("renderroundChart 함수 실행됨:", series);
 		    const el = document.getElementById('chart-area');
+		    if (!el) {
+		        console.error("chart-area 요소를 찾을 수 없습니다!");
+		        return;
+		    }
 		    el.innerHTML = ''; // 기존 차트 제거
 		    const data = {
 		        series: series // PIE 차트 형식 (label, data 형태)
 		    };
 		    const options = {
-		        chart: { title: '지점별 매출 통계', width: 800, height: 600 },
+		        chart: { title: '지점별 매출 통계', width: 1250, height: 600 },
 		        tooltip: {
 		            formatter: (value) => value.toLocaleString() + ' 원' // 툴팁에서 천 단위 쉼표 추가
-		        }
+		        },
+		        series: {
+		            dataLabels: {
+		                visible: true,
+		                pieSeriesName: {
+		                    visible: true,
+		                },
+		            },
+		        },
 		    };
 		    toastui.Chart.pieChart({ el, data, options });
 		}
-		
-		function renderChart(categories, series) {
-		    const el = document.getElementById('chart-area');
-		    el.innerHTML = '';
+
+		// 원형 그래프용 (상품별 판매통계)
+		function optionRoundChart(series) {
+		    console.log("optionRoundChart 함수 실행됨:", series);
+		    const el = document.getElementById('chart-goods-round');
+		    if (!el) {
+		        console.error("chart-goods-round 요소를 찾을 수 없습니다!");
+		        return;
+		    }
+		    el.innerHTML = ''; // 기존 차트 제거
 		    const data = {
-		        categories: categories,  // API에서 받은 지점 목록
-		        series: series           // API에서 받은 price 합산 데이터
+		        series: series // PIE 차트 형식 (label, data 형태)
 		    };
 		    const options = {
-		        chart: { title: '지점별 매출 통계', width: 1250, height: 600 },
+		        chart: { title: '상품별 매출 통계', width: 1250, height: 600 },
+		        tooltip: {
+		            formatter: (value) => value.toLocaleString() + ' 원' // 툴팁에서 천 단위 쉼표 추가
+		        },
+		        series: {
+		            dataLabels: {
+		                visible: true,
+		                pieSeriesName: {
+		                    visible: true,
+		                },
+		            },
+		        },
+		    };
+		    toastui.Chart.pieChart({ el, data, options });
+		}
+
+		// 막대 그래프용 (기간 및 지점별 판매통계)
+		function renderChart(categories, series) {
+		    const el = document.getElementById('chart-point-bar');
+		    el.innerHTML = ''; // 기존 차트 제거
+		    const formattedSeries = series.map(item => ({
+		        name: item.name || 'Unknown',  // name이 없는 경우 대비
+		        data: Array.isArray(item.data) ? item.data : [] // data가 배열이 아닐 경우 빈 배열로 처리
+		    }));
+		    const data = {
+		        categories: categories, // 날짜 목록 (resultDate)
+		        series: formattedSeries // `{ name: string, data: number[] }` 구조 유지
+		    };
+		    const options = {
+		        chart: { title: '일자별 지점 매출 통계', width: 1250, height: 600 },
+		        xAxis: { title: '날짜' },
+		        yAxis: { title: '매출', tick: { format: value => value.toLocaleString() } }
+		    };
+		    toastui.Chart.columnChart({ el, data, options });
+		}
+		
+		// 막대 그래프용 (기간 및 상품별 판매통계)
+		function rendergoodsChart(categories, series) {
+		    const el = document.getElementById('chart-goods-bar');
+		    el.innerHTML = ''; // 기존 차트 제거
+		    const formattedSeries = series.map(item => ({
+		        name: item.name || 'Unknown',  // name이 없는 경우 대비
+		        data: Array.isArray(item.data) ? item.data : [] // data가 배열이 아닐 경우 빈 배열로 처리
+		    }));
+		    const data = {
+		        categories: categories, // 날짜 목록 (resultDate)
+		        series: formattedSeries // `{ name: string, data: number[] }` 구조 유지
+		    };
+		    const options = {
+		        chart: { title: '일자별 상품 매출 통계', width: 1250, height: 600 },
+		        xAxis: { title: '날짜' },
+		        yAxis: { title: '매출', tick: { format: value => value.toLocaleString() } }
 		    };
 		    toastui.Chart.columnChart({ el, data, options });
 		}
