@@ -90,8 +90,8 @@
 						    	'debtaddModal', 
 						    	'modal-xl', 
 						    	'채무 등록', 
-						    	'accnut/debtForm',
-						    	'accnut/debtFooter'
+						    	'accnut/modal/debtForm',
+						    	'accnut/modal/debtFooter'
 						    )"></div>
 						    
 		<!-- 상세 보기 -->
@@ -99,8 +99,8 @@
 						    	'debtdetailModal', 
 						    	'modal-xl', 
 						    	'상세 보기', 
-						    	'accnut/debtDetail', 
-						    	'accnut/debtFooter'
+						    	'accnut/modal/debtDetail', 
+						    	'accnut/modal/debtFooter'
 						    )"></div>
 		
 	</div>
@@ -143,7 +143,7 @@
 	
 	const dataSource = {
 		api: {
-			readData: { url: 'http://localhost:81/accnut/rest/debt/list', method: 'GET', initParams: { page: 1 , amount: 0, companyNum: session.companyNum } },
+			readData: { url: '/accnut/rest/debt/list', method: 'GET', initParams: { page: 1 , amount: 0, companyNum: session.companyNum } },
 			
 		},
 		contentType: 'application/json'

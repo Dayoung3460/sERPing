@@ -7,10 +7,10 @@
     
         <script type="text/javascript">
         var session = sessionData;
-        
+        	
             //등록 모달이 보여질때
-            document.querySelector('#assetaddModal').addEventListener('shown.bs.modal', (e) => {
-                let footer = document.querySelector('#assetaddModal').querySelector('.modal-footer');
+            document.querySelector('#debtaddModal').addEventListener('shown.bs.modal', (e) => {
+                let footer = document.querySelector('#debtaddModal').querySelector('.modal-footer');
                 if (!footer.querySelector('.insertbtn')) {
                     let btn = footer.querySelector('.btn-secondary');
                     let html = `<button type="button" class="btn btn-success insertbtn" data-bs-dismiss="modal">등록</button>`;
@@ -20,36 +20,38 @@
                     footer.querySelector('.insertbtn').addEventListener('click', (e)=>{
                         let param = {};
 
-                        let con = document.querySelector('#assetaddModal').querySelector('.modal-body .container');
+                        let con = document.querySelector('#debtaddModal').querySelector('.modal-body .container');
                         
-                        let assetsCode =  con.querySelector('#assetsCode');
+                        let debtCode =  con.querySelector('#debtCode');
                         let section = con.querySelector('#section');
-                        let assetsName = con.querySelector('#assetsName');
-                        let owner = con.querySelector('#owner');
+                        let debtName = con.querySelector('#debtName');
+                        let creditor = con.querySelector('#creditor');
                         let amount = con.querySelector('#amount');
                         let registerDate = con.querySelector('#registerDate');
 
-                        param.assetsCode = assetsCode.value;
+                        param.debtCode = debtCode.value;
                         param.section = section.value;
-                        param.assetsName = assetsName.value;
-                        param.owner = owner.value;
+                        param.debtName = debtName.value;
+                        param.creditor = creditor.value;
                         param.amount = amount.value;
                         param.registerDate = registerDate.value;
                         param.companyNum = session.companyNum;
                         
-                        if(con.querySelector('#financialInstitution') && con.querySelector('#financeInformation')){
-                            let financialInstitution =  con.querySelector('#financialInstitution');
-                            param.financialInstitution = financialInstitution.value;
-                            let financeInformation =  con.querySelector('#financeInformation');
-                            param.financeInformation = financeInformation.value;
+                        if(con.querySelector('#interest')){
+                            let interest =  con.querySelector('#interest');
+                            param.interest = interest.value;
                         }
                         
-                        if(con.querySelector('#quantity') && con.querySelector('#fixturesAmount')){
-                            let quantity =  con.querySelector('#quantity');
-                            param.quantity = quantity.value;
-                            let fixturesAmount =  con.querySelector('#fixturesAmount');
-                            param.fixturesAmount = fixturesAmount.value;
+                        if(con.querySelector('#prearrangementDueDate')){
+                            let prearrangementDueDate =  con.querySelector('#prearrangementDueDate');
+                            param.prearrangementDueDate = prearrangementDueDate.value;
                         }
+                        
+                        if(con.querySelector('#timeLimit')){
+                            let timeLimit =  con.querySelector('#timeLimit');
+                            param.timeLimit = timeLimit.value;
+                        }
+                        
 
                         console.log(param);
                         
@@ -59,7 +61,7 @@
                         
                         // 등록
                         
-                        fetch("http://localhost:81/accnut/rest/asset/insert", {
+                        fetch("/accnut/rest/debt/insert", {
 	        					method: "POST",
 	        					headers: {
 	        						 	'header': header,
@@ -79,8 +81,8 @@
                 } // if (!footer.querySelector('.insertbtn'))
             });
             
-            // 자산 등록 모달이 닫힐 때
-            document.querySelector('#assetaddModal').addEventListener('hidden.bs.modal', () => {
+            // 등록 모달이 닫힐 때
+            document.querySelector('#debtaddModal').addEventListener('hidden.bs.modal', () => {
                 document.querySelectorAll('.insertbtn').forEach(btn => {
                     btn.remove();
                 })

@@ -371,6 +371,41 @@ public class AccnutRestController {
     	
     }
     
+    @GetMapping("day/list")
+    public ResponseEntity<Map<String, Object>> dayList(@RequestParam(name = "companyNum") int companyNum, @RequestParam(name = "bhfId") String bhfId, @RequestParam(name = "month") String month) {
+    	Map<String, Object> response = new HashMap<>();
+    	try {
+    		List<Map<String, Object>> result = otherService.dayList(companyNum, bhfId, month);
+	        response.put("status", "success");
+	        response.put("message", "조회 성공");
+	        response.put("result", result);
+	        return ResponseEntity.ok(response); // JSON 형태 응답
+	    } catch (Exception e) {
+	        log.error("조회 실패", e);
+	        response.put("status", "error");
+	        response.put("message", "조회 실패");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
+    	
+    }
+    
+    @GetMapping("closing/list")
+    public ResponseEntity<Map<String, Object>> closingList(@RequestParam(name = "code") String code) {
+    	Map<String, Object> response = new HashMap<>();
+    	try {
+    		List<Map<String, Object>> result = otherService.closingList(code);
+	        response.put("status", "success");
+	        response.put("message", "조회 성공");
+	        response.put("result", result);
+	        return ResponseEntity.ok(response); // JSON 형태 응답
+	    } catch (Exception e) {
+	        log.error("조회 실패", e);
+	        response.put("status", "error");
+	        response.put("message", "조회 실패");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
+    	
+    }
     
     
     
@@ -436,9 +471,9 @@ public class AccnutRestController {
 	    Map<String, Object> response = new HashMap<>();
 	    log.info(dto);
 	    try {
-	    	taxService.insert(dto);
+	    	int result = taxService.insert(dto);
 	        response.put("status", "success");
-	        response.put("message", "등록 성공");
+	        response.put("message", "등록 성공");	        response.put("result", result);
 	        return ResponseEntity.ok(response); // JSON 형태 응답
 	    } catch (Exception e) {
 	        log.error("등록 실패", e);

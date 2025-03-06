@@ -37,7 +37,7 @@
         const token = document.querySelector('meta[name="_csrf"]').content;
         
 		let goods = document.querySelector("#goodsName");
-		fetch(`http://localhost:81/accnut/rest/option/list?goodsName=${goods.value}&companyNum=${session.companyNum}`, {
+		fetch(`/accnut/rest/option/list?goodsName=${goods.value}&companyNum=${session.companyNum}`, {
 				method: "GET",
 				headers: {
 						 	'header': header,
