@@ -12,6 +12,7 @@ import com.beauty1nside.erp.dto.ErpSubscriptionOptionDTO;
 import com.beauty1nside.erp.dto.SubScriptionDTO;
 import com.beauty1nside.erp.dto.SubscriptionDetailDTO;
 import com.beauty1nside.erp.dto.TaxInvoiceDTO;
+import com.beauty1nside.erp.dto.UserDepartmentDTO;
 import com.beauty1nside.erp.dto.erpSubscriptionInfoListDTO;
 
 /**
@@ -31,6 +32,7 @@ import com.beauty1nside.erp.dto.erpSubscriptionInfoListDTO;
  *  2025.02.20  표하연          사용계약서 정보를 CR 한다
  *  2025.02.21  표하연          결제 목록을 리드한다
  *  2025.02.26  표하연          구독 결제한 현금영수증, 세금계산서 데이터를 삽입한다
+ *  2025.03.05  표하연          ERP 사용회사 부서 이름 호출
  *
  *  </pre>
 */
@@ -187,5 +189,13 @@ public interface ErpUserMapper {
      * @return ErpSubscriptionOptionDTO
      */
 	public ErpSubscriptionOptionDTO subscriptionoptionname(int optionNum);
+	
+	/**
+     * 부서와 부모 부서를 조회한다
+     *
+     * @param int
+     * @return UserDepartmentDTO	
+     */
+	public UserDepartmentDTO userDepartmentName(int departmentNum);
 	
 }

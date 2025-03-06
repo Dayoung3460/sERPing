@@ -54,7 +54,7 @@ public class ErpAdminController {
 		List<testDTO> list = erpAdminService.test();
 		log.info(list.toString());
 		model.addAttribute("list", list);
-		return "/erp/dbtest";
+		return "erp/dbtest";
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class ErpAdminController {
         Object ErpEmployeeInfo = session.getAttribute("ErpEmployeeInfo");
         // 세션이 없으면 로그인 페이지로 리다이렉트
         if (ErpEmployeeInfo == null) {
-            return "redirect:/erp/login";
+            return "redirect:login";
         }
         
         return "erp/admin";
@@ -101,7 +101,7 @@ public class ErpAdminController {
         Object ErpEmployeeInfo = session.getAttribute("ErpEmployeeInfo");
         // 세션이 없으면 로그인 페이지로 리다이렉트
         if (ErpEmployeeInfo == null) {
-            return "redirect:/erp/login";
+            return "redirect:login";
         }
         return "erp/cs";
 	}

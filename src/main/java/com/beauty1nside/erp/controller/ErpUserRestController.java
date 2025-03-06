@@ -20,6 +20,7 @@ import com.beauty1nside.erp.dto.ContractDTO;
 import com.beauty1nside.erp.dto.ErpSearchDTO;
 import com.beauty1nside.erp.dto.SubscriptionDetailDTO;
 import com.beauty1nside.erp.dto.TaxInvoiceDTO;
+import com.beauty1nside.erp.dto.UserDepartmentDTO;
 import com.beauty1nside.erp.dto.erpSubscriptionInfoListDTO;
 import com.beauty1nside.erp.service.ErpUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -45,6 +46,7 @@ import lombok.extern.log4j.Log4j2;
  *  2025.02.20  표하연          전자계약 모듈 등록 / 구독내역 리스트 전달
  *  2025.02.26  표하연          계산서 처리 내역 등록
  *  2025.03.04  표하연          정기구독을 등록 한다 ( 결제X )
+ *  2025.03.05  표하연          ERP 사용회사 부서 이름 호출
  *
  *  </pre>
 */
@@ -256,6 +258,18 @@ public class ErpUserRestController {
 		}else {
 			return "NO";
 		}
+	}
+	
+	/**
+     * ERP사용회사 부서명 호출
+     *
+     * @param int
+     * @return UserDepartmentDTO
+     */
+	@GetMapping("/userDepartmentName/{departmentNum}")
+	public UserDepartmentDTO userDepartmentName(@PathVariable(name="departmentNum") int departmentNum) {
+		//log.info("부서번호"+departmentNum);
+		return erpUserService.userDepartmentName(departmentNum);
 	}
 	
 }
