@@ -14,6 +14,7 @@ public class BhfOrdListDTO {
 	private String progressStatus;
 	private String remark;
 	private String orderCancelReason;
+	private String countName;
 	
 	private String goodsCode;
 	private String goodsName;
