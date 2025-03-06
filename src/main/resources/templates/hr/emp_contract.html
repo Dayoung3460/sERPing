@@ -48,7 +48,7 @@
                         <label class="form-label">사원명</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="employeeName" required readonly>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#employeeSelectModal">사원 선택</button>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" onclick="resetEmployeeSelection()" data-bs-target="#employeeSelectModal">사원 선택</button>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -615,6 +615,18 @@ function setContractPeriod(months) {
     endDateInput.value = formattedEndDate;
 }
 
+
+function resetEmployeeSelection() {
+    // 선택된 사원 정보 초기화
+    selectedEmployee = {}; 
+    
+    // 입력 필드 초기화
+    document.getElementById("employeeNum").value = "";
+    document.getElementById("employeeName").value = "";
+    document.getElementById("companyName").value = "";
+    document.getElementById("companyNum").value = "";
+    document.getElementById("workLocation").value = "";
+}
 
 </script>
 
