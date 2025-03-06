@@ -6,12 +6,15 @@
         xmlns="http://www.w3.org/1999/xhtml"
 >
 <body layout:fragment="content">
-<input type="hidden" id="documentId" th:value="${documentId}"/>
-<h4 class="mb-4">결재서 작성</h4>
-<div id="editor">
+<div class="container mt-4">
+    <input type="hidden" id="documentId" th:value="${documentId}"/>
+    <h3 class="mb-4">결재서 작성</h3>
+    <div id="editor">
 
+    </div>
+    <button class="btn btn-primary mt-4 d-block ml-auto" id="submit">제출</button>
 </div>
-<button id="submit">제출</button>
+
 <script>
 </script>
     <script src="/js/mypage/approvalWrite.js"></script>

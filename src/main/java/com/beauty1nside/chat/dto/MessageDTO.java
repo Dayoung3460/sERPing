@@ -11,5 +11,6 @@ public class MessageDTO {
   private Long employeeNum;
   private String employeeName;
   private String msgContent;
+  private String imgPath;
   private Date sendDate;
 }

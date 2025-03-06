@@ -1,67 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Spring Boot Chat</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-</head>
-<body>
-<div>
-    <input type="text" id="username" placeholder="Enter your name"/>
-    <button onclick="connect()">Join Chat</button>
-</div>
-<div>
-    <input type="text" id="messageInput" placeholder="Type a message"/>
-    <button onclick="sendMessage()">Send</button>
-</div>
-<div id="chat"></div>
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Spring Boot Chat</title>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div>-->
+<!--    <input type="text" id="username" placeholder="Enter your name"/>-->
+<!--    <button onclick="connect()">Join Chat</button>-->
+<!--</div>-->
+<!--<div>-->
+<!--    <input type="text" id="messageInput" placeholder="Type a message"/>-->
+<!--    <button onclick="sendMessage()">Send</button>-->
+<!--</div>-->
+<!--<div id="chat"></div>-->
 
-<script>
+<!--<script>-->
 
-    let stompClient = null;
+<!--    let stompClient = null;-->
 
-    function connect() {
-        let socket = new SockJS('/ws');
+<!--    function connect() {-->
+<!--        let socket = new SockJS('/ws');-->
 
-        stompClient = Stomp.over(socket);
-        stompClient.debug = null;
-        console.log('stompClient1', stompClient)
+<!--        stompClient = Stomp.over(socket);-->
+<!--        stompClient.debug = null;-->
+<!--        console.log('stompClient1', stompClient)-->
 
-        stompClient.connect({}, function () {
-            let username = document.getElementById("username").value;
-            stompClient.send("/app/chat.addUser", {}, JSON.stringify({sender: username, type: 'JOIN'}));
+<!--        stompClient.connect({}, function () {-->
+<!--            let username = document.getElementById("username").value;-->
+<!--            stompClient.send("/app/chat.addUser", {}, JSON.stringify({sender: username, type: 'JOIN'}));-->
 
-            stompClient.subscribe('/topic/public', function (message) {
-                showMessage(JSON.parse(message.body));
-            });
-        }, function (error) {
-            console.error("WebSocket 연결 실패:", error);
-        });
-    }
+<!--            stompClient.subscribe('/topic/public', function (message) {-->
+<!--                showMessage(JSON.parse(message.body));-->
+<!--            });-->
+<!--        }, function (error) {-->
+<!--            console.error("WebSocket 연결 실패:", error);-->
+<!--        });-->
+<!--    }-->
 
 
-    function sendMessage() {
-        if (!stompClient || !stompClient.connected) {
-            console.error("WebSocket is not connected yet.");
-            return;
-        }
+<!--    function sendMessage() {-->
+<!--        if (!stompClient || !stompClient.connected) {-->
+<!--            console.error("WebSocket is not connected yet.");-->
+<!--            return;-->
+<!--        }-->
 
-        let messageInput = document.getElementById("messageInput").value;
-        let username = document.getElementById("username").value;
-        let message = { sender: username, content: messageInput, type: 'CHAT' };
+<!--        let messageInput = document.getElementById("messageInput").value;-->
+<!--        let username = document.getElementById("username").value;-->
+<!--        let message = { sender: username, content: messageInput, type: 'CHAT' };-->
 
-        // 메세지를 서버로 보냄
-        // 서버가 메세지를 받고 해당 메세지를 /topic/public 채널에 브로드캐스트
-        // stompClient.subscribe()로 의해 showMessage() 실행됨
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
-    }
+<!--        // 메세지를 서버로 보냄-->
+<!--        // 서버가 메세지를 받고 해당 메세지를 /topic/public 채널에 브로드캐스트-->
+<!--        // stompClient.subscribe()로 의해 showMessage() 실행됨-->
+<!--        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));-->
+<!--    }-->
 
-    function showMessage(message) {
-        let chatDiv = document.getElementById("chat");
-        let messageElement = document.createElement("p");
-        messageElement.innerText = message.sender + ": " + message.content;
-        chatDiv.appendChild(messageElement);
-    }
-</script>
-</body>
-</html>
+<!--    function showMessage(message) {-->
+<!--        let chatDiv = document.getElementById("chat");-->
+<!--        let messageElement = document.createElement("p");-->
+<!--        messageElement.innerText = message.sender + ": " + message.content;-->
+<!--        chatDiv.appendChild(messageElement);-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->

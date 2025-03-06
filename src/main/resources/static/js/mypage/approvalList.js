@@ -23,7 +23,7 @@ if(employeeNum) {
             perPage: 10,
         },
         columns: [
-            {header: "번호", name: "inApprovalId", sortable: true},
+            {header: "번호", name: "inApprovalId", sortable: true, align: 'right'},
             {header: "요청 구분", name: "documentType", sortable: true},
             {
                 header: "결재요청 날짜",
@@ -31,7 +31,8 @@ if(employeeNum) {
                 sortable: true,
                 formatter: ({value}) => {
                     return formatDateTime(value)
-                }
+                },
+                align: 'center'
             },
             {
                 header: "처리",
@@ -48,7 +49,7 @@ if(employeeNum) {
                 name: "inApprovalStatus",
                 sortable: true,
                 rowClassName: 'center',
-                // hidden: true,
+                align: 'center',
                 formatter: ({value}) => {
                     const statusMap = {
                         WAITING: {text: "대기중", color: "gray"},
@@ -190,7 +191,7 @@ typeSelected.addEventListener('change', (e) => {
 const requestApproval = document.getElementById('requestApproval')
 requestApproval.addEventListener('click', () => {
     if(selectedDocType) {
-        window.location = `/mypage/approval/${selectedDocType}`
+        window.location = `/mypage/approval/${selectedDocType}?menu=mypage`
     } else {
         showAlert('요청 구분을 선택해주세요.', 'danger')
     }

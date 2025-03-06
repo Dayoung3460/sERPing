@@ -107,11 +107,25 @@ fetch(deptListUrl, {
             popupDelete() {
                 return '<span data-bs-toggle="modal" data-bs-target="#commonModal">삭제</span>';
             },
+            monthSchedule: function(schedule) {
+                // 이벤트 시작 및 종료 날짜 가져오기
+                const startDate = new Date(schedule.start);
+                const endDate = new Date(schedule.end);
+                console.log('schedule', schedule)
+                // 하루짜리 일정이면 시간 + 제목, 그렇지 않으면 제목만 표시
+                if (endDate.getDate() > startDate.getDate() ||
+                    endDate.getMonth() > startDate.getMonth() ||
+                    endDate.getFullYear() > startDate.getFullYear()) {
+                    console.log(schedule.title)
+                    return schedule.title; // 시간 없이 제목만 반환
+                } else {
+                    return `${startDate.getHours()}:${String(startDate.getMinutes()).padStart(2, '0')} ${schedule.title}`;
+                }
+            }
         },
         useFormPopup: true,
         useDetailPopup: true,
     });
-
     const url = 'api/mainpage/schedule'
     fetch(url, {
         method: 'get',

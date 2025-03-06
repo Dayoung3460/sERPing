@@ -163,6 +163,8 @@
     }
 
     .send-btn {
+        right: 12px;
+        position: absolute;
         background: none;
         border: none;
         font-size: 20px;
@@ -170,6 +172,8 @@
     }
 
     .file-btn {
+        right: 52px;
+        position: absolute;
         border: none;
         background: none;
     }

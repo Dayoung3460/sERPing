@@ -15,6 +15,6 @@
     border: none;
     > i{
         font-size: 20px;
-        padding-left: 10px;
+        padding: 10px 8px 0 10px;
     }
 }

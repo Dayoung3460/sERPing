@@ -71,6 +71,24 @@
                  )
     </insert>
 
+    <insert id="insertImgPath"
+            parameterType="com.beauty1nside.chat.dto.MessageDTO"
+    >
+        INSERT INTO grpwr_chat_message (
+            msg_id,
+            room_id,
+            employee_num,
+            img_path,
+            send_date
+        ) VALUES (
+                     GRPWR_CAHT_MESSAGE_SEQ.nextval,
+                     #{roomId},
+                     #{employeeNum},
+                     #{imgPath},
+                     sysdate
+                 )
+    </insert>
+
     <select id="getMsgList">
         select g.MSG_ID,
                g.ROOM_ID,
