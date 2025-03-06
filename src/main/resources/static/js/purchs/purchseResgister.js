@@ -383,9 +383,41 @@ function purchaseRegister() {
     const gridData = purchaseGrid.getCheckedRows();
 
     if (gridData.length === 0) {
-        alert("발주할 상품이 없습니다.");
+        showAlert("발주할 상품이 없습니다.","danger");
         return;
     }
+    
+ 
+    // ✅ 납기일자 선택 여부 확인
+	const purchaseDueDate = document.getElementById("purchaseDueDate").value;
+	if (!purchaseDueDate) {
+	    showAlert("납기일자를 등록하세요.", "danger");
+	    return;
+	}
+	
+	// ✅ 발주일 가져오기
+	const purchaseDate = document.getElementById("purchaseDate").value;
+	
+	// ✅ 발주일과 납기일 비교
+	const purchaseDateObj = new Date(purchaseDate);
+	const dueDateObj = new Date(purchaseDueDate);
+	
+	// ✅ 날짜 유효성 검사
+	if (dueDateObj < purchaseDateObj) {
+	    showAlert("납기일은 발주일보다 이후 날짜여야 합니다.", "danger");
+	    return;
+	}
+
+    
+     // ✅ 수량이 입력되지 않았거나 0인 경우 알림
+	for (let item of gridData) {
+	    let quantity = item.purchaseQuantity ? parseInt(item.purchaseQuantity.toString().replace(/,/g, '')) || 0 : 0; // 안전하게 처리
+	    if (quantity <= 0) {
+	        showAlert("수량을 입력하세요.", "danger");
+	        return;
+	    }
+	}
+
 
     // ✅ VAT 체크박스 상태에 따라 플래그 설정
     const vatFlag = document.getElementById("vatChecked").checked ? 1 : 0;
