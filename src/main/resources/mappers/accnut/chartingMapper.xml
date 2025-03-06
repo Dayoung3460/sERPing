@@ -7,22 +7,14 @@
 		       b.office_id, 
 		       b.option_code, 
 		       b.option_name, 
-		       b.goods_name,  -- ✅ 최종 SELECT에서 `goods_name` 포함
+		       b.goods_name,
 		       b.sell_qy, 
 		       b.minus_qy, 
 		       fn_get_option_price(b.option_code) AS price, 
 		       b.total_price
 		FROM (  SELECT rownum rn, a.*
 		        FROM (  SELECT 
-        				<choose>
-        			   		<when test="startDate !=null and ! startDate.equals('') and endDate != null and ! endDate.equals('')">
-		        			   TO_CHAR(#{startDate}, 'YYYY-MM-DD') || '-' || TO_CHAR(#{endDate}, 'YYYY-MM-DD') AS result_date,		        			   		
-        			   		</when>
-		        			   		
-        			   		<otherwise>
-		                       TO_CHAR(c.result_date, 'YYYY-MM-DD') result_date,        			   		
-        			   		</otherwise>
-						</choose>
+        					   TO_CHAR(c.result_date, 'YYYY-MM-DD') result_date,
 		                       c.office_id,
 		                       c.option_code,
 		                       c.option_name,
@@ -82,15 +74,7 @@
 		                <include refid="searchInfo"></include>
 		                
 		                GROUP BY 
-	                	<choose>
-	                		<when test="startDate !=null and ! startDate.equals('') and endDate != null and ! endDate.equals('')">
-	                		</when>
-	                		
-	                		<otherwise>		                		
-	                		 	 TO_CHAR(result_date, 'YYYY-MM-DD'),
-	                		</otherwise>
-	                	</choose>
-		                		
+		                		 TO_CHAR(result_date, 'YYYY-MM-DD'),
 		                         office_id, 
 		                         option_code, 
 		                         option_name,
@@ -128,6 +112,10 @@
 		
 		<if test="optionCode != null and ! optionCode.equals('')">
 		AND c.option_code = #{optionCode}
+		</if>
+		
+		<if test="goodsName != null and ! goodsName.equals('')">
+		AND c.goods_name = #{goodsName}
 		</if>
 	</sql>
 	
