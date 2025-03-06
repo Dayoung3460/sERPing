@@ -23,7 +23,7 @@ if(employeeNum) {
             perPage: 10,
         },
         columns: [
-            {header: "번호", name: "inApprovalId", sortable: true},
+            {header: "번호", name: "inApprovalId", sortable: true, align: 'right'},
             {header: "요청 구분", name: "documentType", sortable: true},
             {
                 header: "결재요청 날짜",
@@ -31,7 +31,8 @@ if(employeeNum) {
                 sortable: true,
                 formatter: ({value}) => {
                     return formatDateTime(value)
-                }
+                },
+                align: 'center'
             },
             {
                 header: "처리",
@@ -48,7 +49,7 @@ if(employeeNum) {
                 name: "inApprovalStatus",
                 sortable: true,
                 rowClassName: 'center',
-                // hidden: true,
+                align: 'center',
                 formatter: ({value}) => {
                     const statusMap = {
                         WAITING: {text: "대기중", color: "gray"},

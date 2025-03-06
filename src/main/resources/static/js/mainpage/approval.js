@@ -20,7 +20,7 @@ const grid = new Grid({
         perPage: 10,
     },
     columns: [
-        {header: "번호", name: "inApprovalId", sortable: true},
+        {header: "번호", name: "inApprovalId", sortable: true, align: 'right'},
         {header: "요청 구분", name: "documentType", sortable: true},
         {header: "요청자", name: "employeeName", sortable: true},
         {
@@ -30,11 +30,12 @@ const grid = new Grid({
             width: 150,
             formatter: ({value}) => {
                 return formatDateTime(value)
-            }
+            },
         },
         {
             header: "처리",
             name: "process",
+            align: 'center',
             formatter: ({row}) => {
                 return `
                     <button class="btn btn-sm btn-outline-success btn-approve " data-bs-toggle="modal" data-bs-target="#commonModal" data-in-approval-id="${row.inApprovalId}">승인</button>
@@ -63,25 +64,28 @@ const grid = new Grid({
         {header: "요청 내용", name: "inApprovalRequestContent", sortable: true, hidden: true},
         {header: "요청 내용 확인", name: "moveToPage", sortable: true,
             formatter: ({ row }) => {
-                return `<button class="move-btn" data-id="${row.inApprovalId}">
+                return `<button class="move-btn btn btn-outline-success p-0" data-id="${row.inApprovalId}">
                           <i class="mdi mdi-arrow-right-bold"></i>
                         </button>`;
-            }
+            },
+            align: 'center',
         },
         {
             header: "다운로드",
             name: "download",
             sortable: true,
             formatter: ({ row }) => {
-                return `<button class="download-btn" data-content='${row.inApprovalRequestContent}'>
+                return `<button class="download-btn btn btn-outline-secondary p-0" data-content='${row.inApprovalRequestContent}'>
                     <i class="mdi mdi-folder-download"></i>
                   </button>`;
-            }
+            },
+            align: 'center',
         }  ],
     data : dataSource,
 });
 
 const approvalTab = document.getElementById('approval-tab')
+const calendarTab = document.getElementById('calendar-tab')
 // !최고관리자 && !관리자
 let isAdmin = sessionAuthority === 'AU001' || sessionAuthority === 'AU002'
 if(!isAdmin) {
@@ -90,7 +94,15 @@ if(!isAdmin) {
 
 approvalTab.addEventListener('click', () => {
     grid.refreshLayout()
+
+    // session.setValue("mainpageTab", 2)
 }, {once: isAdmin})
+
+// calendarTab.addEventListener('click', () => {
+//     console.log(calendar)
+//     calendar.render();
+//     session.setValue("mainpageTab", 1)
+// })
 
 document.addEventListener("click", function (event) {
     let buttonApprove = event.target.closest(".btn-approve");

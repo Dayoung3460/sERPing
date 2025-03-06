@@ -66,20 +66,21 @@
                     perPage: 10,
                 },
                 columns: [
-                    {header: "번호", name: "documentId", sortable: true},
+                    {header: "번호", name: "documentId", sortable: true, align: 'right'},
                     {header: "요청구분", name: "documentType", sortable: true},
                     {header: "문서제목", name: "documentName", sortable: true},
                     {
                         header: "문서 템플릿",
                         name: "moveToPage",
                         sortable: true,
+                        align: 'center',
                         formatter: ({ row }) => {
-                            return `<button class="move-btn" data-id="${row.documentId}">
+                            return `<button class="move-btn btn btn-outline-success p-0" data-id="${row.documentId}">
                                   <i class="mdi mdi-arrow-right-bold"></i>
                                 </button>`;
                         }
                     },
-                    {header: "결재부서", name: "deptName", sortable: true}
+                    {header: "결재부서", name: "deptName", sortable: true, align: 'center'}
                 ],
                 data : dataSource,
             });

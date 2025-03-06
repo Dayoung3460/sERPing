@@ -25,11 +25,11 @@
   </div>
 
   <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">일정</button>
+    <li class="nav-item" role="presentation" id="calendar-tab">
+      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" >일정</button>
     </li>
     <li class="nav-item" role="presentation" id="approval-tab">
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" aria-selected="false">결재</button>
+      <button class="nav-link " data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" >결재</button>
     </li>
   </ul>
   <div class="tab-content">
@@ -38,7 +38,6 @@
         <p id="clicked-event"></p>
         <div id="calendar" style="height: 600px;">
         </div>
-
       </div>
     </div>
     <div class="tab-pane fade" id="approval-tab-pane" role="tabpanel" aria-labelledby="approval-tab" tabindex="0">
@@ -90,12 +89,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
-      ...
-    </div>
-    <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
-      ...
     </div>
   </div>
   <script src="/js/mainpage/calendar.js"></script>
