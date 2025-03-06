@@ -123,6 +123,67 @@ const modalElement = document.getElementById("contractModal");
 	        this.classList.remove("is-invalid");
 	    }
 	});
+	
+	// ✅ 사원 ID 입력 후 중복 체크 실행
+	const employeeIdInput = document.getElementById("employeeIdInput");
+	employeeIdInput.addEventListener("blur", async function () {
+	    const employeeId = this.value.trim();
+	    if (employeeId === "") return; // 값이 없으면 검사하지 않음
+	
+	    const exists = await checkEmployeeIdExists(employeeId);
+	    if (exists) {
+	        Swal.fire({
+	            icon: "error",
+	            title: "사원 ID 중복",
+	            text: "이미 등록된 사원 ID입니다. 다른 ID를 입력하세요.",
+	            confirmButtonText: "확인",
+	            customClass: { popup: 'custom-swal-popup' }
+	        });
+	
+	        this.value = ""; // 중복 시 입력값 초기화
+	        this.classList.add("is-invalid"); // Bootstrap 스타일 적용
+	    } else {
+	        this.classList.remove("is-invalid");
+	    }
+	});
+	
+	
+// ✅ 주민번호 입력값 검증 (앞 6자리 + 뒤 7자리 필수 입력)
+function validateResidentNumber() {
+    const firstSsn = document.getElementById("firstSsn");
+    const secondSsn = document.getElementById("secondSsn");
+
+    // 앞자리 검증 (6자리)
+    if (firstSsn.value.length !== 6) {
+        Swal.fire({
+            icon: "warning",
+            title: "입력 오류",
+            text: "주민등록번호 앞자리는 6자리여야 합니다.",
+            confirmButtonText: "확인"
+        });
+        firstSsn.classList.add("is-invalid");
+        return false;
+    } else {
+        firstSsn.classList.remove("is-invalid");
+    }
+
+    // 뒷자리 검증 (7자리)
+    if (secondSsn.value.length !== 7) {
+        Swal.fire({
+            icon: "warning",
+            title: "입력 오류",
+            text: "주민등록번호 뒷자리는 7자리여야 합니다.",
+            confirmButtonText: "확인"
+        });
+        secondSsn.classList.add("is-invalid");
+        return false;
+    } else {
+        secondSsn.classList.remove("is-invalid");
+    }
+
+    return true;
+}
+
 
 	// 이름 검증
 	const nameInput = document.getElementById("employeeName");
@@ -204,7 +265,7 @@ const modalElement = document.getElementById("contractModal");
     let registerBtn = document.getElementById("registerBtn");
     
     if (registerBtn) {
-        registerBtn.addEventListener("click", function (event) {
+        registerBtn.addEventListener("click", async function (event) {
             console.log("🔍 등록 버튼 클릭됨!");
 
             // 🔹 입력값 검증 후 실행
@@ -212,6 +273,27 @@ const modalElement = document.getElementById("contractModal");
                 console.warn("⚠️ 필수 입력값이 누락되었습니다. 등록을 중단합니다.");
                 return;
             }
+            
+            
+            
+    const employeeId = document.getElementById("employeeIdInput")?.value.trim();
+    if (!employeeId) {
+        Swal.fire({ icon: "warning", title: "입력 오류", text: "사원 ID를 입력하세요.", confirmButtonText: "확인" });
+        return;
+    }
+
+    // ✅ 사원 ID 중복 체크 실행
+    const exists = await checkEmployeeIdExists(employeeId);
+    if (exists) {
+        Swal.fire({ icon: "error", title: "사원 ID 중복", text: "이미 등록된 사원 ID입니다. 다른 ID를 입력하세요.", confirmButtonText: "확인" });
+        return; // 중복이면 등록 중단
+    }
+
+    // ✅ 검증 성공 시 등록 실행
+    if (!validateEmployeeForm()) {
+        console.warn("⚠️ 필수 입력값이 누락되었습니다. 등록을 중단합니다.");
+        return;
+    }
 
             // 🔹 사원 등록 실행
             registerEmployee();
@@ -222,8 +304,10 @@ const modalElement = document.getElementById("contractModal");
         console.error("❌ registerBtn 요소를 찾을 수 없습니다!");
     }
     
-    document.getElementById("empRegisterModal").addEventListener("show.bs.modal", function () {
-	    populateModalData();  // 모달 공통 코드 데이터 로드
+	document.getElementById("empRegisterModal").addEventListener("show.bs.modal", function () {
+	    resetEmployeeForm();
+	    fetchNewEmployeeId();
+	    populateModalData();
 	});
 
     
@@ -297,8 +381,8 @@ function initializeGrid() {
             { header: "사원명", name: "employeeName", align: "center", sortable: true, width: 150 },
             { header: "부서", name: "departmentName", align: "center", sortable: true, width: 100 },
             { header: "직급", name: "position", align: "center", sortable: true, width: 100, formatter: formatCommonCode('position') },
-            { header: "재직 상태", name: "status", align: "center", sortable: true, width: 100, formatter: formatCommonCode('status') },
-            { header: "근무 유형", name: "employmentType", align: "center", sortable: true, width: 100, formatter: formatCommonCode('employmentType') },
+            { header: "재직 상태", name: "status", align: "center", sortable: true, width: 120, formatter: formatCommonCode('status') },
+            { header: "근무 유형", name: "employmentType", align: "center", sortable: true, width: 120, formatter: formatCommonCode('employmentType') },
             { header: "입사일", name: "hireDate", align: "center", sortable: true, width: 150, formatter: ({ value }) => value?.split('T')[0] || '' },
             { header: "연락처", name: "phone", align: "center", sortable: true, width: 150, formatter: ({ value }) => formatPhoneNumberForDB(value) },
             { header: "이메일", name: "email", align: "center", sortable: true, width: 200 },
@@ -526,12 +610,58 @@ document.querySelectorAll("input[name='searchStatus']").forEach(btn => {
 });
 
 
+    const employeeIdInput = document.getElementById("employeeIdInput");
+    const toggleButton = document.getElementById("toggleAutoGenerate");
+    
+	employeeIdInput.addEventListener("blur", async function () {
+	    const employeeId = this.value.trim();
+	    if (employeeId === "") return; // 값이 없으면 검사하지 않음
+	
+	    const exists = await checkEmployeeIdExists(employeeId);
+	    if (exists) {
+	        Swal.fire({
+	            icon: "error",
+	            title: "사원 ID 중복",
+	            text: "이미 등록된 사원 ID입니다. 다른 ID를 입력하세요.",
+	            confirmButtonText: "확인",
+	            customClass: { popup: 'custom-swal-popup' }
+	        });
+	
+	        this.value = ""; // 중복 시 입력값 초기화
+	        this.classList.add("is-invalid"); // Bootstrap 스타일 적용
+	    } else {
+	        this.classList.remove("is-invalid");
+	    }
+	});
+
+    if (toggleButton) {
+        toggleButton.addEventListener("click", function () {
+            if (employeeIdInput.disabled) {
+                // 🔹 '수동 입력' 활성화
+                employeeIdInput.disabled = false;
+                employeeIdInput.value = ""; // 기존 자동 생성된 값 제거
+                toggleButton.textContent = "자동 생성";
+            } else {
+                // 🔹 '자동 생성' 활성화 (기존 방식 유지)
+                employeeIdInput.disabled = true;
+                fetchNewEmployeeId();
+                toggleButton.textContent = "수동 입력";
+            }
+        });
+    } else {
+        console.error("❌ 'toggleAutoGenerate' 버튼을 찾을 수 없습니다!");
+    };
+
+
 // 🔹 새 사원번호 가져오기
 function fetchNewEmployeeId() {
     fetch("/hr/rest/emp/new-employee-id")
         .then(response => response.text())
         .then(data => {
-            document.getElementById("employeeIdInput").value = data; // 사원번호 입력칸에 자동 반영
+            const employeeIdInput = document.getElementById("employeeIdInput");
+            if (employeeIdInput && employeeIdInput.disabled) {
+                employeeIdInput.value = data; // 자동 생성된 사원번호 입력
+            }
         })
         .catch(error => console.error("❌ 사원번호 생성 오류:", error));
 }
@@ -540,40 +670,26 @@ function fetchNewEmployeeId() {
  * 📌 입력값 검증 함수
  */
 function validateEmployeeForm() {
-    let employeeName = document.getElementById("employeeName")?.value.trim();
-    let email = document.getElementById("email")?.value.trim();
-    let phone = document.getElementById("phone")?.value.trim();
-    let hireDate = document.getElementById("hireDate")?.value.trim();
-    let departmentNum = document.getElementById("modalDepartment")?.value.trim();
-    let position = document.getElementById("modalPosition")?.value.trim();
-    let employmentType = document.querySelector("input[name='modalEmploymentType']:checked")?.value;
+    const fields = [
+        { id: "employeeName", message: "사원명을 입력하세요." },
+        { id: "email", message: "이메일을 입력하세요." },
+        { id: "phone", message: "연락처를 입력하세요." },
+        { id: "hireDate", message: "입사일을 선택하세요." },
+        { id: "modalDepartment", message: "부서를 선택하세요." },
+        { id: "modalPosition", message: "직급을 선택하세요." },
+        { id: "modalAutority", message: "권한을 선택하세요." }
+    ];
 
-    if (!employeeName) {
-        alert("⚠️ 사원명을 입력하세요.");
-        return false;
+    for (let field of fields) {
+        let value = document.getElementById(field.id)?.value.trim();
+        if (!value) {
+            Swal.fire({ icon: "warning", title: "입력 오류", text: field.message, confirmButtonText: "확인", customClass: { popup: 'custom-swal-popup' } });
+            return false;
+        }
     }
-    if (!email) {
-        alert("⚠️ 이메일을 입력하세요.");
-        return false;
-    }
-    if (!phone) {
-        alert("⚠️ 연락처를 입력하세요.");
-        return false;
-    }
-    if (!hireDate) {
-        alert("⚠️ 입사일을 선택하세요.");
-        return false;
-    }
-    if (!departmentNum) {
-        alert("⚠️ 부서를 선택하세요.");
-        return false;
-    }
-    if (!position) {
-        alert("⚠️ 직급을 선택하세요.");
-        return false;
-    }
-    if (!employmentType) {
-        alert("⚠️ 근무 유형을 선택하세요.");
+
+    if (!document.querySelector("input[name='modalEmploymentType']:checked")) {
+        Swal.fire({ icon: "warning", title: "입력 오류", text: "근무 유형을 선택하세요.",customClass: { popup: 'custom-swal-popup' }, confirmButtonText: "확인" });
         return false;
     }
 
@@ -587,11 +703,20 @@ function registerEmployee() {
 	let employmentValue = employmentId ? employmentId.substring(employmentId.lastIndexOf("_") + 1) : "";
 	let phone = document.getElementById("phone")?.value || "";
     let formattedPhone = formatPhoneNumberForDB(phone); // 변환된 전화번호
+    let bankSelect = document.getElementById("bankSelect");
+    
+    // 🔹 은행 선택이 "선택"이면 값을 null로 변경
+    let bankValue = bankSelect.value === "" ? "" : bankSelect.options[bankSelect.selectedIndex].text.trim();
+	
 	
 	let profileInputIMG = document.querySelector("#profileImage");
     const file = profileInputIMG.files[0];
     const formData = new FormData();
-    formData.append("image", file);
+	if (file) {
+	    formData.append("image", file);  // 파일이 있을 때만 추가
+	} else {
+	    console.warn("📌 프로필 이미지 파일이 선택되지 않음, 서버로 전송되지 않음");
+	}
     
     formData.append("employeeId", document.getElementById("employeeIdInput")?.value || "");
 	formData.append("employeeName",document.getElementById("employeeName")?.value || "");
@@ -602,7 +727,7 @@ function registerEmployee() {
 	formData.append("position",document.getElementById("modalPosition")?.value || "");
 	formData.append("status","ST001");
 	formData.append("employmentType",employmentValue || "");
-	formData.append("bankName",document.getElementById("bankSelect")?.options[document.getElementById("bankSelect").selectedIndex].text.trim() || "");
+	formData.append("bankName",bankValue);
 	formData.append("accountNum",document.getElementById("accountNumber")?.value || "");
 	formData.append("zipCode",document.getElementById("zipcode")?.value || "");
 	formData.append("address",document.getElementById("address")?.value || "");
@@ -695,21 +820,92 @@ function registerEmployee() {
     fetch("/hr/rest/emp/register", {
         method: "POST",
         headers: {
-                'header': header,
-                'X-CSRF-Token': token
-            },
+            'header': header,
+            'X-CSRF-Token': token
+        },
         body: formData
     })
-    .then(response => response.text())
-    .then(message => {
-        alert(message);
-        location.reload();
-        return;
-    })
-    .catch(error => console.error("❌ 등록 실패:", error));
-    
+	.then(async (response) => {
+	    if (!response.ok) {
+	        let errorData;
+	        try {
+	            errorData = await response.json();
+	        } catch (jsonError) {
+	            console.error("❌ JSON 파싱 오류:", jsonError);
+	            throw new Error(`서버 오류: ${response.status} ${response.statusText}`);
+	        }
+	
+	        throw new Error(errorData?.error || `서버 오류: ${response.status} ${response.statusText}`);
+	    }
+	    return response.json();
+	})
+	.then(data => {
+	    if (data.error) {
+	        if (data.error.includes("이미 등록된 이메일")) {
+	            // ✅ 이메일 중복 처리
+	            let emailInput = document.getElementById("email");
+	            emailInput.value = "";
+	            emailInput.classList.add("is-invalid");
+	
+	            Swal.fire({
+	                icon: 'error',
+	                title: '이메일 중복',
+	                text: '이미 등록된 이메일입니다. 다른 이메일을 입력해주세요.',
+	                confirmButtonText: '확인',
+	                customClass: { popup: 'custom-swal-popup' }
+	            });
+	
+	            return;
+	        } else if (data.error.includes("이미 등록된 사원 ID")) {
+	            // ✅ 사원 ID 중복 처리
+	            let employeeIdInput = document.getElementById("employeeIdInput");
+	            employeeIdInput.value = "";
+	            employeeIdInput.classList.add("is-invalid");
+	
+	            Swal.fire({
+	                icon: 'error',
+	                title: '사원 ID 중복',
+	                text: '이미 등록된 사원 ID입니다. 다른 ID를 입력해주세요.',
+	                confirmButtonText: '확인',
+	                customClass: { popup: 'custom-swal-popup' }
+	            });
+	
+	            return;
+	        }
+	
+	        // 기타 오류 처리
+	        Swal.fire({
+	            icon: 'error',
+	            title: '등록 실패',
+	            text: data.error,
+	            confirmButtonText: '확인',
+	            customClass: { popup: 'custom-swal-popup' }
+	        });
+	    } else {
+	        // ✅ 등록 성공 처리
+	        Swal.fire({
+	            icon: 'success',
+	            title: '등록 완료',
+	            text: '사원 등록이 성공적으로 완료되었습니다!',
+	            confirmButtonText: '확인',
+	            customClass: { popup: 'custom-swal-popup' }
+	        }).then(() => {
+	            location.reload(); // 페이지 새로고침
+	        });
+	    }
+	})
+	.catch(error => {
+	    console.error("❌ 등록 실패:", error);
+	
+	    Swal.fire({
+	        icon: 'error',
+	        title: '등록 중 오류 발생',
+	        text: error.message || '등록 중 문제가 발생했습니다. 다시 시도해주세요.',
+	        confirmButtonText: '확인',
+	        customClass: { popup: 'custom-swal-popup' }
+	    });
+	});
 }
-
     
 let globalDepartments = [];
 let globalSubDepartments = [];
@@ -883,5 +1079,17 @@ function formatPhoneNumberForDB(value) {
     }
     return value;
 };
+
+
+// 사원 ID 중복 체크 함수
+function checkEmployeeIdExists(employeeId) {
+    return fetch(`/hr/rest/emp/check-id?employeeId=${employeeId}`)
+        .then(response => response.json())
+        .then(data => data.exists) // 서버에서 true/false 반환
+        .catch(error => {
+            console.error("❌ 사원 ID 중복 체크 오류:", error);
+            return false; // 에러 발생 시 기본적으로 중복 없음 처리
+        });
+}
 
 

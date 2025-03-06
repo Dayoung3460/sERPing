@@ -390,6 +390,10 @@
 	    SELECT COUNT(*) FROM HR_EMPLOYEE WHERE EMAIL = #{email}
 	</select>
 	
+	<select id="checkEmpIDExists" resultType="int">
+	    SELECT COUNT(*) FROM HR_EMPLOYEE WHERE EMPLOYEE_ID = #{employeeId}
+	</select>
+	
 	<!-- 특정 부서의 사원 목록 가져오기 -->
 	<select id="listByDept" resultType="com.beauty1nside.hr.dto.EmpDTO"
 										 parameterType="com.beauty1nside.hr.dto.EmpSearchDTO">

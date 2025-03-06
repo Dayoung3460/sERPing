@@ -36,6 +36,9 @@ public interface EmpMapper {
     // 이메일 중복 체크 추가
     int checkEmailExists(String email);
     
+    // 사원 ID 중복 체크
+    int checkEmpIDExists(String employeeId);
+    
     // 특정 부서의 사원 목록 가져오기 (부서 이름 포함)
     List<EmpDTO> listByDept(EmpSearchDTO dto);
 
