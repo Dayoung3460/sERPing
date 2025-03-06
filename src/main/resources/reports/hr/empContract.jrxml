@@ -182,10 +182,6 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{WORK_DAYS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="124" y="245" width="70" height="20" uuid="5f6e987b-a0b3-4724-b79d-5bb957d7168b"/>
-				<textFieldExpression><![CDATA[$F{MONTHLY_SALARY}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement style="han_font" x="194" y="278" width="80" height="22" uuid="e99ef00e-1b60-493c-b14c-761291accd46"/>
 				<textFieldExpression><![CDATA[$F{BONUS}]]></textFieldExpression>
 			</textField>

@@ -204,12 +204,12 @@ function subManagement(data) {
             subscriptionState[dateKey] = remainingDays;
         }
     });
-    console.log("최종 구독 상태:", subscriptionState);
+    //console.log("최종 구독 상태:", subscriptionState);
 
 	/*============ 구독에 따른 권한 처리 ===============*/
 	setTimeout(function(){
-		console.log("현재주소 : "+window.location.href);
-		console.log(sessionData);
+		//console.log("현재주소 : "+window.location.href);
+		//console.log(sessionData);
 		
 	    //계약정보가 없을경우 페이지로 리다액션
 	    if(!window.location.href.includes("erp/usercontact")){
@@ -383,6 +383,14 @@ function subManagement(data) {
 document.addEventListener("DOMContentLoaded", function () {
     //관리자이면서 마이페이지이면 메뉴 생기게
     var currentUrl = window.location.href;
+    if ( currentUrl.includes("/mypage/") || currentUrl.includes("/erp/erpsubinfo") || currentUrl.includes("/erp/usercontact") || currentUrl.includes("/erp/fppay") ) {
+		if(sessionData.authority != "AU001"){
+			 document.querySelectorAll(".nav-item.autag").forEach(li => {
+			    li.remove();
+			});
+		}
+	}
+    /*
     if(sessionData.authority == "AU001"){
 		if ( currentUrl.includes("/mypage/") || currentUrl.includes("/erp/erpsubinfo") || currentUrl.includes("/erp/usercontact") 
 		 || currentUrl.includes("/erp/fppay") ) {
@@ -406,4 +414,232 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.querySelector(".admin").insertAdjacentHTML("beforeend", adminDomTag);
 		}
 	}
+	*/
+	
+	if(sessionData.authority != "AU001"){
+		//부서에대한 권한처리
+		//console.log("현재주소 : "+currentUrl);
+		//console.log("사용할세션 : ",sessionData);
+		const url = `/erp/rest/userDepartmentName/`+sessionData.departmentNum;
+					
+		fetch(url, {
+		    method: "GET",
+		    headers: {
+		        "Content-Type": "application/json"
+		    }
+		})
+		.then(response => response.json())  // JSON 변환
+		.then(result => {
+		    //console.log("API 응답:", result);  // API 응답을 확인
+		    
+		    //인사부서 링크제거 처리
+		   	if (result.childDepartmentName && result.childDepartmentName.includes("인사")) {
+			    let branchLink = document.querySelector('nav.menu a[data="branch"]');
+			    let bsnLink = document.querySelector('nav.menu a[data="sales"]');
+			    let purchsLink = document.querySelector('nav.menu a[data="inventory"]');
+			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
+			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
+			    if (branchLink) branchLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
+			    if (purchsLink) purchsLink.removeAttribute("href");
+			    //if (hrLink) hrLink.removeAttribute("href");
+			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //부서내부 등급 권한
+			    if(sessionData.authority === "AU002" || sessionData.authority === "AU001"){
+				}else{
+					document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/hr/emp_contract?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+			}
+			
+			//영업부서 링크제거 처리
+		   	if (result.childDepartmentName && result.childDepartmentName.includes("영업")) {
+			    let branchLink = document.querySelector('nav.menu a[data="branch"]');
+			    let bsnLink = document.querySelector('nav.menu a[data="sales"]');
+			    let purchsLink = document.querySelector('nav.menu a[data="inventory"]');
+			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
+			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
+			    if (branchLink) branchLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
+			    if (purchsLink) purchsLink.setAttribute("href", "/purchs/goodsLots?menu=inventory");
+			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
+			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사부서)
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				//재고부서에 영업팀이 접근 가능
+				if (currentUrl.includes("/purchs/") || currentUrl.includes("menu=inventory")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/purchs/goodsLots")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+			}
+			
+			//재고부서 링크제거 처리
+		   	if (result.childDepartmentName && result.childDepartmentName.includes("재고")) {
+			    let branchLink = document.querySelector('nav.menu a[data="branch"]');
+			    let bsnLink = document.querySelector('nav.menu a[data="sales"]');
+			    let purchsLink = document.querySelector('nav.menu a[data="inventory"]');
+			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
+			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
+			    if (branchLink) branchLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
+			    //if (purchsLink) purchsLink.removeAttribute("href");
+			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
+			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사)
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+			}
+			
+			//회계부서 링크제거 처리
+		   	if (result.childDepartmentName && result.childDepartmentName.includes("회계")) {
+			    let branchLink = document.querySelector('nav.menu a[data="branch"]');
+			    let bsnLink = document.querySelector('nav.menu a[data="sales"]');
+			    let purchsLink = document.querySelector('nav.menu a[data="inventory"]');
+			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
+			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
+			    if (branchLink) branchLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
+			    if (purchsLink) purchsLink.removeAttribute("href");
+			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
+			    //if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사)
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+			}
+			
+			//지점부서 링크제거 처리
+		   	if (result.childDepartmentName && result.parentDepartmentName.includes("지점")) {
+			    let branchLink = document.querySelector('nav.menu a[data="branch"]');
+			    let bsnLink = document.querySelector('nav.menu a[data="sales"]');
+			    let purchsLink = document.querySelector('nav.menu a[data="inventory"]');
+			    let hrLink = document.querySelector('nav.menu a[data="hr"]');
+			    let accnutLink = document.querySelector('nav.menu a[data="account"]');
+			    //if (branchLink) branchLink.removeAttribute("href");
+			    //if (bsnLink) bsnLink.removeAttribute("href");
+			    if (purchsLink) purchsLink.removeAttribute("href");
+			    if (hrLink) hrLink.setAttribute("href", "/hr/organization_list?menu=hr");
+			    if (accnutLink) accnutLink.removeAttribute("href");
+			    
+			    //다른부서인데 모든사원이 접근 가능한 페이지 (인사)
+			    if (currentUrl.includes("/hr/") || currentUrl.includes("menu=hr")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href && !href.includes("/hr/organization_list")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+				
+				//다른부서인데 모든사원이 접근 가능한 페이지 (영업부서)
+			    if (currentUrl.includes("/bsn/") || currentUrl.includes("menu=sales")) {
+				    document.querySelectorAll("#sidebar .nav-item a.nav-link").forEach(link => {
+				        let href = link.getAttribute("href");
+				        if (href.includes("/bsn/order/Regist") || href.includes("/bsn/delivery?") || href.includes("/bsn/order/cs/returning?")) {
+				            link.removeAttribute("href");
+				            link.style.pointerEvents = "none";
+				            link.style.color = "#aaa";
+				            link.style.cursor = "default";
+				        }
+				    });
+				}
+			}
+			
+			//관리자 권한만 접근 가능
+		    if(sessionData.authority === "AU002" || sessionData.authority === "AU001"){
+			}else{
+				let standardLink = document.querySelector('nav.menu a[data="standard"]')
+			    if (standardLink) standardLink.removeAttribute("href");
+			}
+		});
+	}
+	
+	
 });

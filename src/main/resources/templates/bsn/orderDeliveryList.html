@@ -27,7 +27,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h1>출고 관리</h1>
+		<h1>이동 출고 조회</h1>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -111,8 +111,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">출고 준비중인 주문 목록</h4>
-                		<p class="card-description">출고 처리할 주문 선택</p>
+                		<h4 class="card-title">출고 목록</h4>
+                		<p class="card-description">조회할 출고를 선택하세요.</p>
                 		<div id="orderList"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
               		</div>
@@ -126,8 +126,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">주문 상세</h4>
-                		<p class="card-description">출고 하기전에 본사 창고에서 해당 상품을 LOT별로 매칭하여 연결</p>
+                		<h4 class="card-title">출고 상세</h4>
+                		<p class="card-description">출고 LOT 목록을 조회하고 싶은 상품을 선택하세요.</p>
                 		<div id="deliDetail"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
                		 	
@@ -138,7 +138,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6 grid-margin stretch-card">
 			    <div class="card">
 			        <div class="card-body">
-			        	<h4 class="card-title">이동 출고 상품의 LOT리스트</h4>
+			        	<h4 class="card-title">LOT목록</h4>
 			            <div id="deliLotDetail"></div>
 			            <div id="pagination" class="tui-pagination"></div>
 			            
@@ -230,8 +230,8 @@ const orderList = new Grid({
 		{ header : "주문ID", name : "orderId", sortable : true},
 		{ header : "주문명", name : "orderName", width: 'auto',  sortable : true},
 		{ header : "지점코드", name : "branchOfficeId"},
-		{ header : "담당자번호", name : "employeeNum"},
-		// { header : "회사번호", name : "companyNum"},
+		//{ header : "담당자번호", name : "employeeNum"},
+		{ header : "담당자", name : "employeeName"},
 		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
 		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
 		{ header : "출고일", name : "deliveryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
@@ -242,16 +242,17 @@ const orderList = new Grid({
 });
 
 //그리드 날짜 형식 변경(데이터 수정X, 표기만)
-function formatDate(dateString, type) {
-    if (!dateString) return ''; // 데이터가 없으면 빈 문자열 반환
-    const date = new Date(dateString);
-    if (isNaN(date)) return dateString; // 날짜 변환이 실패하면 원본 유지
+		function formatDate(dateString, type) {
+		    if (!dateString) return ''; // 데이터가 없으면 빈 문자열 반환
+		    const date = new Date(dateString);
+		    if (isNaN(date)) return dateString; // 날짜 변환이 실패하면 원본 유지
 
-    return type === 'order' 
-        ? date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) // "2025년 2월 17일"
-        : date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }); // "02/17 (월)"
-}
-
+		    return type === 'order' 
+		        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+		        : date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+	            .replace(/\. /g, '-')  // "2025. 02. 17." → "2025-02-17"
+	            .replace(/\.$/, '');
+		}
 //상태여부 표기 변경
 function formatStatus(status) {
     if (status === null || status === undefined) return ''; // 데이터가 없으면 빈 문자열 반환
@@ -261,6 +262,8 @@ function formatStatus(status) {
     case "DS02":
     	return "출고완료";
     case "DS03":
+    	return "지점입고완료";
+    case "DS04":
     	return "출고취소";
     	
     case 0 :
@@ -269,6 +272,8 @@ function formatStatus(status) {
     	return "요구수량충족";
     case 2 :
 		return "출고됨";
+    case 3 :
+		return "출고취소";
     }
   	
 }
@@ -397,8 +402,8 @@ columns: [
     },
     { header: "옵션명", name: "optionName", },
     //{ header: "옵션코드", name: "optionCode",  },
-    { header: "요구수량(규격)", name: "deliveryDemandQnt",  },
-    { header: "출고총수량(규격)", name: "deliveryTotalQnt",  },
+    { header: "요구수량(box)", name: "deliveryDemandQnt",  },
+    { header: "출고총수량(box)", name: "deliveryTotalQnt",  },
     { header: "출고준비여부", name: "sufficiencyStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 
 ],
@@ -467,7 +472,7 @@ columns: [
     { header: "LOT번호", name: "goodsLotNum", align: "left"},
     //{ header: "유통기한", name: "goodsConsumptionDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
     //{ header: "출고가능수량", name: "deliveryPossibleQnt",  align: "right"},
-    { header: "연결수량(규격)", name: "deliveryQnt",  sortable : true, align: "right"},
+    { header: "수량(box)", name: "deliveryQnt",  sortable : true, align: "right"},
     
 
 ],

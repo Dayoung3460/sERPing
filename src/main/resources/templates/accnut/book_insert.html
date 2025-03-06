@@ -53,8 +53,8 @@
     
     const dataSource = {
       api: {
-    	  readData: { url: 'http://localhost:81/accnut/rest/book/list', method: 'GET', initParams: { page: 1 }},
-          createData: { url: 'http://localhost:81/accnut/rest/book/insert', method: 'POST', headers: {  
+    	  readData: { url: '/accnut/rest/book/list', method: 'GET', initParams: { page: 1 }},
+          createData: { url: '/accnut/rest/book/insert', method: 'POST', headers: {  
         	  																							"header": header,
               																							[header]: token,
               } },

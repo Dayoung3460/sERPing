@@ -21,30 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/bsn/*")
 public class BsnSampleController {
 	
-	//final private BsnOrderService bsnOrderService;
-
 	
 	@GetMapping("/")
 	public String sample() {
 		return "redirect:/bsn/order";
 	};
-	///////////////////////////////////////////////////
-	@GetMapping("/test")
-	public String test() {
-		return "/bsn/sample";
-	};
 	
-	@GetMapping("/test2")
-	public String test2() {
-		return "/bsn/sample2";
-	};
-	
-	
-	@GetMapping("/test3")
-	public String test3() {
-		return "/bsn/testOrder";
-	};
-	///////////////////////////////////////////////////
 
 	
 	@GetMapping("/order")
@@ -57,13 +39,13 @@ public class BsnSampleController {
 	public String orderRegist() {
 		
 
-		return "/bsn/orderRegist";
+		return "bsn/orderRegist";
 	};
 	
 	@GetMapping("/order/List")
 	public String orderList() {
 		
-		return "/bsn/orderList";
+		return "bsn/orderList";
 	};
 	
 	
@@ -71,13 +53,13 @@ public class BsnSampleController {
 	@GetMapping("/delivery")
 	public String delivery() {
 		
-		return "/bsn/orderDelivery";
+		return "bsn/orderDelivery";
 	};
 	
 	@GetMapping("/delivery/list")
 	public String deliveryList() {
 		
-		return "/bsn/orderDeliveryList";
+		return "bsn/orderDeliveryList";
 	};
 	
 	@GetMapping("/order/cs")
@@ -88,12 +70,12 @@ public class BsnSampleController {
 	@GetMapping("/order/cs/returning")
 	public String returning() {
 		
-		return "/bsn/orderReturning";
+		return "bsn/orderReturning";
 	};
 	
 	@GetMapping("/order/cs/returning/list")
 	public String returningList() {
-		return "/bsn/orderReturningList";
+		return "bsn/orderReturningList";
 	}
 	
 	

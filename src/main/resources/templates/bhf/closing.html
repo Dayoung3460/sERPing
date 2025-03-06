@@ -10,35 +10,42 @@
 <!-- 엑셀 파일을 읽어서 json형식으로 바꾸기 위해서 필요 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-.custom-file-upload {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: rgb(0, 128, 0);
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
-.custom-file-upload:hover {
-    background-color: rgb(0, 255, 0);
-}
+	.custom-file-upload {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    background-color: rgb(0, 128, 0);
+	    color: white;
+	    border-radius: 5px;
+	    cursor: pointer;
+	    font-size: 14px;
+	}
+	.custom-file-upload:hover {
+	    background-color: rgb(0, 255, 0);
+	}
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
 </style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
+		<h3 class="mt-2 mb-2"><b>마감 정산</b></h3>
+		<hr>
 		<div class="row">
-			<h3 class="mt-2 mb-2">마감 정산</h3>
-			<hr>
-			<div class="col-md-6 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-4">마감 일자</label> 
-					<input type="date"class="col-sm-7" id="closingDate"> 
-				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-4">주문 지점</label> 
-					<input type="text"class="col-sm-7" id="branchOfficeId" readonly>
+			<div id="custom-container">
+				<div class="row ">
+					<div class="col-md-6 mt-1 mb-1">
+						<label class="form-label">마감 일자</label> 
+						<input type="date"class="form-control" id="closingDate"> 
+					</div>
+					<div class="col-md-6 mt-1 mb-1">
+						<label class="form-label">주문 지점</label> 
+						<input type="text"class="form-control" id="branchOfficeId" readonly>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-12 stretch-card mt-2 mb-2">
@@ -83,7 +90,7 @@
 			<div class="col-md-6 stretch-card mt-3 mb-2">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">판매량</h6>
+						<h5 class="mb-4"><b>판매량</b></h5>
 						<div id="salesNum"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -133,13 +140,13 @@
 			},
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", align: 'center', width: 100},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "옵션코드", name : "optionCode", align: 'center', width: 100},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ 
 					header : "판매량",
 					name : "bnfSleQy", 
-					align: 'center', 
+					align: 'right', 
 					width: 80,
 					formatter: function(ev){
 						return numberFormat(ev.value);
@@ -258,7 +265,7 @@
 		        files: grid.getData()  // Grid 데이터 포함
 		    };
 
- 		    fetch("http://localhost:81/bhf/rest/close/insert", {
+ 		    fetch("/bhf/rest/close/insert", {
 		        method: "POST",
 		        headers: { 
 		        	"Content-Type": "application/json" ,

@@ -6,39 +6,56 @@
 <head>
 <meta charset="UTF-8">
 <title>교환 및 반품 조회</title>
+<!-- 행 선택 색상 -->
+<style>
+	.selected-row {
+	    background-color: #d7fffe !important; 
+	}
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
+		<h3 class="mt-2 mb-2"><b>교환 및 반품 조회</b></h3>
+		<hr>
 		<div class="row">
-			<h3 class="mt-2 mb-2">교환 및 반품 조회</h3>
-			<hr>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<label class="col-sm-4">신청 일자</label> 
-					<input type="date"class="col-sm-7" id="requestDate"> 
+			<div id="custom-container">
+				<div class="row ">
+					<div class="col-md-5 mt-1 mb-1">
+						
+							<label class="form-label">신청 일자</label> 
+							<input type="date"class="form-control" id="requestDate"> 
+						
+					</div>
+					<div class="col-md-5 mt-1 mb-1">
+						
+							<label class="form-label">진행 상태</label> 
+							<select name="progressStatus" id="progressStatus" class="form-control">
+								<option value="" selected>선택 하세요.</option>
+								<option value="신청">신청</option>
+								<option value="승인">승인</option>
+								<option value="취소">취소</option>
+							</select>
+						
+					</div>
+					<div class="col-md-2 mt-4 mb-2">
+						<div style="text-align : center">
+							<button class="btn btn-primary" style="margin: 0px 17px" onclick="search()">검색</button>
+							<button class="btn btn-secondary" onclick="reset()">초기화</button>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<label class="col-sm-4">진행 상태</label> 
-					<select name="progressStatus" id="progressStatus" class="col-sm-7">
-						<option value="" selected>선택 하세요.</option>
-						<option value="신청">신청</option>
-						<option value="승인">승인</option>
-						<option value="취소">취소</option>
-					</select>
-				</div>
-			</div>
-			<div class="col-md-12 mt-2 mb-2">
-				<div style="text-align : center">
-					<button class="btn btn-primary" style="margin: 0px 17px" onclick="search()">검색</button>
-					<button class="btn btn-secondary" onclick="reset()">초기화</button>
-				</div>
-			</div>
+			</div>			
 			<div class="col-md-6 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">교환 및 반품</h6>
+						<h5 class="mb-4"><b>교환 및 반품</b></h5>
 						<div id="returning"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -47,7 +64,7 @@
 			<div class="col-md-6 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">교환 및 반품 상세</h6>
+						<h5 class="mb-4"><b>교환 및 반품 상세</b></h5>
 						<div id="returningDtl"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -80,6 +97,9 @@
 	
 		var Grid = tui.Grid;
 		
+		// 현재 선택된 행을 추적
+		let selectedRowKey = null;
+		
 		//페이지가 로드되면 함수 실행
 		document.addEventListener("DOMContentLoaded",()=>{
 			REDnodata();
@@ -89,7 +109,7 @@
 		// 교환및반품 조회 쿼리 호출
 		const dataSource = {
 			api: {
-				readData: { url: 'http://localhost:81/bhf/rest/return/list', method: 'GET', initParams: { page: 1 }},
+				readData: { url: '/bhf/rest/return/list', method: 'GET', initParams: { page: 1 }},
 			},
 			contentType: 'application/json'
 			
@@ -105,7 +125,7 @@
 				{ header : "교환및반품 코드", name : "returningCode", align: 'center'},
 				{ header : "신청일자", name : "requestDate", align: 'center', width: 110},
 				{ header : "진행상태", name : "progressStatus", align: 'center', width: 100},
-				{ header : "비고", name : "returnRemark", align: 'center', width: 225}
+				{ header : "비고", name : "returnRemark", align: 'left', width: 225}
 			],
 			data: dataSource
 		});
@@ -114,11 +134,20 @@
 			const rowKey = ev.rowKey;  	// 클릭된 행의 키값
 			if(rowKey != undefined){ 	// 행 말고 다른데 클릭해도 이 함수가 실행되서 행의 키값이 있을때만 실행되게 함
 				
+				// 이전에 선택된 행의 스타일 제거
+			    if (selectedRowKey !== null) {
+			        grid.removeRowClassName(selectedRowKey, 'selected-row');
+			    }
+			    // 현재 선택된 행에 스타일 추가
+			    grid.addRowClassName(ev.rowKey, 'selected-row');
+			    // 현재 선택된 행 업데이트
+			    selectedRowKey = ev.rowKey
+				
 				const rowData = grid.getRow(rowKey); //해당 행의 데이터 가져오기
 				const returningCode = rowData.returningCode; // 교환및반품 코드
 				
 				// 교환및반품 상세 조회 쿼리호출(orderCode)
-			    fetch('http://localhost:81/bhf/rest/return/detail?returningCode=' + returningCode, {
+			    fetch('/bhf/rest/return/detail?returningCode=' + returningCode, {
 			        method: 'GET',
 			        headers: {
 			            'Content-Type': 'application/json'
@@ -140,19 +169,19 @@
 				perPage: 5,
 			},
 			columns: [ 
-				{ header : "상품명", name : "goodsName", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ 
 					header : "수량", 
 					name : "quantity", 
-					align: 'center', 
+					align: 'right', 
 					width: 80,
 					formatter: function(ev){
 						return numberFormat(ev.value);
 					}
 				},
 				{ header : "교환 및 반품", name : "exchangeReturningChoice", align: 'center', width: 100},
-				{ header : "사유", name : "returningReason", align: 'center', width: 167}
+				{ header : "사유", name : "returningReason", align: 'left', width: 167}
 			],
 			data: ""
 		});

@@ -9,6 +9,7 @@ SELECT
        order_id,
        delivery_date,
        employee_num,
+       employee_name,
        delivery_status,
        remark,
        company_num,
@@ -26,6 +27,7 @@ SELECT ROW_NUMBER() OVER (
        bd.order_id,
        bd.delivery_date,
        bd.employee_num,
+       he.employee_name,
        bd.delivery_status,
        bd.remark,
        bd.company_num,
@@ -36,7 +38,8 @@ SELECT ROW_NUMBER() OVER (
        bo.due_date
 
 FROM bsn_delivery bd
-LEFT JOIN bsn_order bo ON bo.order_id = bd.order_id
+LEFT JOIN bsn_order bo ON bd.order_id = bo.order_id
+LEFT JOIN hr_employee he ON bd.employee_num = he.employee_num
 WHERE bd.company_num = #{companyNum}
 <include refid="searchInfoBsnDLV"></include>
 )

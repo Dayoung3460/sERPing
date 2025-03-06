@@ -37,4 +37,30 @@
 		AND parent_department_num IS NOT NULL
 	</select>
 	
+	<select id="dayList" resultType="map">
+		SELECT TO_CHAR(closing_date, 'YYYY-MM-DD') AS "day", closing_code AS "code"
+		FROM bhf_closing
+		WHERE company_num = #{companyNum}
+		AND branch_office_id = #{bhfId}
+		AND TO_CHAR(closing_date, 'YYYY-MM') = #{month}
+	</select>
+	
+	<select id="closingList" resultType="map">
+		SELECT fn_get_option_price(option_code) AS "amount", 
+	        goods_name || '-' || option_name AS "optionCode", 
+	        bnf_sle_qy AS "quantity",
+	        option_code AS "optCode", 
+	        TO_CHAR(closing_date, 'MM') AS "month",
+	        TO_CHAR(closing_date, 'DD') AS "day",
+	        bnf_sle_qy * fn_get_option_price(option_code) AS "total",
+	        bnf_sle_qy * fn_get_option_price(option_code) * 0.9 AS "supplyPrice",
+	        bnf_sle_qy * fn_get_option_price(option_code) * 0.1 AS "tax",
+	        fn_get_standard(option_code) AS "standard"
+	        
+		FROM bhf_closing_detail bcd JOIN bhf_closing bc
+		ON (bcd.closing_code = bc.closing_code)
+		WHERE bcd.closing_code = #{code}
+	</select>
+	
 </mapper>
+

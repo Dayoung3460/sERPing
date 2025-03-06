@@ -28,6 +28,7 @@ public class BsnOrderDTO extends OrderSearchDTO {
 	private Date sendingDate;
 	private String orderStatus;
 	private int employeeNum;
+	private String employeeName;
 	private String remark;
 	private int companyNum;
 
