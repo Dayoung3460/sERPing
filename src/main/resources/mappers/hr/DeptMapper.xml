@@ -28,6 +28,9 @@
 	        d.register_date AS registerDate,
 	        d.update_date AS updateDate,
 	        d.company_num AS companyNum,
+	        c.company_name AS companyName,  
+	        c.company_eng_name AS companyEngName,  
+	        c.representation_name AS representationName, 
 	        (
 	            SELECT COUNT(*) 
 	            FROM hr_employee he 
@@ -38,6 +41,7 @@
 	        LEFT JOIN CMMN dt on d.department_type = dt.cmmn_code  
 	        LEFT JOIN CMMN ds on d.department_status = ds.cmmn_code  
 	        LEFT JOIN hr_employee e on d.manager_num = e.employee_num and e.authority = 'au002' 
+	        LEFT JOIN ERP_COMPANY c on d.company_num = c.company_num
 	    WHERE d.company_num = #{companyNum} 
 	    ORDER BY e.employee_num,COALESCE(d.parent_department_num, d.department_num), d.department_num
 	</select>

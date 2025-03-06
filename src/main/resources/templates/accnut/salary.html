@@ -71,8 +71,8 @@
 						    	'salaryModal', 
 						    	'modal-lg', 
 						    	'일괄 처리', 
-						    	'accnut/salaryBody',
-						    	'accnut/salaryFooter'
+						    	'accnut/modal/salaryBody',
+						    	'accnut/modal/salaryFooter'
 						    )"></div>
 		
 		
@@ -93,7 +93,7 @@
 	
 	const dataSource = {
 		api: {
-			readData: { url: 'http://localhost:81/accnut/rest/salary/list', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum } },
+			readData: { url: '/accnut/rest/salary/list', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum } },
 			
 		},
 		contentType: 'application/json'
@@ -188,7 +188,7 @@
 		const header = document.querySelector('meta[name="_csrf_header"]').content;
         const token = document.querySelector('meta[name="_csrf"]').content;
 		
-		fetch(`http://localhost:81/accnut/rest/dept/list?companyNum=${session.companyNum}`, {
+		fetch(`/accnut/rest/dept/list?companyNum=${session.companyNum}`, {
 			method: "GET",
 			headers: {
 					 	'header': header,

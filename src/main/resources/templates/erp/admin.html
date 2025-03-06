@@ -42,11 +42,11 @@
 					<div class="fieldset-container">
 						<div class="form-check mt-2 p-0">
 							<input type="checkbox" class="btn-check" id="useing" autocomplete="off" checked="checked">
-							<label class="btn btn-outline-primary" for="useing">사용중</label>
+							<label class="btn btn-outline-warning" for="useing">사용중</label>
 						</div>
 						<div class="form-check mt-2 p-0">
 							<input type="checkbox" class="btn-check" id="unuseing" autocomplete="off" checked="checked">
-							<label class="btn btn-outline-primary" for="unuseing">만료</label>
+							<label class="btn btn-outline-warning" for="unuseing">만료</label>
 						</div>
 					</div>
 				</fieldset>
@@ -55,11 +55,11 @@
 					<div class="fieldset-container">
 						<div class="form-check mt-2 p-0">
 							<input type="checkbox" class="btn-check" id="daysubscript" autocomplete="off" checked="checked">
-							<label class="btn btn-outline-primary" for="daysubscript">기간구독</label>
+							<label class="btn btn-outline-success" for="daysubscript">기간구독</label>
 						</div>
 						<div class="form-check mt-2 p-0">
 							<input type="checkbox" class="btn-check" id="regulsubscript" autocomplete="off" checked="checked">
-							<label class="btn btn-outline-primary" for="regulsubscript">정기구독</label>
+							<label class="btn btn-outline-success" for="regulsubscript">정기구독</label>
 						</div>
 					</div>
 				</fieldset>
@@ -124,7 +124,7 @@
 							    <button type="button" class="btn btn-outline-success btn-sm reinfo">구독정보</button>
 							    <button type="button" class="btn btn-outline-success btn-sm relist">구독내역</button>
 							    <!-- <button type="button" class="btn btn-outline-danger btn-sm getout">중도해지</button> -->
-							    <button type="button" class="btn btn-outline-warning btn-sm pwreset">비밀번호초기화</button>
+							    <button type="button" class="btn btn-outline-danger btn-sm pwreset">비밀번호초기화</button>
 							</div>
 					    </div>
 					
@@ -202,7 +202,10 @@
 			            <div class="d-flex flex-wrap mb-1">
 			                <div class="p-0">
 			                	<div class="input-group input-group-sm mb-1 pe-1">
-			                		<input type="file" class="form-control" placeholder="png, jpg 가능" accept=".jpg, .jpeg, .png" id="businessLicense" name="businessLicense" style="width: 400px;">
+			                		<span class="input-group-text">사업자등록증</span>
+			                		<input type="text" class="form-control" placeholder="png, jpg 가능" id="businessLicenseTemp" name="businessLicenseTemp" style="width: 300px">
+			                		<input type="file" class="form-control" placeholder="png, jpg 가능" accept=".jpg, .jpeg, .png" id="businessLicense" name="businessLicense" hidden="hidden" >
+			                		<!-- <input type="file" class="form-control" placeholder="png, jpg 가능" accept=".jpg, .jpeg, .png" id="businessLicense" name="businessLicense" style="width: 400px;"> -->
 								    <button class="btn btn-outline-secondary" type="button" id="businessLicense_upload">업로드</button>
 									
 								</div>
@@ -265,7 +268,7 @@
 			            <div class="d-flex align-items-stretch mb-1">
 						    <div class="p-0 flex-grow-1 me-2">
 						        <div class="mb-1">
-						            <label class="form-label"><b>내용 등록</b> &nbsp;&nbsp;&nbsp;&nbsp;<span class="errMessage" style="font-weight: bold; color: red;"></span></label>
+						            <label class="form-label"><b>문의 내용</b> &nbsp;&nbsp;&nbsp;&nbsp;<span class="errMessage" style="font-weight: bold; color: red;"></span></label>
 						            <textarea style="width: 683px;" class="form-control" id="customerServiceContent" name="customerServiceContent" rows="4"></textarea>
 						        </div>
 						    </div>
@@ -491,11 +494,12 @@
 			         	// 만료일 - 오늘날짜 (미리초로 데이터 반환)
 			            const timeDiff = endDate.getTime() - today.getTime();
 			            // 미리초 데이터를 일 단위로 변환
-			            const remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
+			            let remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+			            remainingDays += -1;
+			            remainingDays = Number(remainingDays);
 			            if(remainingDays > 10){
 			            	return `${remainingDays}일 남음`;
-			            }else if(remainingDays >= 0 && remainingDays <= 9){
+			            }else if(remainingDays >= 0){
 			            	//나중에 붉은색 스타일 넣을꺼 가만하고 분리
 			            	//grid.addRowClassName(row.rowKey, 'custom-red-row');
 			            	return `${remainingDays}일 남음`;
@@ -597,7 +601,7 @@
 	            const today = new Date();
 	            const timeDiff = endDate.getTime() - today.getTime();
 	            const remainingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-				document.querySelector("#dDay").value = remainingDays+"일";	//남은기간
+				document.querySelector("#dDay").value = (remainingDays-1)+"일";	//남은기간
 				
 				//CS 내용
 				//document.querySelector("#customerServiceContent").value = rowData.customerServiceContent;
@@ -1106,37 +1110,37 @@
 				let servicetag1 = ``;
 				let servicetag2 = `
 						<div class="service-item">
-				           <span>✅ <strong>그룹웨어 서비스</strong></span>
-				           <span>👥 그룹웨어: 미사용</span>
+				           <span class="opacity-25">❎ 그룹웨어 서비스</span>
+				           <span class="opacity-25">❌ 그룹웨어: 미사용</span>
 				       </div>	
 					`;
 				let servicetag3 = `
 						<div class="service-item">
-				           <span>✅ <strong>인사관리 서비스</strong></span>
-				           <span>📌 인사관리: 미사용</span>
+				           <span class="opacity-25">❎ 인사관리 서비스</span>
+				           <span class="opacity-25">❌ 인사관리: 미사용</span>
 				       </div>	
 					`;
 				let servicetag4 = `
 						<div class="service-item">
-				           <span>✅ <strong>지점관리 서비스</strong></span>
-				           <span>📌 지점관리: 미사용</span>
+				           <span class="opacity-25">❎ 지점관리 서비스</span>
+				           <span class="opacity-25">❌ 지점관리: 미사용</span>
 				       </div>	
 					`;
 				let servicetag5 = `
 						<div class="service-item">
-				           <span>✅ <strong>회계관리 서비스</strong></span>
-				           <span>📌 회계관리: 미사용</span>
+				           <span class="opacity-25">❎ 회계관리 서비스</span>
+				           <span class="opacity-25">❌ 회계관리: 미사용</span>
 				       </div>	
 					`;
 				
 				result.forEach(ele=>{
 					if(ele.subscriptionNameNum == 1 || ele.subscriptionNameNum == 6 ){
 						//서비스사용 형태와 방법
-						if(ele.limitDay <= 0){
+						if(ele.limitDay+1 <= 0){
 							servicetag1 = `
 								<div class="service-item">
-						           <span>✅ <strong>sERPing 서비스</strong></span>
-						           <span>📌 종료</span>
+						           <span class="opacity-25">❎ sERPing 서비스</span>
+						           <span class="opacity-25">❌ 종료</span>
 						       </div>
 							`;
 						}else{
@@ -1145,7 +1149,7 @@
 									<div class="service-item">
 							           <span>✅ <strong>sERPing 서비스</strong></span>
 							           <span>📌 ${ele.subscriptionForm}</span>
-							           <span>⏳ ${ele.limitDay}일 남음</span>
+							           <span>⏳ ${ele.limitDay+1}일 남음</span>
 							           <span>📅 종료일: ${endday}</span>
 							       </div>
 								`;							
@@ -1153,11 +1157,11 @@
 					}
 					if(ele.subscriptionNameNum == 2 || ele.subscriptionNameNum == 7 ){
 						//그룹웨어 사용
-						if(ele.limitDay <= 0){
+						if(ele.limitDay+1 <= 0){
 							servicetag2 = `
 								<div class="service-item">
-						           <span>✅ <strong>그룹웨어 서비스</strong></span>
-						           <span>👥 그룹웨어: 미사용</span>
+						           <span class="opacity-25">❎ 그룹웨어 서비스</span>
+						           <span class="opacity-25">❌ 그룹웨어: 미사용</span>
 						       </div>	
 							`;
 						}else{
@@ -1171,11 +1175,11 @@
 					}
 					if(ele.subscriptionNameNum == 3 || ele.subscriptionNameNum == 8 ){
 						//인사관리 사용
-						if(ele.limitDay <= 0){
+						if(ele.limitDay+1 <= 0){
 							servicetag3 = `
 								<div class="service-item">
-						           <span>✅ <strong>인사관리 서비스</strong></span>
-						           <span>📌 인사관리: 미사용</span>
+						           <span class="opacity-25">❎ 인사관리 서비스</span>
+						           <span class="opacity-25">❌ 인사관리: 미사용</span>
 						       </div>	
 							`;
 						}else{
@@ -1184,7 +1188,7 @@
 								<div class="service-item">
 						           <span>✅ <strong>인사관리 서비스</strong></span>
 						           <span>📌 ${ele.subscriptionForm}</span>
-						           <span>⏳ ${ele.limitDay}일 남음</span>
+						           <span>⏳ ${ele.limitDay+1}일 남음</span>
 						           <span>📅 종료일: ${endday}</span>
 						       </div>
 							`;	
@@ -1192,11 +1196,11 @@
 					}
 					if(ele.subscriptionNameNum == 4 || ele.subscriptionNameNum == 9 ){
 						//지점관리 사용
-						if(ele.limitDay <= 0){
+						if(ele.limitDay+1 <= 0){
 							servicetag4 = `
 								<div class="service-item">
-						           <span>✅ <strong>지점관리 서비스</strong></span>
-						           <span>📌 지점관리: 미사용</span>
+						           <span class="opacity-25">❎ 지점관리 서비스</span>
+						           <span class="opacity-25">❌ 지점관리: 미사용</span>
 						       </div>	
 							`;
 						}else{
@@ -1205,7 +1209,7 @@
 								<div class="service-item">
 						           <span>✅ <strong>지점관리 서비스</strong></span>
 						           <span>📌 ${ele.subscriptionForm}</span>
-						           <span>⏳ ${ele.limitDay}일 남음</span>
+						           <span>⏳ ${ele.limitDay+1}일 남음</span>
 						           <span>📅 종료일: ${endday}</span>
 						       </div>
 							`;	
@@ -1213,11 +1217,11 @@
 					}
 					if(ele.subscriptionNameNum == 5 || ele.subscriptionNameNum == 10 ){
 						//회계관리 사용
-						if(ele.limitDay <= 0){
+						if(ele.limitDay+1 <= 0){
 							servicetag5 = `
 								<div class="service-item">
-						           <span>✅ <strong>회계관리 서비스</strong></span>
-						           <span>📌 회계관리: 미사용</span>
+						           <span class="opacity-25">❎ 회계관리 서비스</span>
+						           <span class="opacity-25">❌ 회계관리: 미사용</span>
 						       </div>	
 							`;
 						}else{
@@ -1226,7 +1230,7 @@
 								<div class="service-item">
 						           <span>✅ <strong>회계관리 서비스</strong></span>
 						           <span>📌 ${ele.subscriptionForm}</span>
-						           <span>⏳ ${ele.limitDay}일 남음</span>
+						           <span>⏳ ${ele.limitDay+1}일 남음</span>
 						           <span>📅 종료일: ${endday}</span>
 						       </div>
 							`;	
@@ -1496,8 +1500,6 @@
 		//파일 업로드 버튼 클릭시 파일 선택 처리
 		// 파일 입력 필드
         const fileInput = document.getElementById("businessLicense");
-        // 파일명 표시하는 텍스트 입력 필드
-        const fileNameDisplay = document.getElementById("fileName");
         // 업로드 버튼
         const uploadButton = document.getElementById("businessLicense_upload");
         // 업로드 버튼 클릭 시 파일 선택 창 열기
@@ -1507,9 +1509,12 @@
         // 파일 선택 후 파일명 표시
         fileInput.addEventListener("change", function() {
             if (fileInput.files.length > 0) {
-                fileNameDisplay.value = fileInput.files[0].name;  // 파일명 표시
+            	let url = document.getElementById("businessLicense").value;
+            	url = url.split('\\');
+            	console.log(url);
+            	document.getElementById("businessLicenseTemp").value = url[url.length-1];
             } else {
-                fileNameDisplay.value = "";  // 파일 선택 취소 시 초기화
+            	document.getElementById("businessLicenseTemp").value = "";
             }
         });
       	//파일 업로드 버튼 클릭시 파일 선택 처리 끝

@@ -6,57 +6,61 @@
 <head>
 <meta charset="UTF-8">
 <title>입고 요청 조회</title>
+<!-- 행 선택 색상 -->
+<style>
+	.selected-row {
+	    background-color: #d7fffe !important; 
+	}
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
+		<h3 class="mt-2 mb-2"><b>입고 요청 조회</b></h3>
+		<hr>
 		<div class="row">
-			<h3 class="mt-2 mb-2">입고 요청 조회</h3>
-			<hr>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<label class="col-sm-4">주문 지점</label> 
-					<input type="text"class="col-sm-7" id="branchOfficeId" readonly> 
-				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<div class="col-sm-1"></div>
-					<label class="col-sm-4">진행 상태</label> 
-					<select name="progressStatus" id="progressStatus" class="col-sm-7">
-						<option value="" selected>선택 하세요.</option>
-						<option value="신청">신청</option>
-						<option value="승인">승인</option>
-						<option value="취소">취소</option>
-						<option value="출고">출고</option>
-						<option value="완료">완료</option>
-					</select>
-				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<label class="col-sm-4">요청 일자</label> 
-					<input type="date"class="col-sm-7" id="orderDate"> 
-				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<div class="col-sm-1"></div>
-					<label class="col-sm-4">납기 일자</label> 
-					<input type="date"class="col-sm-7" id="dueDate">
-				</div>
-			</div>
-			<div class="col-md-12 mt-2 mb-2">
-				<div class="row">
-					<div class="col-sm-5"></div>
-					<button class="col-sm-1 btn btn-primary" onclick="search()">검색</button>
-					<button class="col-sm-1 btn btn-secondary" style=" margin: 0px 10px" onclick="reset()">초기화</button>
-					<div class="col-sm-5"></div>
+			<div id="custom-container">
+				<div class="row ">
+					<div class="col-md-2 mt-1 mb-1">
+						<label class="form-label">주문 지점</label> 
+						<input type="text"class="form-control" id="branchOfficeId" readonly> 
+					</div>
+					<div class="col-md-2 mt-1 mb-1">
+						<label class="form-label">진행 상태</label> 
+						<select name="progressStatus" id="progressStatus" class="form-control">
+							<option value="" selected>선택 하세요.</option>
+							<option value="신청">신청</option>
+							<option value="승인">승인</option>
+							<option value="취소">취소</option>
+							<option value="출고">출고</option>
+							<option value="완료">완료</option>
+						</select>
+					</div>
+					<div class="col-md-2 mt-1 mb-1">
+						<label class="form-label">요청 일자</label> 
+						<input type="date"class="form-control" id="orderDate"> 
+					</div>
+					<div class="col-md-2 mt-1 mb-1">
+						<label class="form-label">납기 일자</label> 
+						<input type="date"class="form-control" id="dueDate">
+					</div>
+					<div class="col-md-2"></div>
+					<div class="col-md-2 mt-4 mb-2">
+						<button class="btn btn-primary" onclick="search()">검색</button>
+						<button class="btn btn-secondary" style=" margin: 0px 10px" onclick="reset()">초기화</button>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-12 stretch-card mt-2 mb-5">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">요청서</h6>
+						<h5 class="mb-4"><b>요청서</b></h5>
 						<div id="orderList"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -66,7 +70,7 @@
 				<div class="card">
 					<div class="card-body">
 						<div id="rayout-container" class="row mb-3">
-							<h6 class=" col-sm-9">요청서 상세</h6>
+							<h5 class=" col-sm-9"><b>요청서 상세</b></h5>
 							<span class="label-search col-sm-1" style="font-size: 1em">표시수량</span>
 							<select name="display_amount" id="display_amount" class="col-sm-1 input-box" onchange="changeDisplay()">
 								<option value="5" selected>5</option>
@@ -77,9 +81,8 @@
 							</select>
 						</div>
 						<div id="orderListDetail"></div>
-						<div id="pagination" class="tui-pagination"></div>
 						<div style="text-align : right">
-							<button type="button" class="btnExcel btn btn-success">EXCEL</button>
+							<button type="button" class="btnExcel btn btn-dark">EXCEL</button>
 						</div>
 					</div>
 				</div>
@@ -130,6 +133,9 @@
 			downExcel();
 		})
 
+		// 현재 선택된 행을 추적
+		let selectedRowKey = null;
+		
 		// 발주서 취소시 필요한 발주서코드,클릭된 행의 키 담기 위해 변수선언
 		let cancelOrdCd = null;
 		let cancelKey = null;
@@ -137,7 +143,7 @@
 		// 발주서조회 쿼리 호출
 		const dataSource = {
 			api: {
-				readData: { url: 'http://localhost:81/bhf/rest/order/list', method: 'GET', initParams: { page: 1 }},
+				readData: { url: '/bhf/rest/order/list', method: 'GET', initParams: { page: 1 }},
 			},
 			contentType: 'application/json',
 			initialRequest: false
@@ -153,11 +159,11 @@
 			},
 			columns: [ 
 				{ header : "요청서코드", name : "orderCode", align: 'center'},
-				{ header : "지점", name : "branchOfficeId", align: 'center'},
+				{ header : "지점", name : "branchOfficeId", align: 'center', hidden: 1},
 				{ header : "요청일자", name : "orderDate", align: 'center'},
 				{ header : "납기일자", name : "dueDate", align: 'center'},
 				{ header : "진행상태", name : "progressStatus", align: 'center'},
-				{ header : "비고", name : "remark", align: 'center', width: 400}
+				{ header : "비고", name : "remark", align: 'left', width: 400}
 			],
 			data: dataSource
 		});
@@ -167,12 +173,21 @@
 			const rowKey = ev.rowKey;  	// 클릭된 행의 키값
 			if(rowKey != undefined){ 	// 행 말고 다른데 클릭해도 이 함수가 실행되서 행의 키값이 있을때만 실행되게 함
 				
+				// 이전에 선택된 행의 스타일 제거
+			    if (selectedRowKey !== null) {
+			        grid.removeRowClassName(selectedRowKey, 'selected-row');
+			    }
+			    // 현재 선택된 행에 스타일 추가
+			    grid.addRowClassName(rowKey, 'selected-row');
+			    // 현재 선택된 행 업데이트
+			    selectedRowKey = rowKey;
+				
 				const rowData = grid.getRow(rowKey); //해당 행의 데이터 가져오기
 				const orderCode = rowData.orderCode; // 발주서 코드
 				const progressStatus = rowData.progressStatus; // 진행 상태
 				
 				// 발주서 상세 조회 쿼리호출(orderCode)
-			    fetch('http://localhost:81/bhf/rest/order/detail?orderCode=' + orderCode, {
+			    fetch('/bhf/rest/order/detail?orderCode=' + orderCode, {
 			        method: 'GET',
 			        headers: {
 			            'Content-Type': 'application/json'
@@ -222,14 +237,14 @@
 			columns: [ 
 				{ header : "요청서코드", name : "orderCode", align: 'center'},
 				{ header : "상품코드", name : "goodsCode", align: 'center'},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "옵션코드", name : "optionCode", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ header : "규격", name : "goodsStandard", align: 'center', width: 130},
 				{ 
 					header : "수량", 
 					name : "quantity", 
-					align: 'center', 
+					align: 'right', 
 					width: 130,
 					formatter: function(ev){
 						return numberFormat(ev.value);
@@ -251,7 +266,7 @@
 			}  
 			
  				// 발주서 취소 쿼리호출
-    		    fetch('http://localhost:81/bhf/rest/order/cancel', {
+    		    fetch('/bhf/rest/order/cancel', {
  		        method: 'POST',
  		        headers: {
  		            'Content-Type': 'application/json',

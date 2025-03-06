@@ -42,7 +42,7 @@ public class ErpUserController {
      */
 	@GetMapping("/fppay")
 	public String fppay() {
-		return "/erp/user/fpsubscriptionpay";
+		return "erp/user/fpsubscriptionpay";
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class ErpUserController {
      */
 	@GetMapping("/usercontact")
 	public String usercontact() {
-		return "/erp/user/userContact";
+		return "erp/user/userContact";
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class ErpUserController {
      */
 	@GetMapping("/erpsubinfo")
 	public String erpsubinfo() {
-		return "/erp/user/erpsubinfo";
+		return "erp/user/erpsubinfo";
 	}
 
 }

@@ -10,12 +10,12 @@
 <body layout:fragment="content">
 	<div class="container">
 		<div class="row">
-			<h3 class="mt-2 mb-2">교환 및 반품 요청</h3>
+			<h3 class="mt-2 mb-2"><b>교환 및 반품 요청</b></h3>
 			<hr>
 			<div class="col-md-12 stretch-card mt-3 mb-5">
 				<div class="card">
 					<div class="card-body">
-						<h5 class="mb-4">상품 바코드</h5>
+						<h5 class="mb-4"><b>상품 바코드</b></h5>
 						<hr>
 						<div class="row">
 							<div class="col-sm-1"></div>
@@ -27,7 +27,7 @@
 			<div class="col-md-12 stretch-card mt-3 mb-5">
 				<div class="card">
 					<div class="card-body">
-						<h5 class="mb-4">상품 정보</h5>
+						<h5 class="mb-4"><b>상품 정보</b></h5>
 						<div id="barcode"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -36,7 +36,7 @@
 			<div class="col-md-12 stretch-card mt-3 mb-5">
 				<div class="card">
 					<div class="card-body">
-						<h5 class="mb-4">반품 요청서</h5>
+						<h5 class="mb-4"><b>반품 요청서</b></h5>
 						<div class="row mb-3">
 							<label class="col-sm-1">지점명</label> 
 							<input type="text" class="col-sm-2" id="branchOfficeId" readonly>
@@ -96,7 +96,7 @@
                 // 여기서 검색 기능을 실행 (예: 서버 요청)
 	            console.log(optionBarcode)
 	         	
-	            fetch(`http://localhost:81/bhf/rest/barcode/list?optionBarcode=${optionBarcode}&companyNum=${sessioCompanyNum}&branchOfficeId=${branchOfficeId}`, {
+	            fetch(`/bhf/rest/barcode/list?optionBarcode=${optionBarcode}&companyNum=${sessioCompanyNum}&branchOfficeId=${branchOfficeId}`, {
 			        method: 'GET',
 			        headers: {
 			            'Content-Type': 'application/json'
@@ -131,11 +131,11 @@
 			columns: [ 
 				{ header : "지점명", name : "branchOfficeId", hidden: 1},
 				{ header : "상품코드", name : "goodsCode", hidden: 1},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "옵션코드", name : "optionCode", hidden: 1},
-				{ header : "옵션명", name : "optionName", align: 'center'},
-				{ header : "바코드", name : "optionBarcode", align: 'center'},
-				{ header : "상품LOT", name : "goodsLotNum", align: 'center'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
+				{ header : "바코드", name : "optionBarcode", align: 'left'},
+				{ header : "상품LOT", name : "goodsLotNum", align: 'left'},
 				{ header : "유통기한", name : "goodsConsumptionDate", align: 'center', width: 150}
 			],
 			data: ""
@@ -179,16 +179,16 @@
 			columns: [ 
 				{ header : "지점명", name : "branchOfficeId", hidden: 1},
 				{ header : "상품코드", name : "goodsCode", hidden: 1},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "옵션코드", name : "optionCode", hidden: 1},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ header : "바코드", name : "optionBarcode", hidden: 1},
-				{ header : "상품LOT", name : "goodsLotNum", align: 'center'},
+				{ header : "상품LOT", name : "goodsLotNum", align: 'left'},
 				{ header : "유통기한", name : "goodsConsumptionDate", align: 'center', width: 140},
 				{ 
 					header : "수량", 
 					name : "quantity", 
-					align: 'center',
+					align: 'right',
 					editor: 'text',
 					width: 130,
 					formatter: function(ev){
@@ -221,7 +221,7 @@
 					}
 					
 				},
-				{ header : "사유", name : "returningReason", editor: 'text', width: 270}
+				{ header : "사유", name : "returningReason", editor: 'text', align: 'left', width: 270}
 			],
 			data: ""
 		});
@@ -261,7 +261,7 @@
 		        returnRemark: document.querySelector('#returnRemark').value,  // 비고
 		        companyNum: sessioCompanyNum
 		    };
-	 	    fetch("http://localhost:81/bhf/rest/returning/insert", {
+	 	    fetch("/bhf/rest/returning/insert", {
 		        method: "POST",
 		        headers: {
 		            "Content-Type": "application/json",

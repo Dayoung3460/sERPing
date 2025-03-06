@@ -30,14 +30,14 @@ public class LoginController {
 //      return "/index"; // 로그인된 상태면 홈으로 이동
 //    }
 //
-    return "/login/login"; // 로그인되지 않았다면 로그인 페이지 반환
+    return "login/login"; // 로그인되지 않았다면 로그인 페이지 반환
   }
   
   @PostMapping("/login")
   public String login(@RequestParam String employeeId, @RequestParam String employeePw) {
     System.out.println("입력된 employeeId: " + employeeId);
     System.out.println("입력된 employeePw: " + employeePw);
-    return "/index";
+    return "index";
   }
   
 }

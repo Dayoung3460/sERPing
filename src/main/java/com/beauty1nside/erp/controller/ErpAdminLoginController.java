@@ -72,10 +72,10 @@ public class ErpAdminLoginController {
         
         //세션 있으면 로그인페이지
         if (employee != null) {
-            return "redirect:/erp/admin"; // ✅ 로그인한 상태에서는 관리자 페이지로 이동
+            return "redirect:admin"; // ✅ 로그인한 상태에서는 관리자 페이지로 이동
         }
         
-        return "/erp/login"; // 관리자 페이지 반환
+        return "erp/login"; // 관리자 페이지 반환
 	}
 	
 	/**
@@ -106,14 +106,14 @@ public class ErpAdminLoginController {
 			if (passwordEncoder.matches(employeePw, dto.getEmployeePw())) {
 				log.info("로그인 성공: {}", employeeId);
 				session.setAttribute("ErpEmployeeInfo", dto);
-				return "redirect:/erp/admin";
+				return "redirect:admin";
 		    } else {
 		        log.warn("비밀번호 불일치: {}", employeeId);
 		        model.addAttribute("loginResult", "실패");
-		        return "/erp/login";
+		        return "erp/login";
 		    }
 		}else {
-			return "/erp/login";
+			return "erp/login";
 		}
 	}
 	
@@ -127,6 +127,6 @@ public class ErpAdminLoginController {
 	public String logout(HttpSession session) {
 		// 세션 제거 (완전 초기화)
 	    session.invalidate();
-	    return "redirect:/erp/login";
+	    return "redirect:login";
 	}
 }

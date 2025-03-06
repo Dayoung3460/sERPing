@@ -15,6 +15,6 @@ public class ErpSampleController {
 	//샘플 페이지
 	@GetMapping("/sample")
 	public String sample() {
-		return "/erp/sample";
+		return "erp/sample";
 	};
 }

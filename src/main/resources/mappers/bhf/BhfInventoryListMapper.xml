@@ -11,8 +11,10 @@
 				GOODS_STANDARD,
 				QUANTITY,
 				MEDIATION_QUANTITY,
+				MEDIATION_DATE,
 				MEDIATION_REASON
-		from  ( select	rownum rn,
+		from  ( select	/*+INDEX_DESC(bhf_goods_mediation PK_BHF_GOODS_MEDIATION)*/
+						rownum rn,
 						GOODS_CODE,
 						GOODS_NAME,
 						OPTION_CODE,
@@ -20,6 +22,7 @@
 						GOODS_STANDARD,
 						QUANTITY,
 						MEDIATION_QUANTITY,
+						MEDIATION_DATE,
 						MEDIATION_REASON
 				from 	bhf_goods_mediation
 		<![CDATA[

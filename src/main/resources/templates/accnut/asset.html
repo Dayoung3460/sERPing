@@ -118,8 +118,8 @@
 						    	'assetaddModal', 
 						    	'modal-xl', 
 						    	'자산 등록', 
-						    	'accnut/assetForm',
-						    	'accnut/assetFooter'
+						    	'accnut/modal/assetForm',
+						    	'accnut/modal/assetFooter'
 						    )"></div>
 						    
 		<!-- 상세 보기 -->
@@ -127,8 +127,8 @@
 						    	'assetdetailModal', 
 						    	'modal-xl', 
 						    	'상세 보기', 
-						    	'accnut/assetDetail', 
-						    	'accnut/assetFooter'
+						    	'accnut/modal/assetDetail', 
+						    	'accnut/modal/assetFooter'
 						    )"></div>
 		
 	</div>
@@ -176,7 +176,7 @@
 	
 	const dataSource = {
 		api: {
-			readData: { url: 'http://localhost:81/accnut/rest/asset/list', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum }},
+			readData: { url: '/accnut/rest/asset/list', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum }},
 			
 		},
 		contentType: 'application/json'
