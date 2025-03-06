@@ -127,6 +127,16 @@ public class EmpServiceImpl implements EmpService {
 		 * empDTO.setStatus("ST001"); // 재직 상태 if (empDTO.getEmploymentType() == null)
 		 * empDTO.setEmploymentType("ET001");
 		 */
+    	
+        // ✅ 사원번호 길이 체크 (5~20자)
+        if (empDTO.getEmployeeId().length() < 5 || empDTO.getEmployeeId().length() > 20) {
+            throw new IllegalArgumentException("사원 ID는 5~20자리여야 합니다.");
+        }
+
+        // ✅ 사원번호 형식 검증 (영문, 숫자, 언더바만 허용)
+        if (!empDTO.getEmployeeId().matches("^[A-Za-z0-9_]+$")) {
+            throw new IllegalArgumentException("사원 ID는 영문, 숫자, 언더바(_)만 사용할 수 있습니다.");
+        }
 
         // ✅ 사원 ID 중복 확인
         if (isEmployeeIdExists(empDTO.getEmployeeId())) {
