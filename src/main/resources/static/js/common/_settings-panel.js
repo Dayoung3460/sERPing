@@ -68,6 +68,44 @@ const storeMsg = (msgContent, message) => {
     })
 }
 
+
+function uploadFile(file) {
+    if (!stompClient || !stompClient.connected) {
+        console.error("WebSocket is not connected yet.");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("image", file);
+
+    fetch("/api/chat/img", {
+        method: "POST",
+        headers: {
+            'header': header_csrf,
+            'X-CSRF-Token': token_csrf
+        },
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                let dto = data.dto;
+                console.log("파일 업로드 성공:", dto);
+
+                let message = {
+                    sender: sessionEmployeeName,
+                    content: dto.fileUrl,
+                    senderEmpNum: sessionEmployeeNum,
+                };
+
+                stompClient.send(`/app/chat.sendMessage/${roomId}`, {}, JSON.stringify(message));
+            } else {
+                alert("파일 업로드 실패");
+            }
+        })
+        .catch(error => console.error("업로드 오류:", error));
+}
+
 const sendMsg = () => {
     if (!stompClient || !stompClient.connected) {
         console.error("WebSocket is not connected yet.");
@@ -86,7 +124,9 @@ const sendMsg = () => {
 }
 
 sendBtn.addEventListener('click', () => {
-    sendMsg()
+    if(textarea.value) {
+        sendMsg()
+    }
 })
 
 textarea.addEventListener('keydown', (event) => {
@@ -124,6 +164,18 @@ const showChats = (chats) => {
     });
 }
 
+if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+function showNotification(message) {
+    if (Notification.permission === "granted") {
+        new Notification(JSON.parse(message.body).sender, {
+            body: JSON.parse(message.body).content,
+            icon: '🎈'
+        });
+    }
+}
+
 const openChatRoom = (employeeNum) => {
     const url = `/api/chat/start/${employeeNum}`
     fetch(url, {
@@ -137,6 +189,7 @@ const openChatRoom = (employeeNum) => {
         roomId = Object.keys(data)[0]
 
         stompClient.subscribe(`/topic/public/${roomId}`, function (message) {
+            showNotification(message);
             const parsedMsg = JSON.parse(message.body)
             addMsg({
                     employeeName: parsedMsg.sender,
@@ -160,7 +213,14 @@ const openChatRoom = (employeeNum) => {
     })
 }
 
+let stompClient = null
 const startChat = (employeeNum) => {
+    if (stompClient !== null) {
+        stompClient.disconnect(() => {
+        });
+        stompClient = null; // 클라이언트 객체 초기화
+    }
+
     let socket = new SockJS('/ws');
 
     stompClient = Stomp.over(socket);
@@ -240,6 +300,18 @@ const getEmpList = () => {
     })
 }
 
+function selectFile() {
+    document.getElementById("fileInput").click(); // 파일 선택 창 열기
+}
+
+document.getElementById("fileInput").addEventListener("change", function (event) {
+    let file = event.target.files[0];
+    if (file) {
+        uploadFile(file);
+    }
+});
+
+
 if(sessionEmployeeNum) {
     getEmpList()
 } else {
@@ -248,3 +320,4 @@ if(sessionEmployeeNum) {
         window.location.href = "/login";
     }, 2000)
 }
+

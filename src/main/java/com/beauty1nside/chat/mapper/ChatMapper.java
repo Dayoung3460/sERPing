@@ -13,6 +13,7 @@ public interface ChatMapper {
   RoomDTO getRoomJustMade();
   List<MessageDTO> getMsgList(Long roomId);
   void insertMsg(MessageDTO messageDTO);
+  void insertImgPath(MessageDTO messageDTO);
   MessageDTO getMsgJustSent(Long roomId);
   
 }
