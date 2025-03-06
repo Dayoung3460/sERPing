@@ -1,12 +1,16 @@
 .settings-panel {
+    .msgImg {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        &.hide {
+            display: none;
+        }
+    }
     .tab-content {
         padding: 0 !important;
-        /*padding-top: 45px;*/
     }
     .chatroom {
-        /*padding: 0 !important;*/
-        /*margin-right: 24px;*/
-        /*font-size: 16px !important;*/
         display: none;
     }
     #empList {

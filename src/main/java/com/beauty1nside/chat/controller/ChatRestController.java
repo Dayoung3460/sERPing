@@ -60,8 +60,8 @@ public class ChatRestController {
   }
   
   @PostMapping("/img")
-  public ResponseEntity<Map<String, Object>> uploadFile(@RequestPart(value = "image", required = false) MultipartFile file,
-                                                        @RequestBody MessageDTO messageDTO,
+  public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("image") MultipartFile file,
+                                                        MessageDTO messageDTO,
                                                      @AuthenticationPrincipal CustomerUser user) {
 
     log.info("imgimgimg");

@@ -6,6 +6,7 @@ let sessionEmployeeNum = document.getElementById("sessionEmployeeNum").value;
 let empList = document.getElementById("empList")
 let settingsClose = document.getElementById("settingsClose")
 let sessionEmployeeName = document.getElementById("sessionEmployeeName").value;
+let msgImg = document.getElementById("msgImg")
 let roomId = 0
 let goback = document.getElementById("goback")
 
@@ -77,6 +78,7 @@ function uploadFile(file) {
 
     let formData = new FormData();
     formData.append("image", file);
+    formData.append("roomId", roomId);
 
     fetch("/api/chat/img", {
         method: "POST",
@@ -89,16 +91,16 @@ function uploadFile(file) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                let dto = data.dto;
-                console.log("파일 업로드 성공:", dto);
+                console.log("파일 업로드 성공:", data);
+                msgImg.src = data.data.imgPath
 
-                let message = {
-                    sender: sessionEmployeeName,
-                    content: dto.fileUrl,
-                    senderEmpNum: sessionEmployeeNum,
-                };
-
-                stompClient.send(`/app/chat.sendMessage/${roomId}`, {}, JSON.stringify(message));
+                // let message = {
+                //     sender: sessionEmployeeName,
+                //     content: data.data.imgPath,
+                //     senderEmpNum: sessionEmployeeNum,
+                // };
+                //
+                // stompClient.send(`/app/chat.sendMessage/${roomId}`, {}, JSON.stringify(message));
             } else {
                 alert("파일 업로드 실패");
             }
