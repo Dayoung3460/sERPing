@@ -8,83 +8,80 @@
     <title>Title</title>
 </head>
 <body layout:fragment="content">
-<h4 class="mb-4">기본정보</h4>
-<div class="container profile">
+<div class="container mt-4">
+    <h3 class="mb-4">기본정보</h3>
+    <div class="container profile">
+        <form>
+            <div class="form-group">
+                <label>근무유형</label>
+                <div class="radio-group">
+                    <input type="radio" name="regular" value="정규직" disabled> 정규직
+                    <input type="radio" name="contract" value="계약직" disabled> 계약직
+                </div>
+            </div>
+            <div class="form-group">
+                <label>사원번호</label>
+                <input type="text" id="employeeId" readonly>
+            </div>
+            <div class="form-group">
+                <label>사원명</label>
+                <input type="text" id="employeeName" readonly>
+            </div>
+            <div class="form-group">
+                <label>입사일</label>
+                <input type="text" id="hireDate" readonly>
+            </div>
+            <div class="form-group">
+                <label>부서</label>
+                <input type="text" id="departmentName" readonly>
+            </div>
+            <div class="form-group">
+                <label>이메일</label>
+                <div class="flex">
+                    <input type="text" id="email1" readonly> <span>@</span> <input type="text" id="email2" readonly>
+                </div>
 
-    <form>
-        <div class="form-group">
-            <label>근무유형</label>
-            <div class="radio-group">
-                <input type="radio" name="regular" value="정규직" disabled> 정규직
-                <input type="radio" name="contract" value="계약직" disabled> 계약직
             </div>
-        </div>
-        <div class="form-group">
-            <label>사원번호</label>
-            <input type="text" id="employeeId" readonly>
-        </div>
-        <div class="form-group">
-            <label>사원명</label>
-            <input type="text" id="employeeName" readonly>
-        </div>
-        <div class="form-group">
-            <label>입사일</label>
-            <input type="text" id="hireDate" readonly>
-        </div>
-        <div class="form-group">
-            <label>부서</label>
-            <input type="text" id="departmentName" readonly>
-        </div>
-        <div class="form-group">
-            <label>이메일</label>
-            <div class="flex">
-                <input type="text" id="email1" readonly> <span>@</span> <input type="text" id="email2" readonly>
+            <div class="form-group">
+                <label>주소</label>
+                <div class="flex">
+                    <input type="text" id="address" class="w-75 mr-2" readonly>
+                    <input type="text" class="w-25" id="zipCode" readonly/>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label>휴대폰번호</label>
+                <div class="flex">
+                    <input type="text" id="phone1" readonly>
+                    <span>-</span>
+                    <input type="text" id="phone2" readonly>
+                    <span>-</span>
+                    <input type="text" id="phone3" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>직급</label>
+                <input type="text" id="position" readonly>
+            </div>
+            <div class="form-group">
+                <label>급여계좌</label>
+                <div class="flex">
+                    <input type="text" class="w-50 mr-2" id="bankName" readonly>
+                    <input type="text" class="mr-2" id="accountNum" readonly>
+                </div>
+            </div>
+        </form>
+        <div>
+            <div class="profile-img">
+                <img src="/" id="profileImg" />
             </div>
 
-        </div>
-        <div class="form-group">
-            <label>주소</label>
-            <div class="flex">
-                <input type="text" id="address" class="w-75 mr-2" readonly>
-                <input type="text" class="w-25" id="zipCode" readonly/>
+            <div class="input-group my-3">
+                <input type="file" class="form-control" id="imgUpdate">
+                <label class="input-group-text" for="imgUpdate">업로드</label>
             </div>
-
-        </div>
-        <div class="form-group">
-            <label>휴대폰번호</label>
-            <div class="flex">
-                <input type="text" id="phone1" readonly>
-                <span>-</span>
-                <input type="text" id="phone2" readonly>
-                <span>-</span>
-                <input type="text" id="phone3" readonly>
-            </div>
-              </div>
-        <div class="form-group">
-            <label>직급</label>
-            <input type="text" id="position" readonly>
-        </div>
-<!--        <div class="form-group">-->
-<!--            <label>급여</label>-->
-<!--            <input type="text" id="salary" readonly>-->
-
-<!--        </div>-->
-        <div class="form-group">
-            <label>급여계좌</label>
-            <div class="flex">
-                <input type="text" class="w-50 mr-2" id="bankName" readonly>
-                <input type="text" class="mr-2" id="accountNum" readonly>
-            </div>
-              </div>
-    </form>
-    <div>
-        <div class="profile-img">
-            <img src="/" id="profileImg" />
-        </div>
-        <div class="file-upload">
-            <input type="file" id="imgUpdate" />
-            <label for="imgUpdate"><i class="mdi mdi-upload"></i></label>
-            <button id="imgUpdateBtn">프로필 사진 변경</button>
+            <button id="imgUpdateBtn" class="mt-1 w-100 btn btn-success">프로필 사진 변경</button>
         </div>
     </div>
 </div>

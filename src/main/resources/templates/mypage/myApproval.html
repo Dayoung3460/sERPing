@@ -5,26 +5,46 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         xmlns="http://www.w3.org/1999/xhtml"
 >
+<head>
+    <title>내 결재</title>
+    <style>
+        .my-search > div {
+            &.search1 {
+                width: 10%;
+            }
+            &.search2 {
+                width: 30%;
+            }
+            &.search3 {
+                width: 20%;
+            }
+            &.search4 {
+               width: 40%;
+            }
+        }
+    </style>
+</head>
 <body layout:fragment="content">
     <div class="container mt-4">
-    <!-- 결재 조회 -->
-    <div class="card p-4 shadow-sm">
-        <h5 class="mb-3">결재 조회</h5>
-        <div class="row g-2 mb-3">
-            <div class="col-md-3">
-                <label class="label-search col-4" for="documentType">요청 구분</label>
-                <select name="documentType" id="documentType" class="col-8 input-box">
+    <h3 class="mb-4">내 결재 내역 조회</h3>
+    <div class="row w-100 my-search" id="custom-container">
+            <div class="search1">
+                <label class="label-search me-2 form-label" for="documentType">요청 구분</label>
+                <select name="documentType" id="documentType" class="form-control">
                     <option value="" selected>선택</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <span class="label-search col-4">요청 날짜</span>
-                <input type="date" id="inApprovalRequestDateStart" class="col-8 input-box"/>~
-                <input type="date" id="inApprovalRequestDateEnd" class="col-8 input-box"/>
+            <div class="search2">
+                <span class="label-search me-2 form-label">요청 날짜</span>
+                <div class="d-flex align-items-center mt-2">
+                    <input type="date" id="inApprovalRequestDateStart" class="form-control"/>~
+                    <input type="date" id="inApprovalRequestDateEnd" class="form-control"/>
+                </div>
+
             </div>
-            <div class="col-md-3">
-                <label class="label-search col-4" for="display_amount">표시수량</label>
-                <select name="display_amount" id="display_amount" class="col-8 input-box" onchange="changeDisplay()">
+            <div class="search3">
+                <label class="label-search me-2 form-label" for="display_amount">표시수량</label>
+                <select name="display_amount" id="display_amount" class="form-control" onchange="changeDisplay()">
                     <option value="5">5</option>
                     <option value="10" selected>10</option>
                     <option value="20">20</option>
@@ -32,41 +52,34 @@
                     <option value="100">100</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">상태</label>
-                <div class="d-flex">
+            <div class="search4">
+                <label class="label-search me-2 form-label">상태</label>
+                <div class="d-flex align-items-center ">
                     <button class="btn btn-outline-secondary me-2 filter-btn" data-status="WAITING">대기중</button>
                     <button class="btn btn-outline-danger me-2 filter-btn" data-status="REJECTED">반려</button>
                     <button class="btn btn-outline-success filter-btn" data-status="APPROVED">승인</button>
                 </div>
             </div>
-            <div class="row btn-box">
-                <button type="button" class="btn btn-primary col-1" onclick="search()">검색</button>
-                <button type="button" class="btn btn-secondary col-1" onclick="reset()">초기화</button>
+            <div class="btn-box mt-4 d-flex justify-content-center">
+                <button type="button" class="btn btn-primary px-3 py-2 mr-2" onclick="search()">검색</button>
+                <button type="button" class="btn btn-secondary px-3 py-2" onclick="reset()">초기화</button>
             </div>
         </div>
-
-        <!-- 그리드 -->
-        <div id="table-container">
-            <div id="grid"></div>
-            <div id="pagination" class="tui-pagination"></div>
-        </div>
+    <div id="table-container">
+        <div id="grid"></div>
+        <div id="pagination" class="tui-pagination"></div>
     </div>
+    <h3 class="mb-4">결재 요청하기</h3>
+    <div class="row" id="custom-container">
+        <div class="w-50 d-flex align-items-center">
+            <label class="label-search col-2" for="documentTypeSelected">요청 구분</label>
+            <select name="documentTypeSelected" id="documentTypeSelected" class="form-control">
+                <option value="" selected>선택</option>
+            </select>
 
-    <!-- 결재 요청 -->
-    <div class="card p-4 shadow-sm mt-4">
-        <h5 class="mb-3">결재 요청</h5>
-        <div class="row">
-            <div class="col-md-6">
-                <label class="label-search col-4" for="documentTypeSelected">요청 구분</label>
-                <select name="documentTypeSelected" id="documentTypeSelected" class="col-8 input-box">
-                    <option value="" selected>선택</option>
-                </select>
-
-            </div>
-            <div class="col-md-6">
-                <button class="btn btn-outline-primary w-100" id="requestApproval">
-                   결재서 작성
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 py-2" id="requestApproval">
+                    결재서 작성
                 </button>
             </div>
         </div>
