@@ -17,6 +17,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		margin-bottom: 20px;
 	
 	}
+	/* 그리드 선택하면 생기는 색상 */
+	.tui-grid-row-highlight {
+		    background-color: #f0f8ff !important; /* 연한 하늘색 */
+	}
   </style>
 
 </head>
@@ -116,19 +120,32 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				useClient: false,
 				perPage: 5,
 			},
+			scrollX:false,
+		    scrollY:false,
 			columns: [ 
 				{ header : "교환및반품 코드", name : "returningCode"},
 				{ header : "지점ID", name: "branchOfficeId"},
-				{ header : "신청일자", name : "requestDate"},
+				{ header : "신청일자", name : "requestDate", align: "center",},
 				//{ header : "진행상태", name : "progressStatus"},
 				//{ header : "비고", name : "returnRemark"}
 			],
 			data: dataSource
 		});
 		// 교환및반품 테이블 행 선택
+		let selectedRowKey = null;
+		
 		grid.on('click', (ev) => {
 			const rowKey = ev.rowKey;  	// 클릭된 행의 키값
-			if(rowKey != undefined){ 	// 행 말고 다른데 클릭해도 이 함수가 실행되서 행의 키값이 있을때만 실행되게 함
+			if(rowKey !== null && rowKey != undefined){ 	// 행 말고 다른데 클릭해도 이 함수가 실행되서 행의 키값이 있을때만 실행되게 함
+				
+				//선택한 키가 있다면 색강조 제거
+			    if (selectedRowKey !== null) {
+			    	grid.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+			    }
+				
+			 	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+				grid.addRowClassName(rowKey, 'tui-grid-row-highlight');
+				selectedRowKey = rowKey;
 				
 				const rowData = grid.getRow(rowKey); //해당 행의 데이터 가져오기
 				returningCode = rowData.returningCode; // 교환및반품 코드
@@ -171,19 +188,21 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				useClient: true,
 				perPage: 5,
 			},
+			scrollX:false,
+		    scrollY:false,
 			columns: [ 
 				{ header : "상세코드", name : "returningDetailCode", width:'auto'},
 				{ header : "상품명", name : "goodsName"},
 				//{ header : "상품코드", name : "goodsCode", width:'auto'},
 				{ header : "옵션명", name : "optionName", width:'auto'},
 				//{ header : "옵션코드", name : "optionCode"},
-				{ header : "수량", name : "returningQnt", width:'auto'},
-				{ header : "교환 및 반품", name : "exchangeReturningChoice", sortable : true},
+				{ header : "수량", name : "returningQnt", width:'auto', align: "right"},
+				{ header : "교환/반품", name : "exchangeReturningChoice", sortable : true, align: "center",},
 				{ header : "사유", name : "returningReason", width: 'auto'},
 				//{ header : "바코드", name : "optionBarcode"},
 				//{ header : "LOT번호", name : "goodsLotNum"},
 				//{ header : '재입고수량', name: 'warehousingQnt', },
-				//{ header : '폐기수량', name: 'DisuseQnt',   }
+				//{ header : '폐기수량', name: 'DisuseQnt',   , align: "right",}
 
 			],
 			data: ""
@@ -195,6 +214,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				useClient: true,
 				perPage: 5,
 			},
+			scrollX:false,
+		    scrollY:false,
 			columns: [ 
 				{ header : "상세코드", name : "returningDetailCode"},
 				{ header : "상품명", name : "goodsName"},
@@ -202,12 +223,12 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				{ header : "옵션명", name : "optionName"},
 				//{ header : "옵션코드", name : "optionCode"},
 				//{ header : "교환 및 반품", name : "exchangeReturningChoice"},
-				{ header : "수량", name : "returningQnt"},
-				{ header : '재입고수량', name: 'warehousingQnt',  },
-				{ header : '폐기수량', name: 'disuseQnt',  },
+				{ header : "수량", name : "returningQnt", align: "right",},
+				{ header : '재입고수량', name: 'warehousingQnt', align: "right",},
+				{ header : '폐기수량', name: 'disuseQnt', align: "right",  },
 				//{ header : "사유", name : "returningReason"},
 				{ header : "바코드", name : "optionBarcode"},
-				{ header : "LOT번호", name : "goodsLotNum"},
+				{ header : "LOT번호", name : "goodsLotNum", },
 				{ header : "입고 창고ID", name : 'warehouseId'},
 
 			],
@@ -220,6 +241,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		
 		// 검색 함수
 		function search(){
+			//선택한 반품 코드와 지점ID 초기화
+			returningCode = null;
+			branchOfficeId = null;
+			
 			// 값 가져와서 변수선언
 			let requestDate = document.querySelector('#requestDate').value;
 			// 객체로 담을 변수선언
@@ -234,10 +259,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			// 검색 조건들 보내기
 			grid.setRequestParams(parameter);
 			grid.readData();
+			grid2.resetData([]);
+            grid3.resetData([]);
 			
-			//선택한 반품 코드와 지점ID 초기화
-			returningCode = null;
-			branchOfficeId = null;
+			
 			
 			
 			//데이터가 없으면 뜨는 문구
@@ -251,13 +276,19 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			// 입력칸 빈칸으로 변경
 			let requestDate = document.querySelector('#requestDate').value = '';
 			let progressStatus = '승인';
-			// 빈 값을 보냄
-			grid.setRequestParams({companyNum: sessionCompanyNum, branchOfficeId: branchOfficeId, progressStatus: progressStatus});
-			grid.readData();
-
+			
 			//선택한 반품 코드 초기화
 			returningCode = null;
 			branchOfficeId = null;
+			
+			// 빈 값을 보냄
+			grid.setRequestParams({companyNum: sessionCompanyNum, branchOfficeId: branchOfficeId, progressStatus: progressStatus});
+			grid.readData();
+			grid2.resetData([]);
+            grid3.resetData([]);
+
+			
+			
 		}
 		
 		// 교환및반품 테이블 데이터 없을때 나오는 문구

@@ -31,7 +31,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h1>이동 출고 관리</h1>
+		<h3>이동 출고 관리</h3>
+		<hr>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -191,6 +192,13 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	   
 <script>
 var Grid = tui.Grid;
+Grid.setLanguage('en', { 
+    display: {
+    	noData: '데이터가 없습니다.',
+        loadingData: 'Loading data.',
+    },
+    
+});
 
 tui.Grid.applyTheme('default', {
 	  cell: {
@@ -208,6 +216,8 @@ var selectedRow = null; // 선택된 상품 상세
 
 document.addEventListener('DOMContentLoaded', function() {
     search();  // DOMContentLoaded 이벤트 후 자동으로 검색 실행
+    REnodata();
+	//REDPnodata();
 });
 
 
@@ -241,11 +251,11 @@ const orderList = new Grid({
 		//{ header : "담당자번호", name : "employeeNum"},
 		{ header : "담당자", name : "employeeName"},
 		// { header : "회사번호", name : "companyNum"},
-		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
-		//{ header : "출고일", name : "delivaryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
-		{ header : "출고상태", name : "deliveryStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
-		{ header : "비고", name : "remark", width: 'auto'},
+		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
+		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
+		//{ header : "출고일", name : "delivaryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "left",},
+		//{ header : "출고상태", name : "deliveryStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
+		{ header : "비고", name : "remark", width: 'auto', align: "left",},
 	],
 	data: OrderListDataSource
 });
@@ -303,7 +313,8 @@ function reset(){
 	document.getElementById("endDate").value = "";
 	// 발주지점 선택 값 초기화
     document.getElementById("selectBhf").value = "all";
-
+	
+    search();
 
 }
 
@@ -406,8 +417,8 @@ columns: [
     },
     { header: "옵션명", name: "optionName", },
     //{ header: "옵션코드", name: "optionCode",  },
-    { header: "요구수량(box)", name: "deliveryDemandQnt",  },
-    { header: "예약총수량(box)", name: "deliveryTotalQnt",  },
+    { header: "요구수량(box)", name: "deliveryDemandQnt", align: "right",  },
+    { header: "예약총수량(box)", name: "deliveryTotalQnt", align: "right",  },
     { header: "출고준비여부", name: "sufficiencyStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 
 ],
@@ -490,10 +501,10 @@ rowHeaders: ['rowNum',
 columns: [
 	
     
-    { header: "LOT번호", name: "goodsLotNum", },
-    { header: "유통기한", name: "goodsConsumptionDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-    { header: "예약가능수량(box)", name: "deliveryPossibleQnt",  },
-    { header: "LOT예약수량(box)", name: "deliveryQnt",  editor: 'text',},
+    { header: "LOT번호", name: "goodsLotNum", width:160},
+    { header: "유통기한", name: "goodsConsumptionDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
+    { header: "예약가능수량(box)", name: "deliveryPossibleQnt", align: "right",  },
+    { header: "LOT예약수량(box)", name: "deliveryQnt", align: "right",  editor: 'text',},
     
 
 ],
@@ -503,9 +514,7 @@ pageOptions: {
 }
 });
 
-
-
-
+////////////////////////////////////////////////////////
 //LOT등록(연결) 처리
 function registerLotData() {
 	   	  registerGrid.finishEditing();
@@ -797,6 +806,12 @@ function checkGoodsSelection(modal) {
 
 // LOT 등록 버튼 클릭 이벤트
 document.getElementById('registerButton').addEventListener('click', () => {
+	// 수량이 1이면 'box', 1보다 크면 'boxes'
+	const demandText = selectedRow.deliveryDemandQnt === 1 ? 'box' : 'boxes'; 
+    const totalText = selectedRow.deliveryTotalQnt === 1 ? 'box' : 'boxes';
+	
+	document.getElementById("demendQnt").textContent = `${selectedRow.deliveryDemandQnt} ${demandText}`;
+	document.getElementById("totalQnt").textContent = `${selectedRow.deliveryTotalQnt} ${totalText}`;
 	checkGoodsSelection(registerModal); // 등록 모달 띄우기
 });
 
@@ -952,8 +967,12 @@ document.querySelectorAll('.modal-footer .btn-danger').forEach(button => {
         if (activeModal) {
 
         	if (activeModal.id === 'registerModal') {
+        		registerGrid.resetData([]);
+        		document.getElementById('loadingContents').style.display = 'none';
+        		showLoading();
+        		
                 registerModal.hide();
-                registerGrid.reloadData();
+                
             } else if (activeModal.id === 'deleteModal') {
                 deleteModal.hide();
             } else if (activeModal.id === 'modifyModal') {
@@ -966,8 +985,14 @@ document.querySelectorAll('.modal-footer .btn-danger').forEach(button => {
     });
 });
 /////////////////////////////////////////////////////////////////////////////////////////
-
+function REnodata() {
+        setTimeout(() => {
+            let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[3];
+            if (nodata) nodata.innerHTML = '등록할 수 있는 LOT가 없습니다.';
+        }, 100);
+}
 
 </script>
+
 </body>
 </html>
