@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class securityController {
   @GetMapping("/no-permission")
   public String noPermission() {
-    return "/security/no_permission";
+    return "security/no_permission";
   }
-  
 }
