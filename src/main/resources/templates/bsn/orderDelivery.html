@@ -20,6 +20,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	.grid-row-selected {
     	background-color: #e86f6f;  
 	}
+	/* 그리드 선택하면 생기는 색상 */
+	.tui-grid-row-highlight {
+		    background-color: #f0f8ff !important; /* 연한 하늘색 */
+	}
 	
   </style>
 
@@ -27,7 +31,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h1>출고 관리</h1>
+		<h1>이동 출고 관리</h1>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -83,7 +87,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                        
 							<div class="col-12 text-center">
 	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
-	                        	<button class="btn btn-light"        onclick="reset()">초기화</button>
+	                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
 	                        </div>
 	                </div>
 	            </div>
@@ -93,8 +97,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">출고 준비중인 주문 목록</h4>
-                		<p class="card-description">출고 처리할 주문 선택</p>
+                		<h4 class="card-title">출고 목록</h4>
+                		<p class="card-description">이동 출고 처리할 주문을 선택</p>
                 		<div id="orderList"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
               		</div>
@@ -108,8 +112,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">주문 상세</h4>
-                		<p class="card-description">출고 하기전에 본사 창고에서 해당 상품을 LOT별로 매칭하여 연결</p>
+                		<h4 class="card-title">출고 상세 목록</h4>
+                		<p class="card-description">출고 예약된 LOT를 조회하고 싶으면 상품을 선택하세요.</p>
                 		<div id="deliDetail"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
                		 	
@@ -120,11 +124,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6 grid-margin stretch-card">
 			    <div class="card">
 			        <div class="card-body">
-			        	<h4 class="card-title">출고할 상품 LOT 정보</h4>
-			            <p class="card-description">LOT연결을 추가하거나 수정, 삭제를 할 수 있다. </p>
+			        	<h4 class="card-title">LOT 예약 목록</h4>
+			            <p class="card-description">해당 상품에 대한 LOT 예약 목록입니다.</p>
 			         	<div class="d-flex justify-content-end gap-3 mt-3">
-			                <button type="button" class="btn btn-primary px-4" id="registerButton">추가</button>
-			                <button type="button" class="btn btn-warning px-4" id="modifyButton">수정</button>
+			                <button type="button" class="btn btn-primary px-4" id="registerButton">LOT등록</button>
+			                <button type="button" class="btn btn-success px-4" id="modifyButton">수정</button>
 			                <button type="button" class="btn btn-danger px-4" id="deleteButton">삭제</button>
 			            </div>
 			            
@@ -138,7 +142,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         </div>
         <div class="row">
           	<div class="d-flex justify-content-center gap-3 mt-3">
-			            <button type="button" class="btn btn-primary px-4" id="confirmButton">상품 출고 확정</button>
+			            <button type="button" class="btn btn-primary px-4" id="confirmButton">출고 확정</button>
 			</div>
         </div>
 	</div>
@@ -223,6 +227,8 @@ const OrderListDataSource = {
 //상품 테이블
 const orderList = new Grid({
 		el: document.getElementById('orderList'), // 컨테이너 엘리먼트
+		scrollX: false,
+		scrollY: false,
 		pageOptions: {
 		useClient: false,
 		perPage: 10,
@@ -232,7 +238,8 @@ const orderList = new Grid({
 		{ header : "주문ID", name : "orderId", sortable : true},
 		{ header : "주문명", name : "orderName", width: 'auto',  sortable : true},
 		{ header : "지점코드", name : "branchOfficeId"},
-		{ header : "담당자번호", name : "employeeNum"},
+		//{ header : "담당자번호", name : "employeeNum"},
+		{ header : "담당자", name : "employeeName"},
 		// { header : "회사번호", name : "companyNum"},
 		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
 		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
@@ -250,8 +257,10 @@ function formatDate(dateString, type) {
     if (isNaN(date)) return dateString; // 날짜 변환이 실패하면 원본 유지
 
     return type === 'order' 
-        ? date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) // "2025년 2월 17일"
-        : date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }); // "02/17 (월)"
+        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+        : date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+        .replace(/\. /g, '-')  // "2025. 02. 17." → "2025-02-17"
+        .replace(/\.$/, '');
 }
 
 //상태여부 표기 변경
@@ -262,8 +271,7 @@ function formatStatus(status) {
     	return "출고준비중";
     case "DS02":
     	return "출고완료";
-    case "DS03":
-    	return "출고취소";
+    
     	
     case 0 :
     	return "요구수량미달";
@@ -325,6 +333,8 @@ function search(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //출고 클릭 시 상세 불러오기
+let selectedRowKey = null;
+
 orderList.on('click', (ev) => {
 	
     const rowKey = ev.rowKey; // 클릭한 행의 키
@@ -332,7 +342,15 @@ orderList.on('click', (ev) => {
         return;
     }
     
-    //console.log(rowKey);
+    //선택한 키가 있다면 색강조 제거
+    if (selectedRowKey !== null) {
+    	orderList.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+    }
+    
+	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+	orderList.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+	selectedRowKey = ev.rowKey;
+
     const rowData = orderList.getRow(rowKey); // 클릭한 행 데이터 가져오기
     selectDlivyId = rowData.deliveryId;
     
@@ -380,14 +398,16 @@ function loadDeliveryDetail(deliveryId) {
 //상세 그리드 형식
 const deliveryDetailGrid = new Grid({
 el: document.getElementById('deliDetail'),
+scrollX: false,
+scrollY: false,
 columns: [
     { header: "상품명", name: "goodsName", 
     //	width: 'auto' ,	
     },
     { header: "옵션명", name: "optionName", },
     //{ header: "옵션코드", name: "optionCode",  },
-    { header: "요구수량", name: "deliveryDemandQnt",  },
-    { header: "출고대기총수량", name: "deliveryTotalQnt",  },
+    { header: "요구수량(box)", name: "deliveryDemandQnt",  },
+    { header: "예약총수량(box)", name: "deliveryTotalQnt",  },
     { header: "출고준비여부", name: "sufficiencyStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 
 ],
@@ -400,13 +420,27 @@ pageOptions: {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //출고 클릭 시 LOT상세 불러오기
+let selectedDetailRowKey = null;
+
 deliveryDetailGrid.on('click', (ev) => {
 	
-    const rowKey = ev.rowKey; // 클릭한 행의 키
-    selectedRow = deliveryDetailGrid.getRow(rowKey);
+	const rowKey = ev.rowKey; // 클릭한 행의 키
     if (rowKey === null || rowKey === undefined) {
         return;
     }
+    
+    //선택한 키가 있다면 색강조 제거
+    if (selectedDetailRowKey !== null) {
+    	deliveryDetailGrid.removeRowClassName(selectedDetailRowKey, 'tui-grid-row-highlight');
+    }
+    
+	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+	deliveryDetailGrid.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+	selectedDetailRowKey = ev.rowKey;
+	
+    
+    selectedRow = deliveryDetailGrid.getRow(rowKey);
+    
     
     const rowData = deliveryDetailGrid.getRow(rowKey); // 클릭한 행 데이터 가져오기
     console.log("선택한 출고 상세 ID : " + rowData.deliveryDetailId);
@@ -451,13 +485,15 @@ const deliveryLotDetailGrid = new Grid({
 el: document.getElementById('deliLotDetail'),
 rowHeaders: ['rowNum', 
 	'checkbox'],
+	scrollX: false,
+	scrollY: false,
 columns: [
 	
     
     { header: "LOT번호", name: "goodsLotNum", },
     { header: "유통기한", name: "goodsConsumptionDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-    { header: "출고가능수량", name: "deliveryPossibleQnt",  },
-    { header: "출고예약수량", name: "deliveryQnt",  editor: 'text',},
+    { header: "예약가능수량(box)", name: "deliveryPossibleQnt",  },
+    { header: "LOT예약수량(box)", name: "deliveryQnt",  editor: 'text',},
     
 
 ],
@@ -495,19 +531,37 @@ function registerLotData() {
 		 // 유효성 검사 (출고 수량이 출고 가능 수량보다 많지 않게)
 		    for (let item of requestData) {
 		    	if (isNaN(item.deliveryQnt) || !Number.isInteger(item.deliveryQnt) || item.deliveryQnt <= 0) {
-		            showAlert('올바르지 않은 출고 수량입니다.(원인:0, 공백, 글자...)', 'danger');
+		            //showAlert('올바르지 않은 출고 수량입니다.(원인:0, 공백, 글자...)', 'danger');
+		            Swal.fire({
+		            	icon: 'error',
+		            	title: '등록 실패',
+		            	text: '수량을 제대로 입력하세요.',
+		            	confirmButtonText: '확인'
+		            	});
 		            return;
 		        }
 		    	
 		        if (item.deliveryQnt > selectedRows.find(row => row.goodsLotNum === item.goodsLotNum).warehousingRemainingQuantity) {
-		            showAlert('출고 수량이 가능 수량을 초과할 수 없습니다.', 'danger');
+		            //showAlert('출고 수량이 가능 수량을 초과할 수 없습니다.', 'danger');
+		            Swal.fire({
+		            	icon: 'error',
+		            	title: '등록 실패',
+		            	text: '출고 수량이 출고 가능 수량을 초과할 수 없습니다.',
+		            	confirmButtonText: '확인'
+		            	});
 		            return;
 		        } 
 		        
 		        qntSum += item.deliveryQnt; // 숫자로 변환한 후 더하기
 
 		        if (selectedRow.deliveryDemandQnt <totalSum + qntSum) { 
-		            showAlert('연결된 출고 수량들의 합이 요구 수량을 초과할 수는 없습니다.', 'danger');
+		            //showAlert('연결된 출고 수량들의 합이 요구 수량을 초과할 수는 없습니다.', 'danger');
+		            Swal.fire({
+		            	icon: 'error',
+		            	title: '등록 실패',
+		            	text: '연결된 출고 수량들의 총수량이 요구 수량보다 많습니다',
+		            	confirmButtonText: '확인'
+		            	});
 		            return;
 		        }
 		        
@@ -690,7 +744,7 @@ function confirmDelivery() {
         if (!response.ok) {
             // 200번대 이외의 응답 코드 처리(코드는 서비스 참조)
         	return response.json().then(data => {
-                throw new Error(data.message || '출고 확정 처리 중 오류가 발생했습니다.');
+                throw new Error(data.message || '출고 처리 중 오류가 발생했습니다.');
             });
         }
         return response.json();  // 응답 본문을 JSON으로 반환
@@ -832,7 +886,7 @@ document.getElementById('confirmButton').addEventListener('click', () => {
         showAlert('출고할 주문 중 수량이 충족되지 않은 상품이 있습니다.', 'danger');
         return;
     }
-    console.log(deliveryDetailData);
+    //console.log(deliveryDetailData);
     
 	confirmModal.show();
 });
@@ -890,7 +944,7 @@ document.querySelectorAll('.modal-footer #btn-register').forEach(button => {
 
 
 
-document.querySelectorAll('.modal-footer .btn-secondary').forEach(button => {
+document.querySelectorAll('.modal-footer .btn-danger').forEach(button => {
     button.addEventListener('click', () => {
         // 현재 활성화된 모달 찾기
         const activeModal = document.querySelector('.modal.show');

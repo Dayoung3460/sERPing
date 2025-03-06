@@ -134,11 +134,19 @@ import lombok.extern.log4j.Log4j2;
 	    	log.info("암호화한 ssnFirstPart={}",ssnFirstPart);
 	    	empDTO.setEmployeePw(ssnFirstPart);
 	    	
-	    	//주소 합치기
-	    	String newAddress = empDTO.getAddress()+"("+empDTO.getAddressDetail()+")";
-	    	empDTO.setAddress(newAddress);
-	    	
-	    	log.info("변경된 empDTO={}",empDTO);
+	    	// ✅ 주소 합치기: null 체크 후 빈 문자열("") 처리
+	    	String address = empDTO.getAddress() != null ? empDTO.getAddress().trim() : "";
+	    	String addressDetail = empDTO.getAddressDetail() != null ? empDTO.getAddressDetail().trim() : "";
+
+	    	// ✅ addressDetail이 존재하면 괄호 포함, 아니면 빈 값으로 저장
+	    	if (!address.isEmpty()) {
+	    	    empDTO.setAddress(!addressDetail.isEmpty() ? address + " (" + addressDetail + ")" : address);
+	    	} else {
+	    	    empDTO.setAddress(""); // 🚨 완전히 비어있는 값 설정 (null 방지)
+	    	}
+
+	    	log.info("변경된 empDTO={}", empDTO);
+
 	    	
 	        // ✅ 파일이 존재하는 경우에만 업로드 수행
 	        if (file != null && !file.isEmpty()) {

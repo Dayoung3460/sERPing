@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/layout}" lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>조직도 조회</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+  <script src="https://balkan.app/js/OrgChart.js"></script>        
+   
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background: #f8f9fa;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .header-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .content-section {
+      display: flex;
+      gap: 20px;
+    }
+    .org-chart {
+      width: 30%;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .employee-table {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .department-tree ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    .toggle-btn {
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    .select-wrapper {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    #grid {
+      width: 100%;
+      height: 300px;
+    }
+    .profile-image {
+    width: 150px; /* 가로 크기 고정 */
+    height: auto; /* 세로 크기는 비율 유지 */
+    border-radius: 5px; /* 선택적: 모서리 둥글게 */
+    object-fit: contain; /* 이미지 비율 유지 */
+}
+
+.content-section{
+  width: 1200px;
+  height: 1100px;
+}
+  </style>
+</head>
+
+<body layout:fragment="content">
+
+  <div class="container mt-3">
+        <h2>조직도 조회</h2>
+
+
+
+    <div class="content-section">
+
+      <section class="employee-table">
+
+        <div class="d-flex justify-content-end">
+        	<button id="downloadPdfBtn" class="btn btn-primary">PDF 다운로드</button>
+        </div>
+        <div id="orgChartList"></div>
+
+
+      </section>
+    </div>
+    
+    
+    <!-- 사원 정보 / 인사 발령 모달 -->
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <!-- 모달 헤더 -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="employeeModalLabel">사원 정보</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- 모달 바디 -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- 프로필 이미지 -->
+          <div class="col-md-3 text-center">
+            <img src="https://via.placeholder.com/150" class="profile-image" id="modalProfileImage" alt="프로필 이미지">
+          </div>
+
+          <!-- 사원 정보 -->
+          <div class="col-md-9">
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">사원번호</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="modalEmployeeId" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">사원명</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="modalEmployeeName" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">직급</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="modalPosition" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">부서</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="modalDepartment" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">입사일</label>
+              <div class="col-md-8">
+                <input type="date" class="form-control" id="modalHireDate" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">연락처</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="modalPhone" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="col-md-4 fw-bold">이메일</label>
+              <div class="col-md-8">
+                <input type="email" class="form-control" id="modalEmail" readonly>
+              </div>
+            </div>
+
+            <!-- 인사 발령 시 보일 부분 (숨김 처리) -->
+            <div id="transferFields" style="display: none;">
+              <hr>
+              <div class="row mb-2">
+                <label class="col-md-4 fw-bold">이전 직급</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="modalOldPosition" readonly>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="col-md-4 fw-bold">이전 부서</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="modalOldDepartment" readonly>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="col-md-4 fw-bold">발령 직급</label>
+                <div class="col-md-8">
+                  <select class="form-select" id="modalNewPosition"></select>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="col-md-4 fw-bold">발령 부서</label>
+                <div class="col-md-8">
+                  <select class="form-select" id="modalNewDepartment"></select>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="col-md-4 fw-bold">발령 사유</label>
+                <div class="col-md-8">
+                  <textarea class="form-control" id="modalReason" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모달 푸터 -->
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+  </div>
+
+
+ <script>
+ let companyNum = /*[[${session.companyNum}]]*/ null; 
+ 
+ 
+ 
+ const header = document.querySelector('meta[name="_csrf_header"]').content;
+ const token = document.querySelector('meta[name="_csrf"]').content;
+ 
+//✅ 회사(Company) 템플릿
+ OrgChart.templates.company = Object.assign({}, OrgChart.templates.ana);
+ OrgChart.templates.company.size = [200, 200];
+ OrgChart.templates.company.node =
+     `<circle cx="100" cy="100" r="100" fill="#ffffff" stroke-width="1" stroke="#aeaeae"></circle>
+     <g transform="matrix(3.5,0,0,3.5,20,20)">
+         <circle cx="12" cy="22" r="12" fill="#039BE5"></circle>
+         <circle cx="33" cy="14" r="10" fill="#FFCA28"></circle>
+         <circle cx="30" cy="32" r="8" fill="#F57C00"></circle>
+     </g>`;
+ OrgChart.templates.company.ripple = {
+     radius: 100,
+     color: "#039BE5",
+     rect: null
+ };
+
+ // ✅ 상위 부서(TopDepartment) 템플릿
+ OrgChart.templates.topDepartment = Object.assign({}, OrgChart.templates.ana);
+ OrgChart.templates.topDepartment.size = [330, 50];
+ OrgChart.templates.topDepartment.node =
+     `<rect x="0" y="0" width="330" height="50" fill="#ffffff" stroke-width="1" stroke="#aeaeae"></rect>`;
+ OrgChart.templates.topDepartment.field_0 = 
+     `<text style="font-size: 24px;" fill="#aeaeae" x="165" y="30" text-anchor="middle">{val}</text>`;
+ OrgChart.templates.topDepartment.ripple = {
+     radius: 0,
+     color: "#F57C00",
+     rect: null
+ };
+
+ // ✅ 하위 부서(SubDepartment) 템플릿
+OrgChart.templates.subDepartment = Object.assign({}, OrgChart.templates.ana);
+OrgChart.templates.subDepartment.size = [50, 300];
+OrgChart.templates.subDepartment.node =
+    `<rect x="0" y="0" width="50" height="300" fill="#ffffff" stroke-width="1" stroke="#aeaeae"></rect>`;
+OrgChart.templates.subDepartment.field_0 = 
+    `<text transform="rotate(90)" style="font-size: 20px;" fill="#aeaeae" x="150" y="-15" text-anchor="middle">{val}</text>`; // 🔹 글씨 90도 회전
+
+OrgChart.templates.subDepartment.ripple = {
+    radius: 0,
+    color: "#FFCA28",
+    rect: null
+};
+
+
+ 
+    // 백엔드 API에서 데이터 가져오기 (Spring Boot API 연결)
+    fetch("/hr/rest/dept/list?companyNum="+companyNum, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            [header]: token
+        }
+    })
+
+        .then(response => response.json())
+.then(data => {
+    if (data.length === 0) {
+        console.error("❌ 조직도 데이터가 없습니다.");
+        return;
+    }
+
+    // ✅ 1. 회사 노드 추가 (대표 포함)
+    const companyNode = {
+        id: "company_" + data[0].companyNum,
+        name: data[0].companyName,
+        title: "대표: " + data[0].representationName,
+        tags: ["Company"]
+    };
+
+    // ✅ 2. 상위 부서(TOP) 노드 추가 (parentDepartmentNum이 NULL)
+    const topDepartments = data
+        .filter(dept => !dept.parentDepartmentNum)
+        .map(dept => ({
+            id: dept.departmentNum,
+            pid: "company_" + dept.companyNum,  // ✅ 최상단 회사에 연결
+            name: dept.departmentName,
+            title: "팀장: " + (dept.managerName || "없음"),
+            tags: ["TopDepartment"]
+        }));
+
+    // ✅ 3. 하위 부서(SUB) 노드 추가 (parentDepartmentNum이 있는 부서들)
+    const subDepartments = data
+        .filter(dept => dept.parentDepartmentNum)
+        .map(dept => ({
+            id: dept.departmentNum,
+            pid: dept.parentDepartmentNum,  // ✅ 상위 부서에 연결
+            name: dept.departmentName,
+            title: "팀장: " + (dept.managerName || "없음"),
+            tags: ["SubDepartment"]
+        }));
+
+    // ✅ 4. 전체 조직도 데이터 구성
+    const nodes = [companyNode, ...topDepartments, ...subDepartments];
+
+    console.log("📌 조직도 노드 데이터:", nodes);
+
+    // ✅ 5. OrgChart 생성
+    let chart = new OrgChart(document.getElementById("orgChartList"), {
+        compact: true, 
+        mouseScrool: OrgChart.action.scroll,
+        enableSearch: false,
+        enableAI: false,    
+        enableDragDrop: true,
+        nodeBinding: {
+            field_0: "name",
+            field_1: "title"
+        },
+        tags: {
+            "Company": { template: "company" }, // ✅ 회사 템플릿 적용
+            "TopDepartment": { template: "topDepartment" },
+            "SubDepartment": { template: "subDepartment" }
+        },
+        nodes: nodes
+    });
+
+    // ✅ AI 정렬 기능 추가
+    chart.on('init', function() {
+        chart.AI("Rearrange the chart to optimize hierarchy");
+    });
+
+    // ✅ PDF 다운로드 기능 추가
+    document.getElementById("downloadPdfBtn").addEventListener("click", function() {
+        chart.exportPDF({
+            format: "A4",
+            landscape: true,
+            padding: 20,
+            filename: "organization_chart.pdf"
+        });
+    });
+
+})
+.catch(error => console.error("❌ 조직도 데이터 불러오기 실패:", error));
+</script>
+  
+
+
+  
+  
+</body>
+</html>

@@ -58,6 +58,8 @@ public class ProductDTO {
 	@Value("${img.upload}")
 	private String imgUpload;
 	
+	
+	
 
 	private int safetyStock; //안전재고 계산 값
 	private int totalRemainingQuantity; 	//상품옵션당 갯수

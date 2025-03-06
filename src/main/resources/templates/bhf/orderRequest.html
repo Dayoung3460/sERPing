@@ -31,38 +31,49 @@
 <!-- 엑셀 -->
 <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 
+<!-- 행 선택 색상 -->
+<style>
+	.selected-row {
+	    background-color: #d7fffe !important; 
+	}
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
+
 </head>
 <body layout:fragment="content">
 
 	<div class="container">
+		<h3 class="mt-2 mb-2"><b>상품 입고 요청</b></h3>
+		<hr>
 		<div class="row">
-			<h3 class="mt-2 mb-2">상품 입고 요청</h3>
-			<hr>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<label class="col-sm-4">주문 지점</label> 
-					<input type="text"class="col-sm-7" id="branchOfficeId" readonly>
+			<div id="custom-container">
+				<div class="row ">
+					<div class="col-md-4 mt-1 mb-1">
+						<label class="form-label">주문 지점</label> 
+						<input type="text"class="form-control" id="branchOfficeId" readonly>
+					</div>
+					<div class="col-md-4 mt-1 mb-1">
+						<label class="form-label">납기 일자</label> 
+						<input type="date"class="form-control" id="dueDate">
+					</div>
+					<div class="col-md-4 mt-1 mb-1">
+						<label class="form-label">비고</label> 
+						<input type="text"class="form-control" id="remark">
+					</div>
 				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<div class="col-sm-1"></div>
-					<label class="col-sm-4">납기 일자</label> 
-					<input type="date"class="col-sm-7" id="dueDate">
-				</div>
-			</div>
-			<div class="col-md-12 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-2">비고</label> 
-					<input type="text"class="col-sm-10" id="remark">
-				</div>
-			</div>
+			</div>	
 			<div class="col-md-6 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
 						<div class="row mb-3">
-							<label class="col-sm-2" style=" margin: 10px 0px">상품명</label> 
-							<input type="text" class="col-sm-7" id="goodsName">
+							<h5 class="col-sm-2" style=" margin: 10px 0px"><b>상품명</b></h5> 
+							<input type="text" class="col-sm-7" style=" border-radius:8px; border: 1px solid #dee2e6;" id="goodsName">
 							<button type="button" class="col-sm-2 btn btn-primary" style=" margin: 0px 25px " onclick="search()">검색</button>
 						</div>
 						<div id="goods"></div>
@@ -73,7 +84,7 @@
 			<div class="col-md-6 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">상품별 옵션</h6>
+						<h5 class="mb-4"><b>상품별 옵션</b></h5>
 						<div id="option"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -82,7 +93,7 @@
 			<div class="col-md-12 stretch-card mt-3 mb-5">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">요청서 작성</h6>
+						<h5 class="mb-4"><b>요청서 작성</b></h5>
 						<div id="order"></div>
 						<div id="pagination" class="tui-pagination"></div>
 						<div style="text-align : center">
@@ -96,7 +107,7 @@
 	</div>
 	
 	<script th:inline="javascript">
-	
+		
 		// layout.html <meta>태그에 있는 값 불러오기
 		const header = document.querySelector('meta[name="_csrf_header"]').content; //서버에서 요구하는 CSRF 헤더이름
 	    const token = document.querySelector('meta[name="_csrf"]').content; //서버에서 생성한 CSRF 토큰 값
@@ -125,10 +136,13 @@
 			getDeptName();
 		})
 		
+		// 현재 선택된 행을 추적
+		let selectedRowKey = null; 
+		
 		// 상품조회 쿼리 호출
 		const dataSource = {
 			api: {
-				readData: { url: 'http://localhost:81/bhf/rest/goods/list', method: 'GET', initParams: { page: 1, companyNum: sessioCompanyNum }},
+				readData: { url: '/bhf/rest/goods/list', method: 'GET', initParams: { page: 1, companyNum: sessioCompanyNum }},
 			},
 			contentType: 'application/json'
 			
@@ -142,7 +156,7 @@
 			},
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", align: 'center'},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "규격", name : "goodsStandard", align: 'center'}
 			],
 			data: dataSource
@@ -151,6 +165,16 @@
 		grid.on('click', (ev) => {
 			const rowKey = ev.rowKey;  	// 클릭된 행의 키값
 			if(rowKey != undefined){	// 행 말고 다른데 클릭해도 이 함수가 실행되서 행의 키값이 있을때만 실행되게 함
+				
+				// 이전에 선택된 행의 스타일 제거
+			    if (selectedRowKey !== null) {
+			        grid.removeRowClassName(selectedRowKey, 'selected-row');
+			    }
+			    // 현재 선택된 행에 스타일 추가
+			    grid.addRowClassName(rowKey, 'selected-row');
+			    // 현재 선택된 행 업데이트
+			    selectedRowKey = rowKey;
+				
 				const rowData = grid.getRow(rowKey);  //해당 행의 데이터 가져오기
 				const goodsCode = rowData.goodsCode;  //url의 보내기 위해서 변수담기	
 				// 옵션조회 쿼리 호출(goodsCode)
@@ -175,9 +199,9 @@
 				perPage: 5
 			},
 			columns: [ 
-				{ header : "상품코드", name : "goodsCode", align: 'center'},
+				{ header : "상품코드", name : "goodsCode", align: 'center', hidden: 1},
 				{ header : "옵션코드", name : "optionCode", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'}
+				{ header : "옵션명", name : "optionName", align: 'left'}
 			],
 			data: "",
 		});
@@ -220,14 +244,14 @@
 			}, */
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", align: 'center'},
-				{ header : "상품명", name : "goodsName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
 				{ header : "옵션코드", name : "optionCode", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ header : "규격", name : "goodsStandard", align: 'center', width: 150},
 				{ 
 					header : "요청수량", 
 					name : "quantity", 
-					align: 'center',
+					align: 'right',
 					width: 150,
 					editor: 'text',
 					formatter: function(ev){
@@ -279,7 +303,7 @@
 		        remark: document.querySelector('#remark').value,  // 비고
 		        companyNum: sessioCompanyNum
 		    };
-	 	    fetch("http://localhost:81/bhf/rest/order/insert", {
+	 	    fetch("/bhf/rest/order/insert", {
 		        method: "POST",
 		        headers: {
 		            "Content-Type": "application/json",
@@ -310,9 +334,7 @@
 		
 		// 초기화 버튼 함수
 		function orderReset(){
-			document.getElementById('dueDate').value = "";
-			document.getElementById('remark').value = "";
-			grid2.resetData([]);
+			
 	        grid3.resetData([]);
 	     	//테이블 데이터 없을떄 나오는 문구 다시 실행
 	        OPnodata();

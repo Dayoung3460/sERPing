@@ -8,6 +8,7 @@ import com.beauty1nside.erp.dto.ErpSearchDTO;
 import com.beauty1nside.erp.dto.SubScriptionDTO;
 import com.beauty1nside.erp.dto.SubscriptionDetailDTO;
 import com.beauty1nside.erp.dto.TaxInvoiceDTO;
+import com.beauty1nside.erp.dto.UserDepartmentDTO;
 import com.beauty1nside.erp.dto.erpSubscriptionInfoListDTO;
 
 /**
@@ -28,6 +29,7 @@ import com.beauty1nside.erp.dto.erpSubscriptionInfoListDTO;
  *  2025.02.21  표하연          결제 목록을 리드한다
  *  2025.02.26  표하연          구독 결제한 현금영수증, 세금계산서 데이터를 삽입한다
  *  2025.03.04  표하연          정기구독을 등록 한다 ( 결제X )
+ *  2025.03.05  표하연          ERP 사용회사 부서 이름 호출
  *
  *  </pre>
 */
@@ -128,5 +130,13 @@ public interface ErpUserService {
      * @return boolean
      */
 	public boolean insertTaxInvoice(TaxInvoiceDTO dto);
+	
+	/**
+     * 부서와 부모 부서를 조회한다
+     *
+     * @param int
+     * @return UserDepartmentDTO	
+     */
+	public UserDepartmentDTO userDepartmentName(int departmentNum);
 
 }

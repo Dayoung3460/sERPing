@@ -6,29 +6,47 @@
 <head>
 <meta charset="UTF-8">
 <title>상품 입고</title>
+<!-- 행 선택 색상 -->
+<style>
+	.selected-row {
+	    background-color: #d7fffe !important; 
+	}
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
+		<h3 class="mt-2 mb-2"><b>상품 입고</b></h3>
+		<hr>
 		<div class="row">
-			<h3 class="mt-2 mb-2">상품 입고</h3>
-			<hr>
-			<div class="col-md-6 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-4">요청 일자</label> 
-					<input type="date"class="col-sm-5" id="orderDate"> 
-					<button type="button" class="col-sm-2 btn btn-primary" style=" margin: 0px 10px" onclick="search()">검색</button>
-				</div>
-			</div>
-			<div class="col-md-6 mt-2 mb-5">
-				<div class="row">
-					<label class="col-sm-4">지점명</label> 
-					<input type="text"class="col-sm-7" id="branchOfficeId" readonly>
+			<div id="custom-container">
+				<div class="row ">
+					<div class="col-md-6 mt-1 mb-1">
+						<div class="row">
+							<label class="col-sm-3" style="margin: 10px 0px;">요청 일자</label> 
+							<input type="date"class="col-sm-6" style=" border-radius:8px; border: 1px solid #dee2e6;" id="orderDate"> 
+							<button type="button" class="col-sm-2 btn btn-primary" style=" margin: 0px 25px" onclick="search()">검색</button>
+						</div>
+					</div>
+					<div class="col-md-6 mt-1 mb-1">
+						<div class="row">
+							<div class="col-sm-2"></div>
+							<label class="col-sm-3" style="margin: 10px 0px;">지점명</label> 
+							<input type="text" class="col-sm-6" style=" border-radius:8px; border: 1px solid #dee2e6; background-color: #e9ecef; height: 44px;" id="branchOfficeId" readonly>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-12 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
-						<h6 class="mb-4">주문서</h6>
+						<h5 class="mb-4"><b>주문서</b></h5>
 						<div id="order"></div>
 						<div id="pagination" class="tui-pagination"></div>
 					</div>
@@ -38,7 +56,7 @@
 				<div class="card">
 					<div class="card-body">
 						<div id="rayout-container" class="row mb-3">
-							<h6 class=" col-sm-9">주문 상세</h6>
+							<h5 class=" col-sm-9"><b>주문 상세</b></h5>
 							<span class="label-search col-sm-1" style="font-size: 1em">표시수량</span>
 							<select name="display_amount" id="display_amount" class="col-sm-1 input-box" onchange="changeDisplay()">
 								<option value="5" selected>5</option>
@@ -92,6 +110,9 @@
 	        })
 	        .catch(error => console.error("부서명 가져오기 실패:", error)); 
         }
+		
+		// 현재 선택된 행을 추적
+		let selectedRowKey = null;
 
 		//쿼리에 넘길 주문번호, 발주서코드
 		let deliveryId = '';
@@ -107,7 +128,7 @@
 		// 주문 조회 쿼리 호출
 		const dataSource = {
 			api: {
-				readData: { url: 'http://localhost:81/bhf/rest/bsn/order', method: 'GET', initParams: { page: 1 }},
+				readData: { url: '/bhf/rest/bsn/order', method: 'GET', initParams: { page: 1 }},
 			},
 			contentType: 'application/json'
 			
@@ -125,7 +146,7 @@
 				{ header : "출고일자", name : "deliveryDate", align: 'center'},
 				{ header : "요청일자", name : "orderDate", align: 'center'},
 				{ header : "납기일자", name : "dueDate", align: 'center'},
-				{ header : "비고", name : "remark", align: 'center', width: 400}
+				{ header : "비고", name : "remark", align: 'left', width: 400}
 			],
 			data: dataSource
 		});
@@ -134,12 +155,21 @@
 			const rowKey = ev.rowKey;  	// 클릭된 행의 키값
 			if(rowKey != undefined){ 	// 행 말고 다른데 클릭해도 이 함수가 실행되서 행의 키값이 있을때만 실행되게 함
 				
+				// 이전에 선택된 행의 스타일 제거
+			    if (selectedRowKey !== null) {
+			        grid.removeRowClassName(selectedRowKey, 'selected-row');
+			    }
+			    // 현재 선택된 행에 스타일 추가
+			    grid.addRowClassName(rowKey, 'selected-row');
+			    // 현재 선택된 행 업데이트
+			    selectedRowKey = rowKey
+				
 				const rowData = grid.getRow(rowKey); //해당 행의 데이터 가져오기
 				deliveryId = rowData.deliveryId //출고번호 담기
 				orderCode = rowData.orderCode; // 주문서 코드 담기 
 				
 				// 주문서 상세 조회 쿼리호출(orderId)
-			    fetch('http://localhost:81/bhf/rest/bsn/ordlist?deliveryId=' + deliveryId, {
+			    fetch('/bhf/rest/bsn/ordlist?deliveryId=' + deliveryId, {
 			        method: 'GET',
 			        headers: {
 			            'Content-Type': 'application/json'
@@ -163,13 +193,13 @@
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", hidden : 1},
 				{ header : "옵션코드", name : "optionCode", hidden : 1},
-				{ header : "상품명", name : "goodsName", align: 'center'},
-				{ header : "옵션명", name : "optionName", align: 'center'},
+				{ header : "상품명", name : "goodsName", align: 'left'},
+				{ header : "옵션명", name : "optionName", align: 'left'},
 				{ header : "규격", name : "goodsStandard", align: 'center', width: 200},
 				{ 
 					header : "요청수량", 
 					name : "quantity", 
-					align: 'center',
+					align: 'right',
 					width: 150,
 					formatter: function(ev){
 						return numberFormat(ev.value);
@@ -178,7 +208,7 @@
 				{   //창고에 들어갈 수량
 					header : "낱개수량", 
 					name : "stockQuantity", 
-					align: 'center', 
+					align: 'right', 
 					width: 150,
 					formatter: function(ev){
 						return numberFormat(ev.value);
@@ -187,7 +217,7 @@
 				{ 
 					header : "입고수량(box)", 
 					name : "inQuantity",
-					align: 'center',
+					align: 'right',
 					editor: 'text',
 					width: 150,
 					formatter: function(ev){
@@ -281,7 +311,7 @@
 		        deliveryId: deliveryId,
 		        orderCode: orderCode   
 		    };
- 		    fetch("http://localhost:81/bhf/rest/goods/in", {
+ 		    fetch("/bhf/rest/goods/in", {
 		        method: "POST",
 		        headers: {
 		            "Content-Type": "application/json",

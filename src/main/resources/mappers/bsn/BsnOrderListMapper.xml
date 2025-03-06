@@ -16,28 +16,31 @@ SELECT
        due_date,
        order_status,
        employee_num,
+       employee_name,
        company_num,
        remark
 FROM
 (SELECT 
        ROW_NUMBER() OVER (
-              ORDER BY TO_NUMBER(REGEXP_SUBSTR(order_id, '\d+')) desc
+              ORDER BY TO_NUMBER(REGEXP_SUBSTR(bo.order_id, '\d+')) desc
        ) AS RN, 
-       order_id,
-       order_code,
-       branch_office_id,
-       order_name,
-       total_amount,
-       purchase_vat,
-       order_date,
-       register_date,
-       due_date,
-       order_status,
-       employee_num,
-       company_num,
-       remark
-FROM bsn_order
-WHERE company_num = #{companyNum}
+       bo.order_id,
+       bo.order_code,
+       bo.branch_office_id,
+       bo.order_name,
+       bo.total_amount,
+       bo.purchase_vat,
+       bo.order_date,
+       bo.register_date,
+       bo.due_date,
+       bo.order_status,
+       bo.employee_num,
+       he.employee_name,
+       bo.company_num,
+       bo.remark
+FROM bsn_order bo
+LEFT join hr_employee he ON bo.employee_num = he.employee_num
+WHERE bo.company_num = #{companyNum}
 <include refid="searchInfoBsnOrder"></include>
 )
 WHERE RN BETWEEN #{start} AND #{end}

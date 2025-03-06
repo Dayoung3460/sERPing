@@ -8,7 +8,7 @@
  
     <style>
 	    #custom-container{
-			background-color: #f8f9fa; /* 연한 회색 배경 */
+			background-color:white; /* 연한 회색 배경 */
 			padding: 20px;
 			border-radius: 10px;
 			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
@@ -100,58 +100,70 @@
 		.tui-grid-cell:hover {
 		    background-color: #f9f9f9 !important;
 	}
+	
+	.btn-register a {
+        text-decoration: none; /* 밑줄 제거 */
+        color: inherit; /* 버튼의 기본 색상 상속 */
+        display: block; /* a 태그가 버튼 내부에서 꽉 차게 */
+        
+    }
 
 </style>
 
 
 <div class="container mt-4">
 	<h2 class="mb-4">상품 조회</h2>
+	<hr>
 	   <!-- 검색창 -->
 	<div class="search-grid" id="custom-container">
-	    <div class="d-flex flex-wrap align-items-center gap-3">
+	    <div class="d-flex align-items-center gap-3 flex-nowrap w-100">
 	        <div class="d-flex align-items-center">
-	            <span class="label-search me-2">상품명</span>
-	            <input type="text" name="goodsName" id="searchGoodsName" class="form-control w-auto">
+	            <span class="label-search me-3">상품명</span>
+	            <input type="text" name="goodsName" id="searchGoodsName" class="form-control" style="min-width: 150px;">
 	        </div>
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-2">브랜드명</span>
-	            <input type="text" name="brandName" id="searchBrandName" class="form-control w-auto">
+	            <input type="text" name="brandName" id="searchBrandName" class="form-control" style="min-width: 150px;">
 	        </div>
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-2">표시수량</span>
-	            <select name="display_amount" id="product_display_amount" class="form-control w-auto" onchange="changeProductDisplay()">
+	            <select name="display_amount" id="product_display_amount" class="form-control" style="min-width: 100px;" onchange="changeProductDisplay()">
 	                <option value="10" selected>10</option>
 	                <option value="20">20</option>
 	                <option value="50">50</option>
 	                <option value="100">100</option>
 	            </select>
 	        </div>
-	        
-	        <div class="d-flex align-items-center mt-3">
-	        	<p>사용유무</p>
-			    <div class="form-check me-3">
+	
+	        <div class="d-flex align-items-center">
+			    <span class="me-4 ms-2">사용유무</span> <!-- 기존 me-2 → me-1 로 줄임 -->
+			    <div class="form-check me-1"> <!-- 기존 me-2 → me-1 로 줄임 -->
 			        <input class="form-check-input" type="checkbox" id="useGoods">
-			        <label class="form-check-label" for="useGoods">사용</label>
+			        <label class="form-check-label" for="useGoods" style="margin-left: 3px;">사용</label> <!-- label과 체크박스 간격 조정 -->
 			    </div>
 			    <div class="form-check">
 			        <input class="form-check-input" type="checkbox" id="unUseGoods">
-			        <label class="form-check-label" for="unUseGoods">중지</label>
+			        <label class="form-check-label" for="unUseGoods" style="margin-left: 3px;">중지</label>
 			    </div>
 			</div>
-	        <button type="button" class="btn btn-primary ms-auto" onclick="productSearch()">검색</button>
-	        <button type="button" class="btn btn-secondary" onclick="resetFilters()">초기화</button>
+
+	
+	        <!-- 버튼을 우측 정렬 -->
+	        <div class="ms-auto d-flex gap-2">
+	            <button type="button" class="btn btn-primary" onclick="productSearch()">검색</button>
+	            <button type="button" class="btn btn-secondary" onclick="resetFilters()">초기화</button>
+	        </div>
 	    </div>
 	</div>
 	
 	<!-- 그리드 -->
 	<div id="table-container" class="mt-3">
 	    <div id="productGrid"></div>
-	    <div id="pagination" class="tui-pagination"></div>
 	</div>
 
     <!-- 제품 등록 버튼 -->
     <div class="text-end">
-        <button class="btn btn-register">제품 등록</button>
+        <button class="btn btn-register"><a th:href="@{/purchs/goodsRegister(menu='inventory')}">상품등록</a></button>
     </div>
 </div>
 
@@ -183,7 +195,7 @@ class CustomTextRenderer {
         el.style.textAlign = 'center';
         
         if (props.value) {
-            el.innerHTML = `<img src="/file/image/purchs/product/${props.value}" 
+            el.innerHTML = `<img src="${props.value}" 
                             alt="상품 이미지" width="100" height="100" 
                             style="border-radius: 5px; object-fit: cover;">`;
         } else {
@@ -263,7 +275,8 @@ function initProductGrid() {
                 useClient: false,
                 perPage: 5,
             },
-            bodyHeight: 'auto', 
+            bodyHeight: 500,
+            minBodyHeight: 300,  // ✅ 최소 높이 설정
             columns: [
                 { header: "상품명",
                   name: "goodsName", 

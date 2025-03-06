@@ -2,21 +2,19 @@
       lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-<body layout:fragment="content">
-
-    <style>
+<style>
         .form-control { width: 100%; }
         
         .button-container { margin-top: 15px; }
         #custom-container{
-		background-color: #f8f9fa; /* 연한 회색 배경 */
+		background-color: white; /* 연한 회색 배경 */
 		padding: 20px;
 		border-radius: 10px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
 		margin-bottom: 20px;
 	
 		}
+		
        /* ✅ Toast Grid의 기본 높이를 크게 설정 */
 		#grid {
 		    height: 700px !important; /* 원하는 크기로 늘리기 */
@@ -58,11 +56,10 @@
 		
 	
     </style>
-    
+<body layout:fragment="content">
 
-    
 <div class="container mt-4" >
-<h2 class="mb-4">발주서 등록</h2>
+<h3 class="mb-4">발주서 등록</h3>
 <!-- <p id="companyNum" data-company-num="${session.companyNum}"></p> -->
 	<div class="container">
 	    <!-- 🔹 발주서 정보 -->
@@ -100,11 +97,11 @@
 	    <!-- 🔹 버튼 -->
 	    <div class="mb-3 d-flex justify-content-between">
 	        <div>
-	            <button class="btn btn-secondary">주문서 조회</button>
-	            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#goodsNumModal">재고 조회</button>
+	            <button class="btn btn-outline-primary">주문서 조회</button>
+	            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#goodsNumModal">재고 조회</button>
 	           
 	        </div>
-	        <button class="btn btn-primary" id="bttAdd">발주 추가</button>
+	        <button class="btn btn-warning" id="bttAdd">발주 추가</button>
 	    </div>
 	
 	    <!-- 🔹 Toast Grid -->
@@ -114,7 +111,7 @@
 	 
 	    <!-- 🔹 저장 및 초기화 버튼 -->
 	    <div class="button-container text-center mt-3">
-	        <button class="btn btn-success" id="purchaseInsert">등록</button>
+	        <button class="btn btn-primary" id="purchaseInsert">등록</button>
 	        <button class="btn btn-secondary">초기화</button>
 	    </div>
 	</div>
@@ -139,14 +136,14 @@
   )"></div>
   
    <!-- 상품 모달 -->
-<!--  <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (
+ <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (
   'goodsNumModal', 
   'modal-xl', 
   '상품 재고 조회', 
   'purchs/modal/goodsNum', 
   'purchs/modal/brandFooter'
   )"></div>  
- -->
+ 
 
 	
 </body>

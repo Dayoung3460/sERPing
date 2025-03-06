@@ -48,16 +48,23 @@ public class EmpContractRestController {
      * @return 성공 여부
      */
     @PostMapping("/contract/register")
-    public ResponseEntity<String> registerContract(@RequestBody EmpContractDTO contract) {
+    public ResponseEntity<Map<String, Object>> registerContract(@RequestBody EmpContractDTO contract) {
+        Map<String, Object> response = new HashMap<>();
         try {
             int result = empContractService.registerContract(contract);
             if (result > 0) {
-                return ResponseEntity.ok("✅ 근로계약이 성공적으로 등록되었습니다.");
+                response.put("success", true);
+                response.put("message", "✅ 근로계약이 성공적으로 등록되었습니다.");
+                return ResponseEntity.ok(response); // ✅ JSON 형식으로 반환
             } else {
-                return ResponseEntity.badRequest().body("❌ 근로계약 등록 실패.");
+                response.put("success", false);
+                response.put("message", "❌ 근로계약 등록 실패.");
+                return ResponseEntity.badRequest().body(response);
             }
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("❌ 서버 오류 발생: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "❌ 서버 오류 발생: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
         }
     }
 

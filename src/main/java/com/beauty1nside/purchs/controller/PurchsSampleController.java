@@ -33,7 +33,7 @@ public class PurchsSampleController {
 	//샘플 페이지
 	@GetMapping("/")
 	public String sample() {
-		return "/purchs/sample"; // 페이지 출력 
+		return "purchs/sample"; // 페이지 출력 
 	};
 	
 
@@ -64,14 +64,14 @@ public class PurchsSampleController {
 	//발주서 등록 페이지 이동 
 	@GetMapping("/goodslist")
 	public String goodslist() {
-		return "/purchs/goodslist";
+		return "purchs/goodslist";
 	}
 	
 	
 	// 메일 페이지 이동
 	@GetMapping("/mailsender")
 	public String mailtest() {
-		return "/purchs/mailsender"; // 페이지 출력 
+		return "purchs/mailsender"; // 페이지 출력 
 	};
 	
 	
@@ -84,13 +84,13 @@ public class PurchsSampleController {
     //입고등록 이동 
     @GetMapping("/warehousingRegister")
     public String warehousingRegister() {
-        return "/purchs/warehousingRegister"; // templates/purchs/purchaseList.html을 반환
+        return "purchs/warehousingRegister"; // templates/purchs/purchaseList.html을 반환
     }
     
     //입고리스트이동
     @GetMapping("/warehouseList")
     public String warehousingList() {
-        return "/purchs/warehouseList"; // templates/purchs/purchaseList.html을 반환
+        return "purchs/warehouseList"; // templates/purchs/purchaseList.html을 반환
     }
     
   //상품 옵션 상세 정보 조회
@@ -113,13 +113,13 @@ public class PurchsSampleController {
             model.addAttribute("options", new ArrayList<>());  // 🔴 여기가 누락될 경우 `null`이 전달됨
         }
 
-        return "/purchs/goodsModify";
+        return "purchs/goodsModify";
     }
     
     //상품재고조회 페이지 이동 
     @GetMapping("/goodsLots")
     public String goodsNum() {
-        return "/purchs/goodsLots"; // templates/purchs/goodsLots.html을 반환
+        return "purchs/goodsLots"; // templates/purchs/goodsLots.html을 반환
     }
     
     
@@ -158,7 +158,7 @@ public class PurchsSampleController {
             model.addAttribute("options", new ArrayList<>());  
         }
         
-        return "/purchs/purchaseModify";
+        return "purchs/purchaseModify";
     }
 
 

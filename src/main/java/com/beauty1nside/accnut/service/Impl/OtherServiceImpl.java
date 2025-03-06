@@ -42,4 +42,16 @@ public class OtherServiceImpl implements OtherService{
 		return otherMapper.deptList(companyNum);
 	}
 	
+	@Override
+	public List<Map<String, Object>> dayList(int companyNum, String bhfId, String month) {
+		// TODO Auto-generated method stub
+		return otherMapper.dayList(companyNum, bhfId, month);
+	}
+	
+	@Override
+	public List<Map<String, Object>> closingList(String code) {
+		// TODO Auto-generated method stub
+		return otherMapper.closingList(code);
+	}
+	
 }

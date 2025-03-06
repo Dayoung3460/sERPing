@@ -6,13 +6,13 @@
 	<style name="han_font" fontName="맑은"/>
 	<parameter name="p_employeeNum" class="java.lang.Long"/>
 	<queryString>
-		<![CDATA[WITH LATEST_CONTRACT AS (
+		<![CDATA[		WITH LATEST_CONTRACT AS (
     SELECT 
         CONTRACT_NUM, EMPLOYEE_NUM, COMPANY_NUM, DEPARTMENT_NUM, POSITION, 
         CONTRACT_TYPE, CONTRACT_START_DATE, CONTRACT_END_DATE, 
         WORK_LOCATION, JOB_DESCRIPTION, WORK_DAYS, MONTHLY_SALARY, BONUS, 
         SALARY_PAYMENT_DATE, PAYMENT_METHOD, ANNUAL_LEAVE_POLICY, REGISTER_DATE,
-        WORK_START_TIME,WORK_END_TIME,BREAK_START_TIME,BREAK_END_TIME,
+        WORK_START_TIME,WORK_END_TIME,BREAK_START_TIME,BREAK_END_TIME,SOCIAL_INSURANCE,
         
         ROW_NUMBER() OVER (PARTITION BY EMPLOYEE_NUM ORDER BY CONTRACT_START_DATE DESC) AS RN
     FROM HR_EMPLOYEE_CONTRACT
@@ -21,7 +21,8 @@ SELECT
 
     C.COMPANY_NAME, C.COMPANY_ADDRESS, C.REPRESENTATION_NAME, C.REPRESENTATION_PHONE,
 
-    E.EMPLOYEE_NAME, E.ADDRESS AS EMPLOYEE_ADDRESS, E.PHONE AS EMPLOYEE_PHONE, 
+    E.EMPLOYEE_NAME, COALESCE(NULLIF(TRIM(E.ADDRESS), ''), ' ') AS EMPLOYEE_ADDRESS
+, E.PHONE AS EMPLOYEE_PHONE, 
 
     TO_CHAR(LC.CONTRACT_START_DATE, 'YYYY"년" MM"월" DD"일"') AS CONTRACT_START_DATE,
     TO_CHAR(LC.CONTRACT_END_DATE, 'YYYY"년" MM"월" DD"일"') AS CONTRACT_END_DATE,
@@ -40,7 +41,8 @@ SELECT
     NVL(TO_CHAR(TO_DATE(LC.WORK_START_TIME, 'HH24:MI'), 'HH24"시" MI"분"'), '00시 00분') AS WORK_START_TIME,
     NVL(TO_CHAR(TO_DATE(LC.WORK_END_TIME, 'HH24:MI'), 'HH24"시" MI"분"'), '00시 00분') AS WORK_END_TIME,
     NVL(TO_CHAR(TO_DATE(LC.BREAK_START_TIME, 'HH24:MI'), 'HH24"시" MI"분"'), '00시 00분') AS BREAK_START_TIME,
-    NVL(TO_CHAR(TO_DATE(LC.BREAK_END_TIME, 'HH24:MI'), 'HH24"시" MI"분"'), '00시 00분') AS BREAK_END_TIME
+    NVL(TO_CHAR(TO_DATE(LC.BREAK_END_TIME, 'HH24:MI'), 'HH24"시" MI"분"'), '00시 00분') AS BREAK_END_TIME,
+	NVL(LC.SOCIAL_INSURANCE, '없음') AS SOCIAL_INSURANCE
 
 FROM LATEST_CONTRACT LC
 JOIN HR_EMPLOYEE E ON LC.EMPLOYEE_NUM = E.EMPLOYEE_NUM
@@ -116,6 +118,9 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 	<field name="BREAK_END_TIME" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="BREAK_END_TIME"/>
 	</field>
+	<field name="SOCIAL_INSURANCE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="SOCIAL_INSURANCE"/>
+	</field>
 	<title>
 		<band height="802" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -170,20 +175,12 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{REPRESENTATION_PHONE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="127" y="404" width="94" height="20" uuid="c1d65c52-f1cf-4778-87a9-e9181850f45a"/>
-				<textFieldExpression><![CDATA[$F{ANNUAL_LEAVE_POLICY}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement style="han_font" x="166" y="329" width="60" height="20" uuid="abdafbd5-4ea4-41e7-b670-909b2b3c0a34"/>
 				<textFieldExpression><![CDATA[$F{PAYMENT_METHOD}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="137" y="220" width="67" height="16" uuid="bde0c189-4e3c-4e14-a3b0-2f82d1492fb6"/>
 				<textFieldExpression><![CDATA[$F{WORK_DAYS}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="han_font" x="124" y="245" width="70" height="20" uuid="5f6e987b-a0b3-4724-b79d-5bb957d7168b"/>
-				<textFieldExpression><![CDATA[$F{MONTHLY_SALARY}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="194" y="278" width="80" height="22" uuid="e99ef00e-1b60-493c-b14c-761291accd46"/>
@@ -224,6 +221,11 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 			<textField>
 				<reportElement style="han_font" x="140" y="180" width="94" height="16" uuid="28b6123c-b840-4b3b-8baf-7dc4e4f74a55"/>
 				<textFieldExpression><![CDATA[$F{JOB_DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="403" width="180" height="17" uuid="94b94b58-af9b-46b8-ac99-c2f4a3fcd0a7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{SOCIAL_INSURANCE}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

@@ -24,7 +24,7 @@
 
 		const dataSource = {
 				api: {
-					readData: { url: 'http://localhost:81/accnut/rest/selling/info', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum, startDate: rowData.resultDate.slice(0,10), endDate: endDate, officeId: rowData.officeId }},
+					readData: { url: '/accnut/rest/selling/info', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum, startDate: rowData.resultDate.slice(0,10), endDate: endDate, officeId: rowData.officeId }},
 					
 				},
 				contentType: 'application/json'
