@@ -1,10 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html layout:decorate="~{layouts/layout}"
+      lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
 <title>매출 현황</title>
+<style>
+	.nav-tabs {
+	    display: flex;
+	    flex-direction: row !important; /* 강제적으로 가로 정렬 */
+	    flex-wrap: nowrap; /* 버튼이 줄 바꿈되지 않도록 설정 */
+	}
+	
+	.nav-tabs .nav-link {
+	    white-space: nowrap; /* 버튼 내용이 줄바꿈되지 않도록 설정 */
+	}
+</style>
 </head>
-<body>
+<body layout:fragment="content">
+	<div class="container">
+		<!-- 메뉴이름 -->
+		 <div>
+			 <h2>매출 현황</h2>
+		 </div>
 
+		<!-- 검색창 -->
+		<div class="search-grid">
+			<!-- 검색창 첫줄 -->
+			<div class="row 1row">
+				<div class="col-1"></div>
+				<!-- 자산명 인풋 -->
+				<div class="col-5 row ">
+					<span class="label-search col-4">지점</span>
+					<select name="officeId" id="officeId" class="col-8 input-box">
+						<option value="" selected>전체</option>
+						<option value="대구점" >대구점</option>
+						<option value="대구중구점" >대구중구점</option>
+						<option value="부산점" >부산점</option>
+						<option value="서대문점" >서대문점</option>
+						<option value="태전동점" >태전동점</option>
+						<option value="홍대점" >홍대점</option>
+
+					</select>
+				</div>
+				<div class="col-1"></div>
+				<!-- 구분 인풋 -->
+				<div class="col-5 row ">
+					<span class="label-search col-4">시작일</span>
+					<input type="date" name="startDate" id="startDate" class="col-8 input-box">
+				</div>
+			</div>
+			<!-- 검색창 두번째 줄 -->
+			<div class="row 2row">
+				<div class="col-1"></div>
+				<!-- 금융기관 인풋 -->
+				<div class="col-5 row ">
+					<span class="label-search col-4">상품</span>
+					<input type="text" name="optCode" id="optCode" class="col-8 input-box" data-bs-toggle="modal" data-bs-target="#optSearchModal">
+				</div>
+				<div class="col-1"></div>
+				
+				<div class="col-5 row ">
+					<span class="label-search col-4">종료일</span>
+					<input type="date" name="endDate" id="endDate" class="col-8 input-box">
+				</div>
+			</div>
+			<!-- 검색 버튼 줄 -->
+			<div class="row 3row">
+				<div class="col-4"></div>
+				<button type="button" class="btn btn-primary col-1" onclick="search()">검색</button>
+				<div class="col-1"></div>
+				<button type="button" class="btn btn-secondary col-1" onclick="reset()">초기화</button>
+			</div>
+		</div>
+
+		<!--
+		-- 차팅그리드
+		-->
+		<nav class="p-0 m-0 d-flex justify-content-start">
+		    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+		        <button class="nav-link border active fw-bold" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
+		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">지점별 판매 통계(원형)</button>
+		            
+		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-rg"
+		            type="button" role="tab" aria-controls="#nav-rg" aria-selected="false">상품별 판매 통계(원형)</button>
+		            
+		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-st"
+		            type="button" role="tab" aria-controls="#nav-st" aria-selected="false">지점별 일자별 통계(원형)</button>
+		            
+		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-sv"
+		            type="button" role="tab" aria-controls="#nav-sv" aria-selected="false">상품별 일자별 통계(원형)</button>
+		    </div>
+		</nav>
+		 <div class="tab-content border" id="nav-tabContent" style="background-color: #ffffff;">
+            <div class="tab-pane fade show active" id="nav-fp" role="tabpanel" aria-labelledby="nav-fp-tab" tabindex="0">
+            	<div id="table-container">
+					<div id="chart-area"></div>
+				</div>
+            </div>
+            <div class="tab-pane fade" id="nav-rg" role="tabpanel" aria-labelledby="nav-rg-tab" tabindex="0">
+            	<h1>ddd</h1>
+            </div>
+            <div class="tab-pane fade" id="nav-st" role="tabpanel" aria-labelledby="nav-rg-tab" tabindex="0">
+            	<h1>123</h1>
+            </div>
+            <div class="tab-pane fade" id="nav-sv" role="tabpanel" aria-labelledby="nav-rg-tab" tabindex="0">
+            	<h1>sddfsdf</h1>
+            </div>
+        </div>
+<script th:inline="javascript">
+	
+	var session = sessionData;
+	console.log("세션",session);
+
+	function search(){
+		let officeId = document.querySelector('#officeId').value;
+		let optCode = document.querySelector('#optCode').value;
+		let startDate = document.querySelector('#startDate').value;
+		let endDate = document.querySelector('#endDate').value;
+		
+		console.log(startDate);
+		console.log(endDate);
+		
+		let params = {};
+		
+		params.officeId = officeId;
+		params.optionCode = optCode;
+		if(startDate != '') params.startDate = startDate;
+		if(endDate != '') params.endDate = endDate;
+		
+		grid.setRequestParams(params);
+		//grid.setRequestParams({"officeId" : officeId, "optionCode" : optCode, "startDate" : startDate, "endDate" : endDate , "page" : 1});
+		grid.readData();
+	}
+	
+	function reset(){
+		let officeId = document.querySelector('#officeId').value = '';
+		let optCode = document.querySelector('#optCode').value = '';
+		let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1); // 하루 빼기
+        let formattedDate = yesterday.toISOString().split('T')[0]; // YYYY-MM-DD 형식 변환
+        document.getElementById("startDate").value = formattedDate;
+        document.getElementById("endDate").value = formattedDate;
+		grid.setRequestParams({"officeId" : officeId, "optionCode" : optCode });
+	}
+	
+	/*
+	* 차팅그리드
+	*/
+	document.addEventListener("DOMContentLoaded",()=>{
+		let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1); // 하루 빼기
+        let formattedDate = yesterday.toISOString().split('T')[0]; // YYYY-MM-DD 형식 변환
+        document.getElementById("startDate").value = formattedDate;
+        document.getElementById("endDate").value = formattedDate;
+		charting(formattedDate);
+	});
+	
+	function charting(formattedDate){
+		const url = `/accnut/rest/selling/chartinfo?companyNum=${session.companyNum}&startDate=${formattedDate}&endDate=${formattedDate}`;
+		console.log(url);
+		fetch(`/accnut/rest/selling/chartinfo?companyNum=${session.companyNum}&startDate=${formattedDate}&endDate=${formattedDate}`, {
+		    method: 'GET',
+		    headers: { 'Content-Type': 'application/json' }
+		})
+		.then(response => response.json())
+		.then(responseData  => {
+			console.log("API 응답 데이터:", responseData);
+
+			let contents = responseData.data.contents;
+			let categories = [...new Set(contents.map(item => item.officeId))];
+			console.log("categories:", categories);
+
+			let officeTotalPriceMap = {};
+			contents.forEach(ele => {
+			    let officeId = ele.officeId;
+			    let totalPrice = ele.totalPrice || 0;
+			    if (officeTotalPriceMap[officeId]) {
+			        officeTotalPriceMap[officeId] += totalPrice;
+			    } else {
+			        officeTotalPriceMap[officeId] = totalPrice;
+			    }
+			});
+			
+			let series = categories.map(officeId => ({
+	            name: officeId,
+	            data: officeTotalPriceMap[officeId] || 0
+	        }));
+			
+			
+			/* let series = [{
+			    name: '총액',
+			    data: categories.map(officeId => officeTotalPriceMap[officeId] || 0)
+			}]; */
+			console.log("categories:", categories);
+			console.log("series:", series);
+
+			// 차트 업데이트
+			//renderChart(categories, series);
+			// 차트 업데이트 (원형)
+			renderroundChart(series);
+		});
+		
+		function renderroundChart(series){
+		    const el = document.getElementById('chart-area');
+		    el.innerHTML = ''; // 기존 차트 제거
+		    const data = {
+		        series: series // PIE 차트 형식 (label, data 형태)
+		    };
+		    const options = {
+		        chart: { title: '지점별 매출 통계', width: 800, height: 600 },
+		        tooltip: {
+		            formatter: (value) => value.toLocaleString() + ' 원' // 툴팁에서 천 단위 쉼표 추가
+		        }
+		    };
+		    toastui.Chart.pieChart({ el, data, options });
+		}
+		
+		function renderChart(categories, series) {
+		    const el = document.getElementById('chart-area');
+		    el.innerHTML = '';
+		    const data = {
+		        categories: categories,  // API에서 받은 지점 목록
+		        series: series           // API에서 받은 price 합산 데이터
+		    };
+		    const options = {
+		        chart: { title: '지점별 매출 통계', width: 1250, height: 600 },
+		    };
+		    toastui.Chart.columnChart({ el, data, options });
+		}
+	}
+</script>
+	
 </body>
+
 </html>
