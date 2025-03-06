@@ -81,7 +81,7 @@ public class StdrRestController {
     try {
       // 파일명 생성 (UUID + 원본 확장자)
       String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-      String uploadDir = fileConfig.getUpload();
+      String uploadDir = fileConfig.getUploadpath();
       Path uploadPath = Paths.get(uploadDir + fileName);
       
       // 저장 디렉토리 없으면 생성
@@ -89,7 +89,7 @@ public class StdrRestController {
       Files.write(uploadPath, file.getBytes());
       
       // 클라이언트에 제공할 이미지 URL 생성
-      String imageUrl = uploadDir + fileName;
+      String imageUrl = fileConfig.getImgpath() + fileName;
       response.put("imageUrl", imageUrl);
       
       return ResponseEntity.ok(response);

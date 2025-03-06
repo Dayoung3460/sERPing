@@ -8,5 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileConfig {
   @Value("${img.upload}")
-  private String upload;
+  private String uploadpath;
+  
+  @Value("${img.imgpath}")
+  private String imgpath;
 }

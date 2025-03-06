@@ -56,13 +56,13 @@ public class MypageRestController {
     try {
       String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-      String uploadDir = fileConfig.getUpload();
+      String uploadDir = fileConfig.getUploadpath();
       Path uploadPath = Paths.get(uploadDir + fileName);
       
       Files.createDirectories(uploadPath.getParent());
       Files.write(uploadPath, file.getBytes());
       
-      String imageUrl = uploadDir + fileName;
+      String imageUrl = fileConfig.getImgpath() + fileName;
       empDTO.setProfileImage(imageUrl);
       
       int isSuccess = profileService.update(empDTO);
