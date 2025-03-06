@@ -1,14 +1,22 @@
 // ✅ 삭제 버튼 렌더러 (전역으로 이동)
 class DeleteRenderer {
     constructor(props) {
+		// 부모 div 추가
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.height = '100%';
+        
         const el = document.createElement("button");
         el.textContent = "삭제";
-        el.className = "btnDelete btn btn-danger btn-sm";
+        el.className = 'btnDelete btn btn-outline-danger btn-sm';
         el.addEventListener("click", () => {
             // ✅ 올바른 그리드 객체에서 해당 행 삭제
             purchaseGrid.removeRow(props.rowKey);
         });
-        this.el = el;
+          wrapper.appendChild(el); // 버튼을 div 내부에 추가
+		  this.el = wrapper; // wrapper를 요소로 설정
     }
     getElement() {
         return this.el;
@@ -62,6 +70,46 @@ const companyNum = document.getElementById("companyNum").value;
 	    console.warn("❌ 창고 모달 닫기 버튼을 찾을 수 없습니다.");
 	} 
 	
+	// ✅ 모달이 열릴 때 그리드 레이아웃을 새로고침
+    const goodsNumModal = document.getElementById('goodsNumModal');
+
+    if (goodsNumModal) {
+        goodsNumModal.addEventListener('shown.bs.modal', function () {
+            console.log("📢 상품 재고 조회 모달 열림");
+
+            setTimeout(() => {
+                if (window.productNumGrid) {
+                    productNumGrid.refreshLayout();
+                    console.log("✅ productNumGrid 레이아웃 리프레시 완료");
+                } else {
+                    console.warn("❌ productNumGrid가 정의되지 않음");
+                }
+            }, 300); // ✅ 300ms 대기 후 실행 (모달 렌더링 완료될 시간 확보)
+        });
+    } else {
+        console.warn("❌ goodsNumModal 요소를 찾을 수 없음");
+    }
+    
+    // ✅ 모달이 열릴 때 그리드 레이아웃을 새로고침
+    const orderlistModal = document.getElementById('orderlistModal');
+
+    if (orderlistModal) {
+        orderlistModal.addEventListener('shown.bs.modal', function () {
+            console.log("📢 주문서 조회 모달 열림");
+
+            setTimeout(() => {
+                if (window.orderListGrid) {
+                    orderListGrid.refreshLayout();
+                    console.log("✅ orderListGrid 레이아웃 리프레시 완료");
+                } else {
+                    console.warn("❌ orderListGrid가 정의되지 않음");
+                }
+            }, 300); // ✅ 300ms 대기 후 실행 (모달 렌더링 완료될 시간 확보)
+        });
+    } else {
+        console.warn("❌ orderListGrid 요소를 찾을 수 없음");
+    }
+	
 	
     
 });
@@ -75,7 +123,7 @@ function initPurchaseGrid() {
     window.purchaseGrid = new tui.Grid({
         el: document.getElementById('grid'),
         scrollX :false,
-        scrollY : true,
+        scrollY : false,
         bodyHeight: 500, // ✅ 자동 높이 조정
         minBodyHeight: 600, // ✅ 최소 높이 지정 (필요에 따라 조정)
         columns: [

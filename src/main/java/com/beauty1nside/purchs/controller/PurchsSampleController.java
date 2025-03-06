@@ -64,7 +64,7 @@ public class PurchsSampleController {
 	//발주서 등록 페이지 이동 
 	@GetMapping("/goodslist")
 	public String goodslist() {
-		return "purchs/goodslist";
+		return "purchs/goodsList";
 	}
 	
 	
@@ -98,10 +98,7 @@ public class PurchsSampleController {
     public String getProductDetail(@RequestParam(name="goodsCode") String goodsCode, 
                                    @RequestParam(name="companyNum", required=false, defaultValue="0") int companyNum, 
                                    Model model) {
-        if (companyNum == 0) {
-            log.error("❌ companyNum 값이 유효하지 않습니다.");
-            return "redirect:/purchs/goodsList"; // 잘못된 접근 시 리스트 페이지로 리다이렉트
-        }
+     
 
         List<ProductDTO> products = productService.getGoodsOption(goodsCode, companyNum);
 
@@ -128,10 +125,7 @@ public class PurchsSampleController {
     public String getPurchsDetail(@RequestParam(name="purchaseNum") Long purchaseNum, 
                                    @RequestParam(name="companyNum", required=false, defaultValue="0") int companyNum, 
                                    Model model) {
-        if (companyNum == 0) {
-            log.error("❌ companyNum 값이 유효하지 않습니다.");
-            return "redirect:/purchs/goodsList"; // 잘못된 접근 시 리스트 페이지로 리다이렉트
-        }
+     
 
         List<PurchaseDTO> purchaseList = purchaseService.getPurchsinfo(purchaseNum, companyNum);
         

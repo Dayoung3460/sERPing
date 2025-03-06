@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.beauty1nside.purchs.dto.OrderlistDTO;
+import com.beauty1nside.purchs.dto.OrderlistSearchDTO;
 import com.beauty1nside.purchs.dto.PurchInsertVO;
 import com.beauty1nside.purchs.dto.PurchUpdateVO;
 import com.beauty1nside.purchs.dto.PurchaseDTO;
@@ -69,6 +71,16 @@ public class purchaseServiceImpl implements purchaseService{
 	public boolean cancelPurchase(int companyNum, Long purchaseNum) {
 		int result = purchaseMapper.cancelPurchase(companyNum, purchaseNum);
 		return result > 0; // ✅ 성공적으로 변경된 행이 1개 이상이면 true 반환
+	}
+
+	@Override
+	public List<OrderlistDTO> getOrderlist(OrderlistSearchDTO dto) {
+		return purchaseMapper.orderlist(dto);
+	}
+
+	@Override
+	public int orderlistCount(OrderlistSearchDTO dto) {
+		return purchaseMapper.countOrderList(dto);
 	}
 	
 	
