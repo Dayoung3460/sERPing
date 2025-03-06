@@ -6,7 +6,7 @@
 	<style name="han_font" fontName="맑은"/>
 	<parameter name="p_employeeNum" class="java.lang.Long"/>
 	<queryString>
-		<![CDATA[		WITH LATEST_CONTRACT AS (
+		<![CDATA[WITH LATEST_CONTRACT AS (
     SELECT 
         CONTRACT_NUM, EMPLOYEE_NUM, COMPANY_NUM, DEPARTMENT_NUM, POSITION, 
         CONTRACT_TYPE, CONTRACT_START_DATE, CONTRACT_END_DATE, 
@@ -175,7 +175,8 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{REPRESENTATION_PHONE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="han_font" x="166" y="329" width="60" height="20" uuid="abdafbd5-4ea4-41e7-b670-909b2b3c0a34"/>
+				<reportElement style="han_font" x="140" y="329" width="110" height="20" uuid="abdafbd5-4ea4-41e7-b670-909b2b3c0a34"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{PAYMENT_METHOD}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -223,7 +224,7 @@ AND E.EMPLOYEE_NUM =  $P{p_employeeNum}]]>
 				<textFieldExpression><![CDATA[$F{JOB_DESCRIPTION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="70" y="403" width="180" height="17" uuid="94b94b58-af9b-46b8-ac99-c2f4a3fcd0a7"/>
+				<reportElement style="han_font" x="70" y="392" width="180" height="40" uuid="94b94b58-af9b-46b8-ac99-c2f4a3fcd0a7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{SOCIAL_INSURANCE}]]></textFieldExpression>
 			</textField>
