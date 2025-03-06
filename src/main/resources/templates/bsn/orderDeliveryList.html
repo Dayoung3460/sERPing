@@ -20,6 +20,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	.grid-row-selected {
     	background-color: #e86f6f;  
 	}
+	/* 그리드 선택하면 생기는 색상 */
+	.tui-grid-row-highlight {
+		    background-color: #f0f8ff !important; /* 연한 하늘색 */
+	}
 	
   </style>
 
@@ -27,7 +31,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h1>이동 출고 조회</h1>
+		<h3>이동 출고 조회</h3>
+		<hr>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -232,9 +237,9 @@ const orderList = new Grid({
 		{ header : "지점코드", name : "branchOfficeId"},
 		//{ header : "담당자번호", name : "employeeNum"},
 		{ header : "담당자", name : "employeeName"},
-		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
-		{ header : "출고일", name : "deliveryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
+		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
+		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
+		{ header : "출고일", name : "deliveryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
 		{ header : "출고상태", name : "deliveryStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 		{ header : "비고", name : "remark", width: 'auto'},
 	],
@@ -312,6 +317,7 @@ function reset(){
 	// 발주지점 선택 값 초기화
     document.getElementById("selectBhf").value = "all";
 
+    search();
 
 }
 
@@ -341,6 +347,8 @@ function search(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //출고 클릭 시 상세 불러오기
+let selectedRowKey = null;
+
 orderList.on('click', (ev) => {
 	
     const rowKey = ev.rowKey; // 클릭한 행의 키
@@ -348,7 +356,15 @@ orderList.on('click', (ev) => {
         return;
     }
     
-    //console.log(rowKey);
+  	//선택한 키가 있다면 색강조 제거
+    if (selectedRowKey !== null) {
+    	orderList.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+    }
+    
+ 	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+	orderList.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+	selectedRowKey = ev.rowKey;
+
     const rowData = orderList.getRow(rowKey); // 클릭한 행 데이터 가져오기
     selectDlivyId = rowData.deliveryId;
     
@@ -402,8 +418,8 @@ columns: [
     },
     { header: "옵션명", name: "optionName", },
     //{ header: "옵션코드", name: "optionCode",  },
-    { header: "요구수량(box)", name: "deliveryDemandQnt",  },
-    { header: "출고총수량(box)", name: "deliveryTotalQnt",  },
+    { header: "요구수량(box)", name: "deliveryDemandQnt", align: "right",  },
+    { header: "출고총수량(box)", name: "deliveryTotalQnt", align: "right",  },
     { header: "출고준비여부", name: "sufficiencyStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 
 ],
@@ -416,14 +432,24 @@ pageOptions: {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //출고 클릭 시 LOT상세 불러오기
+let selectedDetailRowKey = null;
+
 deliveryDetailGrid.on('click', (ev) => {
 	
     const rowKey = ev.rowKey; // 클릭한 행의 키
-    selectedRow = deliveryDetailGrid.getRow(rowKey);
     if (rowKey === null || rowKey === undefined) {
         return;
     }
+  	//선택한 키가 있다면 색강조 제거
+    if (selectedDetailRowKey !== null) {
+    	deliveryDetailGrid.removeRowClassName(selectedDetailRowKey, 'tui-grid-row-highlight');
+    }
     
+	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+	deliveryDetailGrid.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+	selectedDetailRowKey = ev.rowKey;
+    
+    selectedRow = deliveryDetailGrid.getRow(rowKey);
     const rowData = deliveryDetailGrid.getRow(rowKey); // 클릭한 행 데이터 가져오기
     console.log("선택한 출고 상세 ID : " + rowData.deliveryDetailId);
     

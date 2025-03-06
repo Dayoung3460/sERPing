@@ -20,6 +20,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	#cancelButton {
 	   visibility: hidden;
 	}
+	/* 그리드 선택하면 생기는 색상 */
+	.tui-grid-row-highlight {
+		    background-color: #f0f8ff !important; /* 연한 하늘색 */
+	}
   </style>
 
 </head>
@@ -29,6 +33,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 
       <div class="container">
 		<h3>주문 목록</h3>
+		<hr>
         <div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -153,6 +158,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 끝 -->
   <!-- 세션정보 -->
   	  <script th:inline="javascript">
+  	    let departmentNum = [[${session.departmentNum}]];
 	  	let companyNum = [[${session.companyNum}]];
 	  	//let employeeNum = [[${session.employeeNum}]];
 	  </script>
@@ -180,7 +186,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     	document.getElementById("endDate").value = "";
     	// 발주지점 선택 값 초기화
         document.getElementById("selectBhf").value = "all";
-        console.log(OrderListDataSource);
+    	
+    	search();
+        //console.log(OrderListDataSource);
 
 	}
     
@@ -198,20 +206,22 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	//상품 테이블
 	const orderList = new Grid({
 			el: document.getElementById('orderList'), // 컨테이너 엘리먼트
+			scrollX:false,
+		    scrollY:false,
 			pageOptions: {
 			useClient: false,
 			perPage: 10,
 		},
 		columns: [ 
-			{ header : "주문ID", name : "orderId", sortable : true},
-			{ header : "주문명", name : "orderName", width: 'auto',  sortable : true},
-			{ header : "발주코드", name : "orderCode"},
-			{ header : "지점코드", name : "branchOfficeId"},
-			{ header : "담당자", name : "employeeName"},
-			{ header : "주문상태", name : "orderStatus", formatter: ({ value }) => formatOrderStatus(value),  sortable : true},
-			{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-			{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
-			{ header : "비고", name : "remark", width: 'auto'},
+			{ header : "주문ID", name : "orderId", sortable : true, align: "left",},
+			{ header : "주문명", name : "orderName", width: 'auto',  sortable : true, align: "left",},
+			{ header : "발주코드", name : "orderCode", align: "left",},
+			{ header : "지점코드", name : "branchOfficeId", align: "left",},
+			{ header : "담당자", name : "employeeName", align: "left",},
+			{ header : "주문상태", name : "orderStatus", formatter: ({ value }) => formatOrderStatus(value),  sortable : true, align: "left",},
+			{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
+			{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
+			{ header : "비고", name : "remark", width: 'auto', align: "left",},
 		],
 		data: OrderListDataSource
 	});
@@ -284,6 +294,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	}
 	
 	//주문 클릭 시 상세 불러오기
+	let selectedRowKey = null;
+	
 	orderList.on('click', (ev) => {
 		
 		
@@ -292,9 +304,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	        return;
 	    }
 	    
-	    //console.log(rowKey);
+	  //선택한 키가 있다면 색강조 제거
+	    if (selectedRowKey !== null) {
+	    	orderList.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+	    }
+	    
+		// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+		orderList.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+		selectedRowKey = ev.rowKey;
+	    
+		//
 	    const rowData = orderList.getRow(rowKey); // 클릭한 행 데이터 가져오기
-	    console.log(rowData.orderId);
 	    if (rowData && rowData.orderId) {
 	    	selectedRow = rowData;
 	        loadOrderDetail(rowData.orderId); // 상세 정보 불러오기
@@ -302,7 +322,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	        loadOrderHistory(rowData.orderId);
 	     	// 상태가 'VS001'이면 버튼을 보이고, 아니면 숨김
 	     	const cancelButton = document.getElementById('cancelButton');
-	        if (rowData.orderStatus === 'VS001') {
+	        if (rowData.orderStatus === 'VS001' && departmentNum !== 0) {	//부서번호 조건 걸기(나중에)////////////////////////
 	        	cancelButton.style.visibility = 'visible';
 	        } else {
 	        	cancelButton.style.visibility = 'hidden';
@@ -337,7 +357,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                    }
 	                });
 	            	//
-	                orderDetailGrid.resetData(detailData);
+	                orderDetailGrid.Data(detailData);
 	            } else {
 	                console.warn("상세 데이터가 없습니다.");
 	                orderDetailGrid.resetData([]); // 빈 배열로 초기화
@@ -376,15 +396,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	//상세 그리드 형식
 	const orderDetailGrid = new Grid({
     el: document.getElementById('orderDetail'),
+    scrollX:false,
+    scrollY:false,
     columns: [
-        { header: "상품명", name: "goodsName", 
+        { header: "상품명", name: "goodsName", align: "left", 
         //	width: 'auto' ,	
         },
-        { header: "옵션명", name: "optionName", },
-        { header: "상품코드", name: "goodsCode",  },
-        { header: "옵션코드", name: "optionCode",  },
-        { header: "규격", name: "goodsStandard",  },
-        { header: "수량(box)", name: "quantity",  },
+        { header: "옵션명", name: "optionName", align: "left", },
+        { header: "상품코드", name: "goodsCode", align: "left",  },
+        { header: "옵션코드", name: "optionCode", align: "left",  },
+        { header: "규격", name: "goodsStandard", align: "center",  },
+        { header: "수량(box)", name: "quantity", align: "right",  },
         //{ header: "단가", name: "unitPrice",  },
         //{ header: "총액", name: "totalPrice",  }
     ],
@@ -399,10 +421,12 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	//이력 그리드 형식
 	const orderHistoryGrid = new Grid({
     el: document.getElementById('orderHistory'),
+    scrollX:false,
+    scrollY:false,
     columns: [
-        { header: "이력유형", name: "historyType", formatter: ({ value }) => formatOrderStatus(value), width:"auto" },
-        { header: "처리일", name: "registerDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', },
-        { header: "이력내용", name: "historyContents",  },
+        { header: "이력유형", name: "historyType", formatter: ({ value }) => formatOrderStatus(value), },
+        { header: "이력내용", name: "historyContents",  width:720},
+        { header: "처리일", name: "registerDate", formatter: ({ value }) => formatDate(value, 'order'), },
 
     ],
     pageOptions: {
