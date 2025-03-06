@@ -1,5 +1,6 @@
 package com.beauty1nside.mypage.controller;
 
+import com.beauty1nside.common.FileConfig;
 import com.beauty1nside.hr.dto.EmpDTO;
 import com.beauty1nside.mainpage.dto.ApprovalDTO;
 import com.beauty1nside.mainpage.service.ApprovalService;
@@ -31,8 +32,7 @@ import java.util.UUID;
 public class MypageRestController {
   final ApprovalService approvalService;
   final ProfileService profileService;
-  
-  private static final String UPLOAD_DIR = "src/main/resources/static/file/image/mypage/profile/";
+  final FileConfig fileConfig;
   
   @GetMapping("/profile")
   public EmpDTO getMyProfile(@AuthenticationPrincipal CustomerUser user) {
@@ -55,12 +55,14 @@ public class MypageRestController {
     
     try {
       String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-      Path uploadPath = Paths.get(UPLOAD_DIR + fileName);
+
+      String uploadDir = fileConfig.getUpload();
+      Path uploadPath = Paths.get(uploadDir + fileName);
       
       Files.createDirectories(uploadPath.getParent());
       Files.write(uploadPath, file.getBytes());
       
-      String imageUrl = "/file/image/mypage/profile/" + fileName;
+      String imageUrl = uploadDir + fileName;
       empDTO.setProfileImage(imageUrl);
       
       int isSuccess = profileService.update(empDTO);

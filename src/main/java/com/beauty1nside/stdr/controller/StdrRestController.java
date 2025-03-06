@@ -1,5 +1,6 @@
 package com.beauty1nside.stdr.controller;
 
+import com.beauty1nside.common.FileConfig;
 import com.beauty1nside.common.GridArray;
 import com.beauty1nside.common.Paging;
 import com.beauty1nside.stdr.dto.DocumentDTO;
@@ -32,8 +33,7 @@ import java.util.UUID;
 public class StdrRestController {
   final DocumentService documentService;
   final StdrDeptService stdrDeptService;
-  
-  private static final String UPLOAD_DIR = "src/main/resources/static/file/image/stdr/document/";
+  final FileConfig fileConfig;
   
   @GetMapping("document")
   public Object getDocList(@RequestParam(name = "perPage", defaultValue = "20", required = false) int perPage,
@@ -81,14 +81,15 @@ public class StdrRestController {
     try {
       // 파일명 생성 (UUID + 원본 확장자)
       String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-      Path uploadPath = Paths.get(UPLOAD_DIR + fileName);
+      String uploadDir = fileConfig.getUpload();
+      Path uploadPath = Paths.get(uploadDir + fileName);
       
       // 저장 디렉토리 없으면 생성
       Files.createDirectories(uploadPath.getParent());
       Files.write(uploadPath, file.getBytes());
       
       // 클라이언트에 제공할 이미지 URL 생성
-      String imageUrl = "/file/image/stdr/document/" + fileName;
+      String imageUrl = uploadDir + fileName;
       response.put("imageUrl", imageUrl);
       
       return ResponseEntity.ok(response);
