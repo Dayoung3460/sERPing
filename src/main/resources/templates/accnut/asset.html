@@ -6,132 +6,136 @@
 <head>
 <meta charset="UTF-8">
 <title>자산관리</title>
+<style>
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		 <div>
-			 <h2>자산관리</h2>
-		 </div>
-
-		<!-- 검색창 -->
-		<div class="search-grid">
-			<!-- 검색창 첫줄 -->
-			<div class="row 1row">
-				<div class="col-1"></div>
-				<!-- 자산명 인풋 -->
-				<div class="col-5 row ">
-					<span class="label-search col-4">자산명</span>
-					<input type="text" name="assetsName" id="assetsName" class="col-8 input-box">
-				</div>
-				<div class="col-1"></div>
-				<!-- 구분 인풋 -->
-				<div class="col-5 row ">
-					<span class="label-search col-4">구분</span>
-					<select name="section" id="section" class="col-8 input-box">
-						<option value="" selected>구분</option>
-						<option value="AC01" >현금</option>
-						<option value="AC02" >통장</option>
-						<option value="AC03" >카드</option>
-						<option value="AC04" >비품</option>
-
-					</select>
-				</div>
-			</div>
-			<!-- 검색창 두번째 줄 -->
-			<div class="row 2row">
-				<div class="col-1"></div>
-				<!-- 금융기관 인풋 -->
-				<div class="col-5 row ">
-					<span class="label-search col-4">은행 및 카드사</span>
-					<input type="text" name="financialInstitution" id="financialInstitution" class="col-8 input-box">
-				</div>
-				<div class="col-1"></div>
-				<!-- 그리드 표시 수량 인풋 
-				<div class="col-5 row ">
-					<span class="label-search col-4">표시수량</span>
-					<select name="display_amount" id="display_amount" class="col-8 input-box" onchange="changeDisplay()">
-						<option value="5" selected>5</option>
-						<option value="10">10</option>
-						<option value="20">20</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
-					</select>
-				</div>
-				-->
-			</div>
-			<!-- 검색 버튼 줄 -->
-			<div class="row 3row">
-				<div class="col-4"></div>
-				<button type="button" class="btn btn-primary col-1" onclick="search()">검색</button>
-				<div class="col-1"></div>
-				<button type="button" class="btn btn-secondary col-1" onclick="reset()">초기화</button>
-			</div>
-
-		</div>
-		<div id="rayout-container" class="row">
-			<div class="col-9"></div>
-			<!-- 그리드 표시 수량 인풋 -->
-			<div class="col-3 row ">
-				<div class="col-3"></div>
-				<span class="label-search col-5" style="font-size: 1em">표시수량</span>
-				<select name="display_amount" id="display_amount" class="col-4 input-box" onchange="changeDisplay()">
-					<option value="5" selected>5</option>
-					<option value="10">10</option>
-					<option value="20">20</option>
-					<option value="50">50</option>
-					<option value="100">100</option>
-				</select>
-			</div>
-		</div>
-		<!-- 그리드 -->
-		<div id="table-container">
-			<div id="grid"></div>
-			<div id="pagination" class="tui-pagination"></div>
-		</div>
-		<!-- 하부 버튼 -->
-		<div class="button-bar row">
-		<!-- 
-			<div class="col-1"></div>
-		 -->
-			<button type="button" class="btn btn-primary col-1 btnExcel">Excel</button>
-			<button type="button" class="btn btn-secondary col-1">PDF</button>
-			<div class="col-8"></div>
-			<!-- 등록 모달 띄울 버튼 -->
-			<div class="btn-group dropup col-2">
-				<button type="button" class="btn btn-success cash"  data-bs-toggle="modal" data-bs-target="#assetaddModal">현금 등록</button>
-				<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" id="dropupMenuSplitButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<span class="sr-only"></span>
-				</button>
-				<div class="dropdown-menu" aria-labelledby="dropupMenuSplitButton3">
-					<h6 class="dropdown-header">자산 등록</h6>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assetaddModal">통장 등록</a>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assetaddModal">카드 등록</a>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assetaddModal">비품 등록</a>
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#assetaddModal">현금 등록</a>
+		<h3 class="mt-2 mb-2"><b>자산관리</b></h3>
+		<hr>
+		<div class="row">
+			<!-- 검색창 -->
+			<div id="custom-container">
+				<div class="row">
+					<!-- 자산명 인풋 -->
+					<div class="col-md-3 mt-1 mb-1">
+						<label class="form-label">자산명</label>
+						<input type="text" name="assetsName" id="assetsName" class="form-control input-box">
+					</div>
+					<!-- 금융기관 인풋 -->
+					<div class="col-md-3 mt-1 mb-1">
+						<label class="form-label">금융기관</label>
+						<input type="text" name="financialInstitution" id="financialInstitution" class="form-control input-box">
+					</div>
+					<!-- 구분 인풋 -->
+					<div class="col-md-3 mt-1 mb-1">
+						<label class="form-label">구분</label>
+						<select name="section" id="section" class="form-control input-box">
+							<option value="" selected>구분</option>
+							<option value="AC01" >현금</option>
+							<option value="AC02" >통장</option>
+							<option value="AC03" >카드</option>
+							<option value="AC04" >비품</option>
+						</select>
+					</div>
+					<!-- 그리드 표시 수량 인풋 
+					<div class="col-5 row ">
+						<span class="label-search col-4">표시수량</span>
+						<select name="display_amount" id="display_amount" class="col-8 input-box" onchange="changeDisplay()">
+							<option value="5" selected>5</option>
+							<option value="10">10</option>
+							<option value="20">20</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select>
+					</div>
+					-->
+					<!-- 검색 버튼 줄 -->
+					<div class="col-md-1"></div>
+					<div class="col-md-2 mt-4 mb-2">
+						<button type="button" class="btn btn-primary" onclick="search()">검색</button>
+						<button type="button" class="btn btn-secondary" style=" margin: 0px 10px" onclick="reset()">초기화</button>
+					</div>
 				</div>
 			</div>
-		</div>
-		<!-- 자산 등록 -->
-		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
-						    	'assetaddModal', 
-						    	'modal-xl', 
-						    	'자산 등록', 
-						    	'accnut/modal/assetForm',
-						    	'accnut/modal/assetFooter'
-						    )"></div>
-						    
-		<!-- 상세 보기 -->
-		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
-						    	'assetdetailModal', 
-						    	'modal-xl', 
-						    	'상세 보기', 
-						    	'accnut/modal/assetDetail', 
-						    	'accnut/modal/assetFooter'
-						    )"></div>
 		
+		<div class="col-md-12 stretch-card mt-2 mb-5">
+			<div class="card">
+				<div class="card-body">
+					<div id="rayout-container" class="row mb-3">
+						<div class="col-9"></div>
+						<!-- 그리드 표시 수량 인풋 -->
+						<div class="col-3 row ">
+							<div class="col-3"></div>
+							<span class="label-search col-5" style="font-size: 1em">표시수량</span>
+							<select name="display_amount" id="display_amount" class="col-4 input-box" onchange="changeDisplay()">
+								<option value="5" selected>5</option>
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+							</select>
+						</div>
+					</div>
+					<!-- 그리드 -->
+					<div id="table-container">
+						<div id="grid"></div>
+						<div id="pagination" class="tui-pagination"></div>
+					</div>
+					<!-- 하부 버튼 -->
+					<div class="button-bar row">
+					<!-- 
+						<div class="col-1"></div>
+					 -->
+						<button type="button" class="btn btn-dark col-1 btnExcel">Excel</button>
+						<div class="col-9"></div>
+						<!-- 등록 모달 띄울 버튼 -->
+						<div class="btn-group dropup col-2">
+							<button type="button" class="btn btn-success cash"  data-bs-toggle="modal" data-bs-target="#assetaddModal">현금 등록</button>
+							<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" id="dropupMenuSplitButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span class="sr-only"></span>
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropupMenuSplitButton3">
+								<h6 class="dropdown-header">자산 등록</h6>
+								<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assetaddModal">통장 등록</a>
+								<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assetaddModal">카드 등록</a>
+								<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assetaddModal">비품 등록</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#assetaddModal">현금 등록</a>
+							</div>
+						</div>
+					</div>
+					<!-- 자산 등록 -->
+					<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+									    	'assetaddModal', 
+									    	'modal-xl', 
+									    	'자산 등록', 
+									    	'accnut/modal/assetForm',
+									    	'accnut/modal/assetFooter'
+									    )"></div>
+									    
+					<!-- 상세 보기 -->
+					<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+									    	'assetdetailModal', 
+									    	'modal-xl', 
+									    	'상세 보기', 
+									    	'accnut/modal/assetDetail', 
+									    	'accnut/modal/assetFooter'
+									    )"></div>
+					</div>
+				</div>		    
+			</div>			    
+		</div>
 	</div>
+	
 <script>
 	var session = sessionData;
 
@@ -195,8 +199,8 @@
 			{ header : "금융기관", name : "financialInstitution",  sortable : true},
 			{ header : "통장 및 카드 번호", name : "financeInformation",  sortable : true},
 			{ header : "소유주", name : "owner",  sortable : true},
-			{ header : "금액", name : "amount",  sortable : true},
-			{ header : "등록일", name : "registerDate",  sortable : true},
+			{ header : "금액", name : "amount",  sortable : true, align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+			{ header : "등록일", name : "registerDate",  sortable : true, align: 'center'},
 			{ header : "상세보기", name : "detail", formatter : () => '<button class="btn btn-warning btn-sm btnInfo" data-bs-toggle="modal" data-bs-target="#assetdetailModal">상세보기</button>', align: 'center'},
 			
 		],

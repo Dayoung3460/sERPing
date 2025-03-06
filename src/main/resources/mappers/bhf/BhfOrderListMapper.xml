@@ -9,6 +9,7 @@
 		       order_date, 
 		       due_date, 
 		       progress_status, 
+		       count_name,
 		       remark,
 		       order_cancel_reason
 		from (  select /*+INDEX_DESC(bhf_order pk_bhf_order)*/
@@ -18,6 +19,7 @@
 				       order_date, 
 				       due_date, 
 				       progress_status, 
+				       fn_get_num_string(order_code) as count_name,
 				       remark,
 				       order_cancel_reason
 				from   bhf_order
