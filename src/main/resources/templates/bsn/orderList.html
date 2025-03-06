@@ -357,7 +357,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                    }
 	                });
 	            	//
-	                orderDetailGrid.Data(detailData);
+	                orderDetailGrid.resetData(detailData);
 	            } else {
 	                console.warn("상세 데이터가 없습니다.");
 	                orderDetailGrid.resetData([]); // 빈 배열로 초기화
@@ -412,7 +412,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     ],
     pageOptions: {
         useClient: false,
-        perPage: 5
+        perPage: 10
     }
 	
 	
