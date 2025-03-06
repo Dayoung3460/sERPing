@@ -38,6 +38,9 @@ public interface EmpService {
     // 이메일 중복 체크 추가
     boolean checkEmailExists(String email);
     
+    // 사원ID 중복 체크
+    boolean isEmployeeIdExists(String employeeId);
+    
     List<String> getDepartments(int companyNum); // ✅ 기존 방식 유지
     List<Map<String, Object>> getDepartmentList(); // ✅ 새로운 방식 추가
     List<Map<String, Object>> getSubDepartments(String departmentNum); // ✅ 하위 부서 조회

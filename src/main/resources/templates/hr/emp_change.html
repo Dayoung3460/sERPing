@@ -223,10 +223,10 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("📌 현재 권한 목록 로드 완료:", authList);
     	
         return [
-            { header: "사원번호", name: "employeeId", width: 100 },
-            { header: "사원명", name: "employeeName", width: 150 },
-            { header: "직급", name: "position", width: 100 },
-            { header: "새 직급", name: "newPosition", width: 100 },
+            { header: "사원번호", name: "employeeId", width: 100, align: 'center' },
+            { header: "사원명", name: "employeeName", width: 150, align: 'center' },
+            { header: "직급", name: "position", width: 100, align: 'center' },
+            { header: "새 직급", name: "newPosition", width: 100, align: 'center' },
             {
                 header: "새 직급",
                 name: "newPosition",
@@ -237,8 +237,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     options: { listItems: positionList}
                 }
             },
-            { header: "부서", name: "departmentName", width: 150 },
-            { header: "새 부서", name: "newDepartment", width: 100 },
+            { header: "부서", name: "departmentName", width: 150, align: 'center' },
+            { header: "새 부서", name: "newDepartment", width: 100, align: 'center' },
             {
                 header: "새 부서",
                 name: "newDepartment",
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             },
             { header: "권한", name: "authority", align: "center", sortable: true, width: 100 },
-            { header: "새 권한", name: "newAuthority", width: 100 },
+            { header: "새 권한", name: "newAuthority", width: 100, align: 'center' },
             {
                 header: "새 권한",
                 name: "newAuthority",

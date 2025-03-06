@@ -128,7 +128,12 @@ public class EmpServiceImpl implements EmpService {
 		 * empDTO.setEmploymentType("ET001");
 		 */
 
-        // ✅ 중복 이메일 확인
+        // ✅ 사원 ID 중복 확인
+        if (isEmployeeIdExists(empDTO.getEmployeeId())) {
+            throw new DuplicateKeyException("이미 등록된 사원 ID입니다.");
+        }
+
+        // ✅ 이메일 중복 확인
         if (checkEmailExists(empDTO.getEmail())) {
             throw new DuplicateKeyException("이미 등록된 이메일입니다.");
         }
@@ -137,6 +142,11 @@ public class EmpServiceImpl implements EmpService {
         empMapper.insertEmployee(empDTO);
         
         
+    }
+    
+    @Override
+    public boolean isEmployeeIdExists(String employeeId) {
+        return empMapper.checkEmpIDExists(employeeId) > 0; // ✅ 변환 적용
     }
 
 	@Override

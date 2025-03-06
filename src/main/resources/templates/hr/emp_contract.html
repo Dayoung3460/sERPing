@@ -355,12 +355,13 @@ document.addEventListener("DOMContentLoaded", function() {
         scrollX: false,
         scrollY: false,
         columns: [
-            { header: "사원번호", name: "employeeNum", align: "center" },
+            { header: "사원ID", name: "employeeId", align: "center" },
+            { header: "사원번호", name: "employeeNum", align: "center", hidden: true },
             { header: "이름", name: "employeeName", align: "center" },
             { header: "부서명", name: "departmentName", align: "center" },
-            { header: "부서번호", name: "departmentNum", align: "center" },
+            { header: "부서번호", name: "departmentNum", align: "center", hidden: true },
             { header: "직급", name: "position", align: "center" },
-            { header: "회사번호", name: "companyNum", align: "center" },
+            { header: "회사번호", name: "companyNum", align: "center", hidden: true },
             { header: "회사명", name: "companyName", align: "center" },
         ]
     });

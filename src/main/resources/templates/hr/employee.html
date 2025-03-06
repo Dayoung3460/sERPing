@@ -45,7 +45,14 @@
 	  height: auto;           /* 비율 유지 */
 	  max-height: 100%;       /* 컨테이너 높이 내에서 제한 */
 	}
-
+	
+	.custom-swal-popup {
+	    word-wrap: break-word;  /* 긴 문장 자동 줄바꿈 */
+	    white-space: pre-line;  /* \n도 줄바꿈 적용 */
+	    padding: 24px;          /* 적당한 패딩 */
+	    max-height: 80vh;       /* 내용이 많으면 스크롤 */
+	    overflow-y: auto;       /* 세로 스크롤 자동 */
+	}
 
 	</style>
 	
@@ -143,7 +150,7 @@
     <!-- 사원 검색 영역 끝 -->
     <!-- 버튼 영역 -->
     <div class="row mt-3">
-        <div class="col text-end">
+        <div class="col text-start">
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#empRegisterModal">사원 등록</button>
             <!-- <button class="btn btn-danger" onclick="deleteEmployee()">삭제</button> -->
         </div>
@@ -162,7 +169,7 @@
 		    <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (
 		    'contractModal', 
 		    'modal-xl', 
-		    '최근 근로계약서', 
+		    '최신 근로계약서', 
 		    'purchs/modal/purchaseForm', 
 		    'purchs/modal/purchaseFooter'
 		    )"></div>

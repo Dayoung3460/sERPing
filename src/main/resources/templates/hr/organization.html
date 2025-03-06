@@ -62,7 +62,7 @@
 	    }
 	    #grid {
 	      width: 100%;
-	      height: 300px;
+	      height: 600px;
 	    }
 	    .profile-image {
 	    width: 150px; /* 가로 크기 고정 */
@@ -70,6 +70,21 @@
 	    border-radius: 5px; /* 선택적: 모서리 둥글게 */
 	    object-fit: contain; /* 이미지 비율 유지 */
 	}
+	
+		.table-header {
+		    display: flex;
+		    justify-content: space-between; /* 제목과 드롭다운을 양쪽으로 배치 */
+		    align-items: center; /* 수직 정렬 */
+		    margin-bottom: 10px; /* 아래쪽 여백 추가 */
+		}
+		
+		.table-header .d-flex {
+		    display: flex;
+		    align-items: center;
+		    gap: 10px; /* 드롭다운과 글자 간격 조정 */
+		    white-space: nowrap; /* 줄바꿈 방지 */
+		
+		}
 	  </style>
 	</head>
 	
@@ -89,7 +104,7 @@
 	    <div class="content-section">
 	      <section class="org-chart">
 	        <!-- <input type="text" class="form-control mb-3" id="deptSearchKW" placeholder="부서 검색 후 [Enter]"> -->
-	        <div class="department-tree">
+	        <div class="department-tree pt-3">
 	            <ul>
 	                <!-- 회사 정보 -->
 	                <li th:data-company-id="${company.companyNum}" class="select-item" id="selectCompanySJ">
@@ -128,10 +143,25 @@
 	    </div>
 	  </section>
 	
-	      <section class="employee-table">
-	        <h5 class="fw-bold">사원 목록</h5>
-	        <div id="grid"></div>
-	      </section>
+			<section class="employee-table">
+			    <!-- 제목과 표시 수량을 한 줄에 배치 -->
+			    <div class="table-header pt-3">
+			        <h5 class="fw-bold">사원 목록</h5>
+			        <div class="d-flex align-items-center gap-2">
+			            <label for="perPageSelect" class="mb-0">표시 수량:</label>
+			            <select id="perPageSelect" class="form-select w-auto">
+			                <option value="10">10</option>
+			                <option value="20">20</option>
+			                <option value="50">50</option>
+			                <option value="100">100</option>
+			            </select>
+			        </div>
+			    </div>
+			
+			    <!-- Toast Grid -->
+			    <div id="grid"></div>
+			</section>
+
 	    </div>
 	    
 	    
@@ -491,16 +521,25 @@
 	          // Toast Grid 초기화 (데이터 없이)
 	          const grid = new tui.Grid({
 	              el: document.getElementById("grid"),
-	              pageOptions: { useClient: false, perPage: 5 },
+	              pageOptions: { useClient: false, perPage: 10 },
 	              data: dataSource,
 	              columns: [
-	                  { header: "사원 ID", name: "employeeId" },
-	                  { header: "사원명", name: "employeeName" },
-	                  { header: "이메일", name: "email" },
-	                  { header: "직급", name: "position" },
-	                  { header: "부서", name: "departmentName" }
+	                  { header: "사원 ID", name: "employeeId", align: 'center' },
+	                  { header: "사원명", name: "employeeName", align: 'center' },
+	                  { header: "이메일", name: "email", align: 'left' },
+	                  { header: "직급", name: "position", align: 'center' },
+	                  { header: "부서", name: "departmentName", align: 'center' }
 	              ]
 	          });
+	          
+	          
+		      
+		      document.getElementById("perPageSelect").addEventListener("change", function () {
+		    	    let selectedPerPage = parseInt(this.value); // 선택한 값 가져오기
+		    	    grid.setPerPage(selectedPerPage); // Toast Grid의 perPage 설정 변경
+		    	    grid.readData(1, { perPage: selectedPerPage }); // 새로운 perPage 적용 후 데이터 다시 불러오기
+		    	});
+		
 	
 	          
 	          // Toast Grid 클릭 이벤트 (모달 열기)
@@ -547,10 +586,8 @@
 	        	}); 
 	      });
 	      
-	      
-	      
-	
-	
+
+
 	
 	      
 	  </script>
