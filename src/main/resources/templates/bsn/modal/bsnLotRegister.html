@@ -6,11 +6,9 @@
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 </head>
 <body>
-	<div id="registerGrid"></div>
-	<script th:inline="javascript">
-	  	let companyNum = [[${session.companyNum}]];
 
-	  </script>  
+	<div id="registerGrid"></div>
+	 
 	<script>
         let registerGrid;
 
@@ -21,9 +19,9 @@
                 el: document.getElementById('registerGrid'),
                 columns: [
                     { header: 'LOT번호', name: 'goodsLotNum', },
-                    { header: '출고가능수량', name: 'warehousingRemainingQuantity',  },
+                    { header: '예약가능수량(box)', name: 'warehousingRemainingQuantity',  },
                     { header: '유통기한', name: 'goodsConsumptionDate', formatter: ({ value }) => formatDate(value), },
-                    { header: '수량', name: 'deliveryQnt', editor: 'text',  }
+                    { header: 'LOT예약수량(box)', name: 'deliveryQnt', editor: 'text',  }
                 ],
                 data: LotListDataSource,
                 rowHeaders: ['rowNum', 'checkbox'],
@@ -32,16 +30,17 @@
                     perPage: 50
                 }
             });
+         	
         });
         
-		
+     	
 
         // 모달이 열릴 때 데이터 업데이트
         document.getElementById('registerModal').addEventListener('shown.bs.modal', function () {
             if (registerGrid) {
             	
                 console.log(selectedRow);
-                //console.log(companyNum);
+                console.log(companyNum);
                 loadLotDetail(selectedRow.optionCode, selectedRow.deliveryDetailId, companyNum);
                 registerGrid.reloadData();
                 registerGrid.refreshLayout();
@@ -88,14 +87,18 @@
     	    if (!dateString) return ''; // 데이터가 없으면 빈 문자열 반환
     	    const date = new Date(dateString);
     	    if (isNaN(date)) return dateString; // 날짜 변환이 실패하면 원본 유지
+    	    
 
-    	    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) // "2025년 2월 17일"
-    	        
+    	    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     	}
+     
+  	
+		
+     
      
      // 테이블 데이터 없을때 나오는 문구
 		function REnodata(){
-			console.log("조회중")
+			//console.log("조회중");
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
 				nodata.innerHTML = '해당하는 데이터가 없습니다.';

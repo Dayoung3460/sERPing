@@ -84,7 +84,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                         </div>
 						<div class="col-12 text-center">
                         	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
-                        	<button class="btn btn-light"        onclick="reset()">초기화</button>
+                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
                         </div>
                     <!-- </form> -->
                 </div>
@@ -135,7 +135,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     <!-- ✅ 승인 / 🚫 거부 버튼 -->
     <div class="row mt-3">
         <div class="col-12 text-center">
-            <button class="btn btn-success" id="registerButton">✅ 승인 (등록)</button>
+            <button class="btn btn-primary" id="registerButton">✅ 승인 (등록)</button>
             <button class="btn btn-danger"  id="cancelButton">🚫 거부 (취소)</button>
         </div>
     </div>
@@ -230,9 +230,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    if (isNaN(date)) return dateString; // 날짜 변환이 실패하면 원본 유지
 
 		    return type === 'order' 
-		        ? date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }) // "2025년 2월 17일"
-		        : date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }) // "2025년 2월 17일"
-		        	//date.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit', weekday: 'short' }); // "02/17 (월)"
+		        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+		        : date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+	            .replace(/\. /g, '-')  // "2025. 02. 17." → "2025-02-17"
+	            .replace(/\.$/, '');
 		}
 		
 		// remark 내용이 길면 자르는 함수
@@ -310,12 +311,13 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		        perPage: 5,
 		    },
 		    columns: [
-		        { header: "발주상세코드", name: "orderDetailCode" },
-		        { header: "상품번호", name: "goodsCode" },
+		        //{ header: "발주상세코드", name: "orderDetailCode", },
+		        //{ header: "상품코드", name: "goodsCode" },
 		        { header: "상품이름", name: "goodsName" },
+		        //{ header: "옵션코드", name: "optionCode" },
 		        { header: "옵션명", name: "optionName" },
 		        { header: "규격", name: "goodsStandard" },
-		        { header: "수량", name: "quantity" },
+		        { header: "수량(box)", name: "quantity" },
 		    ]
 		});
 		
@@ -432,7 +434,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		
 		    console.log("등록할 주문:", orderDTO);
 		    
-		 	// 등록 함수 호출(실험하기 위해 막아둠)
+		 	// 등록 함수 호출
 		    registerOrder(orderDTO);
 		 	
 		 	//화면 초기화 함수
@@ -528,6 +530,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    	// 모달이 'cancelModal'이면 발주 코드 표시
 		        if (modal === cancelModal) {
 		            document.getElementById("cancelOrderCode").textContent = selectedRow.orderCode;
+		        } else {
+		            document.getElementById("registerOrderCode").textContent = selectedRow.orderCode;
 		        }
 		        modal.show();
 		    } else {
@@ -574,7 +578,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    });
 		});
 
-		document.querySelectorAll('.modal-footer .btn-secondary').forEach(button => {
+		document.querySelectorAll('.modal-footer .btn-danger').forEach(button => {
 		    button.addEventListener('click', () => {
 		        // 현재 활성화된 모달 찾기
 		        const activeModal = document.querySelector('.modal.show');
