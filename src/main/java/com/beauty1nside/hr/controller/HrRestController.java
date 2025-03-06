@@ -164,7 +164,7 @@ import lombok.extern.log4j.Log4j2;
 	        // ✅ 파일이 존재하는 경우에만 업로드 수행
 	        if (file != null && !file.isEmpty()) {
 	            try {
-	            	String imgPath = fileConfig.getUpload();
+	            	String imgPath = fileConfig.getUploadpath();
 	                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 	                Path uploadPath = Paths.get(imgPath + fileName);
 	                Files.createDirectories(uploadPath.getParent());
