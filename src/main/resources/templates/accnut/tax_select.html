@@ -11,8 +11,141 @@
 	<div class="container">
 		<!-- 메뉴이름 -->
 		 <div>
-			 <h2>세금계산서 조회</h2>
+			 <h3>세금계산서 조회</h3>
+			 <hr>
 		 </div>
+		<!-- 검색바 -->
+		 <div class="stretch-card mb-3">
+		 	<div class="card">
+				<div class="card-body">
+					<span>지점</span>
+					<select id="bhf">
+						<option value="">지점을 선택해주세요</option>
+					
+					</select>
+					
+					<span>작성일자</span>
+					<input type="date" id="rgdate">
+					<button type="button" onclick="search()">검색</button>
+					<button type="button" onclick="reset()">초기화</button>
+				</div>
+			</div>	
+		 </div>
+		<!-- 그리드 -->
+		 <div class="stretch-card">
+		 	<div class="card">
+				<div class="card-body">
+					<div class="row mb-2">
+						<div class="col-9"></div>
+						<span class="label-search col-1">표시수량</span>
+						<select name="display_amount" id="display_amount" class="col-1 input-box" onchange="changeDisplay()">
+							<option value="5" selected>5</option>
+							<option value="10">10</option>
+							<option value="20">20</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select>
+					</div>
+					<div id="grid"></div>
+				</div>
+			</div>	
+		 </div>		 
+		 
 	</div>
+	
+<script>
+	var session = sessionData;
+	
+	document.addEventListener("DOMContentLoaded",()=>{
+		getBhf();
+	  
+	});
+	
+	var Grid = tui.Grid;
+	
+	const header = document.querySelector('meta[name="_csrf_header"]').content;
+	const token = document.querySelector('meta[name="_csrf"]').content;
+	
+	const dataSource = {
+		api: {
+			readData: { url: '/accnut/rest/tax/list', method: 'GET', initParams: { page: 1, companyNum: session.companyNum } },
+		},
+		contentType: 'application/json'		
+	};
+	
+	const grid = new Grid({
+		el : document.querySelector('#grid'),
+		pageOptions: {
+			useClient : false,
+			perPage: 5,
+		},
+		columns: [
+			{ header : "지점번호", name : "toRgno", hidden : 1 },
+			{ header : "지점", name : "toCoName",   },
+	      { header : "성명", name : "toName",  },
+	      { header : "주소", name : "toAddress", width : 250 },
+	      { header : "작성일자", name : "rgdate",  },
+	      { header : "업태", name : "toStatus",  hidden : 1},
+	      { header : "종목", name : "toCate",  hidden : 1},
+	      { header : "금액", name : "total",  },
+	      { header : "공급가액", name : "supply",  },
+	      { header : "세액", name : "tax",  },
+			
+		],
+		data : dataSource,
+	});
+		
+	function changeDisplay() {
+		let gap = parseInt(document.querySelector('#display_amount').value);
+		grid.setPerPage(gap, dataSource);
+	}
+
+	function search() {
+		let bhf = document.querySelector("#bhf").value;
+		let rgdate = document.querySelector("#rgdate").value;
+		let param = {};
+		
+		if(bhf != "") param.toRgno = bhf;
+		if(rgdate != "") param.rgdate = rgdate;
+		
+		grid.setRequestParams(param);
+		grid.readData();
+		
+	}
+	
+	function reset(){
+		document.querySelector("#bhf").value = "";
+		document.querySelector("#rgdate").value = "";
+		grid.setRequestParams({});
+		grid.readData();
+	}
+	
+	function getBhf(){
+		const header = document.querySelector('meta[name="_csrf_header"]').content;
+        const token = document.querySelector('meta[name="_csrf"]').content;
+		
+		fetch(`/accnut/rest/bhf/list?companyNum=${session.companyNum}`, {
+			method: "GET",
+			headers: {
+					 	'header': header,
+			                "Content-Type": "application/json",
+			                'X-CSRF-Token': token				
+			 		}
+		}).then(response => response.json())
+		.then(data => {
+			//console.log(data);
+			let officeId = document.querySelector("#bhf");
+			for(bhf of data.result){
+				let html = `<option value="${bhf.bhfId}" data-phone="${bhf.bhfPhone}" data-address="${bhf.bhfAddress}" data-status="${bhf.bhfStatus}" data-cate="${bhf.bhfCate}" data-name="${bhf.bhfName}">${bhf.bhfName}</option>`;
+				officeId.insertAdjacentHTML("beforeend", html);
+			}
+		});
+	}
+	
+	grid.on("click", (ev)=>{
+		console.log(grid.getRow(ev.rowKey));
+	})
+	
+</script>
 </body>
 </html>
