@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // ✅ 부서 목록 매핑 (수정됨)
         departmentList = departments.map(dept => ({
             text: dept.DEPARTMENT_NAME, // 화면에 표시할 부서명
-            value: dept.DEPARTMENT_NUM  // 실제 DB 저장할 부서번호
+            value: String(dept.DEPARTMENT_NUM)  // 실제 DB 저장할 부서번호
         }));
         
         // ✅ 근무 유형 목록 매핑
@@ -198,6 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
             value: auth.CMMNCODE  
         }));
         
+        
         console.log("📌 직급 목록 로드 완료:", positionList);
         console.log("📌 부서 목록 로드 완료:", departmentList);
         console.log("📌 근무 유형 목록 로드 완료:", employmentTypeList);
@@ -208,12 +209,19 @@ document.addEventListener("DOMContentLoaded", function () {
         
         // ✅ 데이터 다시 불러오기
         employeeGrid.readData();
-    }, 500);
+    }, 1000);
 
 
     
     // ✅ 컬럼 동적 업데이트 함수
     function getUpdatedColumns() {
+    	
+    	console.log("🔥 getUpdatedColumns 실행됨"); // ✅ 실행 여부 확인
+    	console.log("📌 현재 직급 목록 로드 완료:", positionList);
+        console.log("📌 현재 부서 목록 로드 완료:", departmentList);
+        console.log("📌 현재 근무 유형 목록 로드 완료:", employmentTypeList);
+        console.log("📌 현재 권한 목록 로드 완료:", authList);
+    	
         return [
             { header: "사원번호", name: "employeeId", width: 100 },
             { header: "사원명", name: "employeeName", width: 150 },
@@ -271,31 +279,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 포지션 Formatter
     function positionFormatter({ value }) {
+    	console.log("aa");
         const position = positionList.find(item => item.value === value);
+        console.log("🛠️ 매핑된 부서:", position);
         return position ? position.text : value;
     }
     
     // ✅ 부서 Formatter
     function departmentFormatter({ value }) {
-        const department = departmentList.find(item => item.value === value);
+    	console.log("bb");
+        const department = departmentList.find(item => item.value === String(value));
+        console.log("🛠️ 매핑된 부서:", department);
         return department ? department.text : value;
     }
     
     // ✅ 근무우형 Formatter
     function employmentTypeFormatter({ value }) {
+    	console.log("cc");
         const employmentType = employmentTypeList.find(item => item.value === value);
+        console.log("🛠️ 매핑된 부서:", employmentType);
         return employmentType ? employmentType.text : value;
     }
     
     // ✅ 근무우형 Formatter
     function authFormatter({ value }) {
+    	console.log("ddd");
         const auth = authList.find(item => item.value === value);
+        console.log("🛠️ 매핑된 부서:", auth);
         return auth ? auth.text : value;
     }
 
 
 
+    
+    
     initializeEmployeeGrid(); // 초기 Grid 생성
+    
+    console.log("🔍 employeeGrid 데이터 확인:", employeeGrid.getData());
 });
 </script>
 <script src="/js/hr/common-codes.js"></script>

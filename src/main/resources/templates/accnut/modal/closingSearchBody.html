@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8">
+</head>
+<body>    
+    <div class="container">
+    	<select id="selectDay" onchange="changeGrid()">
+    		<option value="">일을 선택해주세요</option>
+    	</select>	
+    
+	</div>
+	
+	<script>
+		document.querySelector("#closingSearchModal").addEventListener('shown.bs.modal', function () {
+			let month = document.querySelector("#regiserDate").value.substr(0, 7);
+			
+			
+			const header = document.querySelector('meta[name="_csrf_header"]').content;
+	        const token = document.querySelector('meta[name="_csrf"]').content;
+	        
+	        if(document.querySelector("#bhf").value != "" && document.querySelector("#regiserDate").value != ""){
+	        	fetch(`http://localhost:81/accnut/rest/day/list?bhfId=${result.to.name}&companyNum=${session.companyNum}&month=${month}`, {
+	    			method: "GET",
+	    			headers: {
+	    					 	'header': header,
+	    			                "Content-Type": "application/json",
+	    			                'X-CSRF-Token': token				
+	    			 		}
+	    			})
+	    			 .then(response => response.json())
+	    			 .then(data => {
+	    				// console.log(data);
+	    				for(day of data.result){
+	    					let html = `<option value="${day.code}">${day.day}</option> `;
+	    					document.querySelector("#selectDay").insertAdjacentHTML("beforeend", html);
+	    				}
+	    			 })
+	        } else {
+	        	showAlert("지점과 작성일자를 입력해주세요.","danger")
+	        	document.querySelector("#closingSearchModal").querySelector("#closingClose").click();
+	        }
+		})
+		
+		function changeGrid() {
+			const header = document.querySelector('meta[name="_csrf_header"]').content;
+	        const token = document.querySelector('meta[name="_csrf"]').content;
+			let code = document.querySelector("#selectDay").value;
+			fetch(`http://localhost:81/accnut/rest/closing/list?code=${code}`, {
+    			method: "GET",
+    			headers: {
+    					 	'header': header,
+    			                "Content-Type": "application/json",
+    			                'X-CSRF-Token': token				
+    			 		}
+    			})
+    			 .then(response => response.json())
+    			 .then(data => {
+    				 console.log(data);
+    				 grid.resetData(data.result);
+    				 displayTotal();
+    			 })
+			
+		}
+	
+	</script>
+</body>
+</html>

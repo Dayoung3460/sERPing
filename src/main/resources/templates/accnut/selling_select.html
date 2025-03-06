@@ -122,16 +122,16 @@
 						    	'optSearchModal', 
 						    	'', 
 						    	'상품 검색', 
-						    	'accnut/optSearchBody', 
-						    	'accnut/optSearchFooter'
+						    	'accnut/modal/optSearchBody', 
+						    	'accnut/modal/optSearchFooter'
 						    )"></div>
 		<!-- 매출 상세 모달 -->
 		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
 						    	'sellDetailModal', 
 						    	'modal-xl', 
 						    	'매출 상세', 
-						    	'accnut/sellDetailBody', 
-						    	'accnut/sellDetailFooter'
+						    	'accnut/modal/sellDetailBody', 
+						    	'accnut/modal/sellDetailFooter'
 						    )"></div>
 		
 	</div>
@@ -164,7 +164,7 @@
 	
 	const dataSource = {
 		api: {
-			readData: { url: 'http://localhost:81/accnut/rest/selling/list', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum }},
+			readData: { url: '/accnut/rest/selling/list', method: 'GET', initParams: { page: 1 , companyNum: session.companyNum }},
 			
 		},
 		contentType: 'application/json'
@@ -282,7 +282,7 @@
 		const header = document.querySelector('meta[name="_csrf_header"]').content;
         const token = document.querySelector('meta[name="_csrf"]').content;
 		
-		fetch(`http://localhost:81/accnut/rest/bhf/list?companyNum=${session.companyNum}`, {
+		fetch(`/accnut/rest/bhf/list?companyNum=${session.companyNum}`, {
 			method: "GET",
 			headers: {
 					 	'header': header,

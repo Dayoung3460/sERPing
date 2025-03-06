@@ -73,10 +73,17 @@
     object-fit: contain; /* 이미지 비율 유지 */
 }
 
-.content-section{
-  width: 800px;
-  height: 800px;
+
+
+.employee-table {
+    width: 100%;
+    height: 100vh; /* 화면 전체 높이 */
+    overflow: hidden; /* 스크롤이 아니라 화면 크기에 맞추도록 */
+    display: flex;
+    flex-direction: column;
 }
+
+
   </style>
 </head>
 
@@ -226,11 +233,64 @@
  <script>
  let companyNum = /*[[${session.companyNum}]]*/ null; 
  
+ 
+ 
  const header = document.querySelector('meta[name="_csrf_header"]').content;
  const token = document.querySelector('meta[name="_csrf"]').content;
  
- 
+//✅ 회사(Company) 템플릿 (사각형 스타일)
+ OrgChart.templates.company = Object.assign({}, OrgChart.templates.ana);
+ OrgChart.templates.company.size = [260, 130]; // 🔹 크기 조정
+ OrgChart.templates.company.node =
+     `<rect x="0" y="0" width="260" height="130" fill="#FFD700" stroke-width="2" stroke="#aeaeae" rx="10" ry="10"></rect>`;
+ OrgChart.templates.company.field_0 =
+     `<text style="font-size: 22px; font-weight: bold; font-family: 'Inter', sans-serif;" 
+          fill="#333" x="130" y="65" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
+ OrgChart.templates.company.field_1 =
+     `<text style="font-size: 18px; font-weight: 600; font-family: 'Inter', sans-serif;" 
+          fill="#555" x="130" y="85" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
 
+ OrgChart.templates.company.ripple = {
+     radius: 0,
+     color: "#FFD700",
+     rect: null
+ };
+
+ // ✅ 상위 부서(TopDepartment) 템플릿 (강조된 스타일)
+ OrgChart.templates.topDepartment = Object.assign({}, OrgChart.templates.ana);
+ OrgChart.templates.topDepartment.size = [240, 70]; // 🔹 크기 조정
+ OrgChart.templates.topDepartment.node =
+     `<rect x="0" y="0" width="240" height="70" fill="#2E86C1" stroke-width="2" stroke="#ffffff" rx="5" ry="5"></rect>`;
+ OrgChart.templates.topDepartment.field_0 =
+     `<text style="font-size: 20px; font-weight: bold; font-family: 'Inter', sans-serif;" 
+          fill="#fff" x="120" y="35" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
+ OrgChart.templates.topDepartment.field_1 =
+     `<text style="font-size: 18px; font-weight: 600; font-family: 'Inter', sans-serif;" 
+          fill="#fff" x="120" y="50" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
+
+ OrgChart.templates.topDepartment.ripple = {
+     radius: 0,
+     color: "#2E86C1",
+     rect: null
+ };
+
+ // ✅ 하위 부서(SubDepartment) 템플릿 (가로 정렬)
+ OrgChart.templates.subDepartment = Object.assign({}, OrgChart.templates.ana);
+ OrgChart.templates.subDepartment.size = [200, 60]; // 🔹 크기 조정
+ OrgChart.templates.subDepartment.node =
+     `<rect x="0" y="0" width="200" height="60" fill="#F57C00" stroke-width="2" stroke="#ffffff" rx="5" ry="5"></rect>`;
+ OrgChart.templates.subDepartment.field_0 =
+     `<text style="font-size: 18px; font-weight: bold; font-family: 'Inter', sans-serif;" 
+          fill="#fff" x="100" y="30" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
+ OrgChart.templates.subDepartment.field_1 =
+     `<text style="font-size: 16px; font-weight: 600; font-family: 'Inter', sans-serif;" 
+          fill="#fff" x="100" y="45" text-anchor="middle" dominant-baseline="middle">{val}</text>`;
+
+ OrgChart.templates.subDepartment.ripple = {
+     radius: 0,
+     color: "#F57C00",
+     rect: null
+ };
  
     // 백엔드 API에서 데이터 가져오기 (Spring Boot API 연결)
     fetch("/hr/rest/dept/list?companyNum="+companyNum, {
@@ -242,47 +302,84 @@
     })
 
         .then(response => response.json())
-        .then(data => {
-            // 부서 데이터를 트리 구조로 변환
-            const nodes = data.map(dept => ({
-                id: dept.departmentNum,
-                pid: dept.parentDepartmentNum,  // 부모 ID (null이면 최상위 노드)
-                name: dept.departmentName,
-                title: dept.managerName
-            }));
-            
-            console.log("nodes",nodes);            
-            let chart = new OrgChart(document.getElementById("orgChartList"), {
-            	compact: true, 
-        	    mouseScrool: OrgChart.action.scroll,
-        	    enableSearch: false,
-        	    enableAI: true,    
-        	    enableDragDrop: true,
-        	    nodeBinding: {
-        	        field_0: "name"
-        	    },
-        	    nodes: nodes
-        	});
-            
-            // AI 정렬 기능 추가
-            chart.on('init', function(){
-                chart.AI("Rearrange the chart to optimize hierarchy");
-            });
-            
-            // PDF 다운로드 기능 추가
-            document.getElementById("downloadPdfBtn").addEventListener("click", function() {
-                chart.exportPDF({
-                    format: "A4",
-                    landscape: true,  // 가로 모드 설정
-                    padding: 20,
-                    filename: "organization_chart.pdf"
-                });
-            });
+.then(data => {
+    if (data.length === 0) {
+        console.error("❌ 조직도 데이터가 없습니다.");
+        return;
+    }
 
-            	
-            
-        })
-        .catch(error => console.error("❌ 조직도 데이터 불러오기 실패:", error));
+    // ✅ 1. 회사 노드 추가 (대표 포함)
+    const companyNode = {
+        id: "company_" + data[0].companyNum,
+        name: data[0].companyName,
+        title: "대표: " + data[0].representationName,
+        tags: ["Company"]
+    };
+
+    // ✅ 2. 상위 부서(TOP) 노드 추가 (parentDepartmentNum이 NULL)
+    const topDepartments = data
+        .filter(dept => !dept.parentDepartmentNum)
+        .map(dept => ({
+            id: dept.departmentNum,
+            pid: "company_" + dept.companyNum,  // ✅ 최상단 회사에 연결
+            name: dept.departmentName,
+            title: "팀장: " + (dept.managerName || "없음"),
+            tags: ["TopDepartment"]
+        }));
+
+    // ✅ 3. 하위 부서(SUB) 노드 추가 (parentDepartmentNum이 있는 부서들)
+    const subDepartments = data
+        .filter(dept => dept.parentDepartmentNum)
+        .map(dept => ({
+            id: dept.departmentNum,
+            pid: dept.parentDepartmentNum,  // ✅ 상위 부서에 연결
+            name: dept.departmentName,
+            title: "팀장: " + (dept.managerName || "없음"),
+            tags: ["SubDepartment"]
+        }));
+
+    // ✅ 4. 전체 조직도 데이터 구성
+    const nodes = [companyNode, ...topDepartments, ...subDepartments];
+
+    console.log("📌 조직도 노드 데이터:", nodes);
+
+    // ✅ 5. OrgChart 생성
+	let chart = new OrgChart(document.getElementById("orgChartList"), {
+	    orientation: OrgChart.orientation.left,
+	    compact: true, 
+	    mouseScrool: OrgChart.action.scroll,
+	    enableSearch: false,
+	    enableAI: false,    
+	    enableDragDrop: true,
+	    nodeBinding: {
+	        field_0: "name",  // ✅ 도형에는 부서명만 표시
+	    },
+	    tags: {
+	        "Company": { template: "company" }, 
+	        "TopDepartment": { template: "topDepartment" },
+	        "SubDepartment": { template: "subDepartment" }
+	    },
+	    nodes: nodes
+	});
+    
+    
+    // ✅ 데이터 반영
+    chart.load(nodes);
+    chart.fit();
+    
+    // ✅ PDF 다운로드 기능 추가
+    document.getElementById("downloadPdfBtn").addEventListener("click", function() {
+        chart.exportPDF({
+            scale: 50,
+            format: "A4",
+            landscape: true,
+            padding: 30,
+            filename: "organization_chart.pdf"
+        });
+    });
+
+})
+.catch(error => console.error("❌ 조직도 데이터 불러오기 실패:", error));
 </script>
   
 

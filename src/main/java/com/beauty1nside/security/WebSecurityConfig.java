@@ -53,7 +53,7 @@ public class WebSecurityConfig {
             return;
           }
           
-          // 📌 인증이 필요한 요청은 401 응답
+          // 인증이 필요한 요청은 401 응답
           response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         })
       )
