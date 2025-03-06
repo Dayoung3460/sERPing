@@ -37,8 +37,8 @@ const grid = new Grid({
             name: "process",
             formatter: ({row}) => {
                 return `
-                    <button class="btn btn-approve" data-bs-toggle="modal" data-bs-target="#commonModal" data-in-approval-id="${row.inApprovalId}">승인</button>
-                    <button class="btn btn-reject" data-bs-toggle="modal" data-bs-target="#commonModal" data-in-approval-id="${row.inApprovalId}">반려</button>`
+                    <button class="btn btn-sm btn-outline-success btn-approve " data-bs-toggle="modal" data-bs-target="#commonModal" data-in-approval-id="${row.inApprovalId}">승인</button>
+                    <button class="btn btn-sm btn-outline-danger btn-reject " data-bs-toggle="modal" data-bs-target="#commonModal" data-in-approval-id="${row.inApprovalId}">반려</button>`
             }
         },
         {
