@@ -241,18 +241,34 @@ function validateResidentNumber() {
    let file = null;
 
     profileInputIMG.addEventListener("change", function (event) {
-		file = event.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                profileImgView.src = e.target.result;
-            };
-
-            reader.readAsDataURL(file); // 파일을 읽어 base64 URL로 변환
-        }
-
+	    let file = event.target.files[0];
+	
+	    if (file) {
+	        // 파일 크기 확인 (2MB 제한)
+	        if (file.size > 2 * 1024 * 1024) { 
+	            alert("이미지 크기가 너무 큽니다! (최대 2MB)");
+	            profileInputIMG.value = "";  // 파일 선택 취소
+	            return;
+	        }
+	        
+	        // 파일 확장자 제한 (jpg, jpeg, png만 허용)
+	        let allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+	        if (!allowedExtensions.exec(file.name)) {
+	            alert("jpg, jpeg, png 형식의 파일만 업로드 가능합니다.");
+	            event.target.value = ""; // 파일 선택 취소
+	            return;
+	        }
+	
+	        const reader = new FileReader();
+	        reader.onload = function (e) {
+	            document.getElementById("profilePreview").src = e.target.result;
+	            document.getElementById("profilePreview").style.width = "150px";
+	            document.getElementById("profilePreview").style.height = "150px";
+	            document.getElementById("profilePreview").style.objectFit = "cover";
+	        };
+	
+	        reader.readAsDataURL(file);
+	    }
     });
     
     
