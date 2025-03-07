@@ -87,6 +87,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 							            </div>
 							            <div class="form-check">
 							                <input type="checkbox" class="form-check-input" id="statusCancelled" name="deliveryStatus" value="DS03">
+							                <label class="form-check-label" for="statusCancelled">지점입고완료</label>
+							            </div>
+							            <div class="form-check">
+							                <input type="checkbox" class="form-check-input" id="statusCancelled" name="deliveryStatus" value="DS04">
 							                <label class="form-check-label" for="statusCancelled">출고취소</label>
 							            </div>
 							        </div>
@@ -94,15 +98,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                        </div>
 	
 	                        <div class="form-group m-3">
-	                            <label for="selectBhf">발주지점</label>
-	                            <select class="form-control" id="selectBhf">
-	                            	<option>all</option>
-	                                <option>발주지점1</option>
-	                                <option>발주지점2</option>
-	                                <option>발주지점3</option>
-	                                <option>yedam</option>
-	                            </select>
-	                        </div>
+							    <label for="inputBhf">발주지점</label>
+							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+						    </div>
 	                        
 							<div class="col-12 text-center">
 	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
@@ -325,8 +323,9 @@ function search(){
 	let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
     let startDate = document.getElementById("startDate").value; // 시작 날짜
     let endDate = document.getElementById("endDate").value; // 끝 날짜
-    let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
     
+    let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
     //console.log(selectedOption, startDate, endDate, selectedBhf);
     
     let params = {
