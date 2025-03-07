@@ -124,6 +124,7 @@ const sendImg = () => {
 
                 msgImg.classList.toggle('hide')
                 textarea.classList.toggle('hide')
+                chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
             } else {
                 showAlert("파일 업로드 실패", 'danger');
             }
@@ -204,6 +205,7 @@ const showChats = (chats) => {
         messageDiv.innerHTML += `<span class="message-time">${formatDateTime(message.sendDate)}</span>`
 
         chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
     });
 
 
