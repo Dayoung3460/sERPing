@@ -204,7 +204,6 @@ const showChats = (chats) => {
         messageDiv.innerHTML += `<span class="message-time">${formatDateTime(message.sendDate)}</span>`
 
         chatContainer.appendChild(messageDiv);
-        console.log('messageDiv', messageDiv)
     });
 
 
@@ -238,12 +237,13 @@ const openChatRoom = (employeeNum) => {
         roomId = Object.keys(data)[0]
 
         stompClient.subscribe(`/topic/public/${roomId}`, function (message) {
+
             let msgBody = JSON.parse(message.body)
-            if(!msgBody.content) {
+            if(!msgBody.content && !msgBody.imgPath) {
                 return
             }
             showNotification(message);
-            console.log('addMsg')
+
             addMsg({
                     employeeName: msgBody.sender,
                     msgContent: msgBody.content,
