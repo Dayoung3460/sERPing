@@ -23,7 +23,10 @@ settingsClose.addEventListener('click', backToEmpList)
 goback.addEventListener('click', backToEmpList)
 
 const addMsg = (sentMsg) => {
-    const messageDiv = document.createElement("div");
+    if(!sentMsg.msgContent) {
+        return
+    }
+    let messageDiv = document.createElement("div");
     let isSender = sentMsg.employeeNum === Number(sessionEmployeeNum)
 
     messageDiv.classList.add(
@@ -170,6 +173,9 @@ if (Notification.permission !== "granted") {
     Notification.requestPermission();
 }
 function showNotification(message) {
+    if(!JSON.parse(message.body).content) {
+        return
+    }
     if (Notification.permission === "granted") {
         new Notification(JSON.parse(message.body).sender, {
             body: JSON.parse(message.body).content,
@@ -191,12 +197,15 @@ const openChatRoom = (employeeNum) => {
         roomId = Object.keys(data)[0]
 
         stompClient.subscribe(`/topic/public/${roomId}`, function (message) {
+            let msgBody = JSON.parse(message.body)
+            if(!msgBody.content) {
+                return
+            }
             showNotification(message);
-            const parsedMsg = JSON.parse(message.body)
             addMsg({
-                    employeeName: parsedMsg.sender,
-                    msgContent: parsedMsg.content,
-                    employeeNum: parsedMsg.senderEmpNum
+                    employeeName: msgBody.sender,
+                    msgContent: msgBody.content,
+                    employeeNum: msgBody.senderEmpNum
                 })
         });
 
