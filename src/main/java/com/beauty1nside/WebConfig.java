@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
   
-   @Value("${img.uploadpath}") String imgUrl;
+  @Value("${img.uploadpath}") String imgUrl;
   
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
