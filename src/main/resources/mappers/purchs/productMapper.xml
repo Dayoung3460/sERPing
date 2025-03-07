@@ -250,6 +250,7 @@ SELECT
     END AS option_use_status,
     o.option_safety_invoice,
     w.warehouse_name,
+    w.warehouse_id,
     e.employee_name,
     
     -- ✅ 옵션별 LOT 정보 (남은 재고량 합계 - 중복 집계 방지)
@@ -317,7 +318,8 @@ GROUP BY
     o.option_code,
     o.option_safety_invoice,
     o.option_use_flag,
-    w.warehouse_name
+    w.warehouse_name,
+    w.warehouse_id
 
 </select>
 
@@ -339,7 +341,7 @@ GROUP BY
     )}
 </insert>
 
-<!-- 상품재고갯수 -->
+
 <!-- 상품재고갯수 -->
 <select id="goodsNum" resultType="ProductDTO">
     WITH AggregatedData AS (
@@ -401,7 +403,7 @@ GROUP BY
 </select>
 
 
-<!-- 상품 수 카운트 -->
+
 <!-- 상품 수 카운트 -->
 <select id="goodsNumcount" resultType="int">
     WITH AggregatedData AS (

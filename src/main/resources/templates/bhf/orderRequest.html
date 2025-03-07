@@ -178,7 +178,7 @@
 				const rowData = grid.getRow(rowKey);  //해당 행의 데이터 가져오기
 				const goodsCode = rowData.goodsCode;  //url의 보내기 위해서 변수담기	
 				// 옵션조회 쿼리 호출(goodsCode)
-			    fetch(`http://localhost:81/bhf/rest/option/list?goodsCode=${goodsCode}&companyNum=${sessioCompanyNum}`, {
+			    fetch(`/bhf/rest/option/list?goodsCode=${goodsCode}&companyNum=${sessioCompanyNum}`, {
 			        method: 'GET',
 			        headers: {
 			            'Content-Type': 'application/json'

@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"></head>
+<head><meta charset="UTF-8">
+<style>
+/* 푸터(합계 부분) 전체를 중앙 정렬 */
+.tui-grid-summary-area {
+    text-align: center !important;
+}
+
+/* 개별 셀 내 텍스트를 중앙 정렬 */
+.tui-grid-summary-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center !important;
+}
+
+</style>
+</head>
 <body>    
     <div class="container">
     	<!-- 그리드 들어올 부분 -->
@@ -23,6 +39,7 @@
 		let newArray = [...checkArray];
 		newArray.unshift({"employeeName" : "총합", "paymentAmount" : total });
 		*/
+		console.log(checkArray);
 		const salgrid = new Grid({
 			el : document.querySelector('#salgrid'),
 			pageOptions: {
@@ -42,15 +59,29 @@
 	      { header : "부대비용", name : "incidentailCost",  },
 	      { header : "공제항목", name : "deductionItem",  },
 				 */
-	      { header : "지급금액", name : "paymentAmount",  align: "center"},
+	      { header : "지급금액", name : "paymentAmount",  align: "center"
+	      },
+	      
 			],
+			summary : {
+				height: 40,
+		        position: 'bottom', // or 'top
+		        columnContent: {
+		        	paymentAmount : {
+		        		align: "center",
+		        		template: function(valueMap) {
+		        			return `총합: ${valueMap.sum}`
+		        		}
+		        	}
+		        }
+			},
 			data : checkArray
 		});
 		//console.log(checkArray);
 		if(checkArray.length > 0) {
 			document.querySelector('#payString').insertAdjacentText("beforeend", `${checkArray[0].employeeName} 외 ${checkArray.length - 1}명, ${total}원`);		
 		}
-		salgrid.appendRow({"employeeName": "총합", "paymentAmount": total},{"at": 0});
+		//salgrid.appendRow({"employeeName": "총합", "paymentAmount": total},{"at": 0});
 		salgrid.on("click",(ev)=>{
 			console.log(salgrid.getRow(ev.rowKey));
 		})

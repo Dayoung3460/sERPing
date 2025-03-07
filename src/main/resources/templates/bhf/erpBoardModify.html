@@ -155,7 +155,7 @@
 		let sessioCompanyNum = [[${session.companyNum}]];
 	    const boardId = document.getElementById("boardId").dataset.boardId
 	    
-	    const url = `http://localhost:81/bhf/rest/board/list?boardId=${boardId}&companyNum=${sessioCompanyNum}`;
+	    const url = `/bhf/rest/board/list?boardId=${boardId}&companyNum=${sessioCompanyNum}`;
 	    fetch(url, {
 	        method: "GET",
 	        headers: {
