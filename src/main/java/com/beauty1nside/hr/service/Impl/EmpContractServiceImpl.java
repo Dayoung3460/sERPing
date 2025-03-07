@@ -42,12 +42,6 @@ public class EmpContractServiceImpl implements EmpContractService {
         return empContractMapper.getLastContract(employeeNum);
     }
 
-    // 전체 계약 목록 조회
-    @Override
-    public List<EmpContractDTO> getAllContracts() {
-        return empContractMapper.getAllContracts();
-    }
-
     
     @Override
     public byte[] generateContractPdf(Long employeeNum, Long companyNum) {
@@ -75,7 +69,14 @@ public class EmpContractServiceImpl implements EmpContractService {
         }
     }
 
-    // ✅ 동적 검색 및 페이징 포함 근로계약 조회
+    // ✅ 전체 근로계약 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<EmpContractDTO> getAllContracts() {
+        return empContractMapper.getAllContracts();
+    }
+
+    // ✅ 검색 및 페이징 포함 근로계약 조회
     @Override
     @Transactional(readOnly = true)
     public List<EmpContractDTO> searchContracts(EmpContractSearchDTO searchDTO) {

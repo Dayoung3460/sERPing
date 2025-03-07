@@ -132,7 +132,7 @@ function searchContracts() {
         endDate: document.getElementById("searchEndDate").value
     };
 
-    fetch("/hr/rest/search", {
+    fetch("/hr/rest/contract/search", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -143,7 +143,7 @@ function searchContracts() {
     .then(response => response.json())
     .then(data => {
         console.log("📊 계약 데이터:", data);
-        grid.resetData(data);
+        grid.resetData(data.contracts);
     })
     .catch(error => console.error("❌ 검색 실패:", error));
 }

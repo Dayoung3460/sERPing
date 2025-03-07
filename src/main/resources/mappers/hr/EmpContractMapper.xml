@@ -59,7 +59,7 @@
 </select>
 
 
-<select id="searchContracts" parameterType="com.beauty1nside.hr.dto.EmpContractSearchDTO" resultType="com.beauty1nside.hr.dto.EmpContractDTO">
+<select id="searchContracts" resultType="com.beauty1nside.hr.dto.EmpContractDTO">
     SELECT * FROM (
         SELECT 
             ROWNUM AS rn, data.*
@@ -80,47 +80,14 @@
             JOIN HR_DEPARTMENT D ON C.DEPARTMENT_NUM = D.DEPARTMENT_NUM
             LEFT JOIN HR_DEPARTMENT PARENT_D ON D.PARENT_DEPARTMENT_NUM = PARENT_D.DEPARTMENT_NUM
             WHERE C.COMPANY_NUM = #{companyNum}
-
-            <!-- ✅ 사원명 검색 -->
-            <if test="searchType == 'employeeName' and searchKeyword != null and searchKeyword != ''">
-                AND E.EMPLOYEE_NAME LIKE '%' || #{searchKeyword} || '%'
-            </if>
-
-            <!-- ✅ 상위 부서 검색 -->
-            <if test="parentDepartmentNum != null">
-                AND D.PARENT_DEPARTMENT_NUM = #{parentDepartmentNum}
-            </if>
-
-            <!-- ✅ 하위 부서 검색 -->
-            <if test="departmentNum != null">
-                AND C.DEPARTMENT_NUM = #{departmentNum}
-            </if>
-
-            <!-- ✅ 계약 유형 검색 -->
-            <if test="contractType != null and contractType != ''">
-                AND C.CONTRACT_TYPE = #{contractType}
-            </if>
-
-            <!-- ✅ 계약 상태 검색 -->
-            <if test="contractStatus != null and contractStatus != ''">
-                AND C.CONTRACT_STATUS = #{contractStatus}
-            </if>
-
-            <!-- ✅ 기간 필터링 -->
-            <if test="startDate != null and startDate != ''">
-                AND C.CONTRACT_START_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-            </if>
-            <if test="endDate != null and endDate != ''">
-                AND C.CONTRACT_END_DATE <![CDATA[<=]]> TO_DATE(#{endDate}, 'YYYY-MM-DD')
-            </if>
-
             ORDER BY C.CONTRACT_START_DATE DESC
         ) data
-        WHERE ROWNUM <![CDATA[<=]]> #{end}
+        <![CDATA[
+        WHERE ROWNUM <= #{end} ]]> <!-- ✅ 페이징 수정 -->
     ) 
-    WHERE rn >= #{start}
+    <![CDATA[
+    WHERE rn >= #{start}  ]]> <!-- ✅ 페이징 수정 -->
 </select>
-
 
 
 	
