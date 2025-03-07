@@ -11,8 +11,8 @@ const dataSource = {
     },
 };
 
-const grid = new Grid({
-    el: document.querySelector('#grid'),
+const approvalGrid = new Grid({
+    el: document.querySelector('#approvalGrid'),
     scrollX: false,
     scrollY: false,
     pageOptions: {
@@ -84,26 +84,14 @@ const grid = new Grid({
         }  ],
     data : dataSource,
 });
-
-const approvalTab = document.getElementById('approval-tab')
-const calendarTab = document.getElementById('calendar-tab')
 // !최고관리자 && !관리자
 let isAdmin = sessionAuthority === 'AU001' || sessionAuthority === 'AU002'
 if(!isAdmin) {
-    approvalTab.classList.add('lock')
+    document.getElementById('approval-tab').classList.add('lock')
 }
-
-approvalTab.addEventListener('click', () => {
-    grid.refreshLayout()
-
-    // session.setValue("mainpageTab", 2)
+document.getElementById('approval-tab').addEventListener('click', () => {
+    approvalGrid.refreshLayout()
 }, {once: isAdmin})
-
-// calendarTab.addEventListener('click', () => {
-//     console.log(calendar)
-//     calendar.render();
-//     session.setValue("mainpageTab", 1)
-// })
 
 document.addEventListener("click", function (event) {
     let buttonApprove = event.target.closest(".btn-approve");
@@ -179,13 +167,13 @@ function reset(){
     inApprovalRequestDateStart.value = '';
     inApprovalRequestDateEnd.value = '';
 
-    grid.setRequestParams({
+    approvalGrid.setRequestParams({
         "documentType" : documentType.value,
         "employeeName" : employeeName.value,
         "inApprovalRequestDateStart" : inApprovalRequestDateStart.value,
         "inApprovalRequestDateEnd" : inApprovalRequestDateEnd.value
     })
-    grid.readData();
+    approvalGrid.readData();
 }
 
 function search(){
@@ -193,18 +181,18 @@ function search(){
     let employeeName = document.querySelector('#employeeName').value.toString();
     let inApprovalRequestDateStart = document.querySelector('#inApprovalRequestDateStart').value.toString();
     let inApprovalRequestDateEnd = document.querySelector('#inApprovalRequestDateEnd').value.toString();
-    grid.setRequestParams({
+    approvalGrid.setRequestParams({
         "documentType" : documentType,
         "employeeName" : employeeName,
         "inApprovalRequestDateStart" : inApprovalRequestDateStart,
         "inApprovalRequestDateEnd" : inApprovalRequestDateEnd
     })
-    grid.readData();
+    approvalGrid.readData();
 }
 
 function changeDisplay() {
     let gap = parseInt(document.querySelector('#display_amount').value);
-    grid.setPerPage(gap, dataSource)
+    approvalGrid.setPerPage(gap, dataSource)
 }
 
 async function downloadPDF(dataset) {
@@ -253,7 +241,7 @@ const processApproval = (inApprovalId, processStr) => {
             } else {
                 showAlert('결재 처리 실패', 'danger')
             }
-            grid.reloadData();
+            approvalGrid.reloadData();
         })
         .catch(error => console.error("Error fetching data:", error));
 }
