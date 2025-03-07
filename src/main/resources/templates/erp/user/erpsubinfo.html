@@ -153,9 +153,9 @@
 		<div id="universalModal" class="modal fade" tabindex="-1" aria-hidden="true">
 		    <div class="modal-dialog modal-xl">
 		        <div class="modal-content">
-		            <div class="modal-header p-3">
+		            <div class="modal-header p-3" style="background-color: #3f3e91; color: white;">
 		                <h5 id="modalTitle" class="modal-title"></h5>
-		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 		            </div>
 		            <div class="modal-body">
 		                <div class="pdf-container">
@@ -672,7 +672,41 @@
 		    } else {
 		        console.warn("❌ 모달 닫기 버튼을 찾을 수 없습니다.");
 		    }
+		    
+		    const closeButton2 =  document.querySelector(".btn-close");
+		    if (closeButton2) {
+		    	closeButton2.addEventListener("click", function () {
+		            console.log("✅ 모달 닫기 버튼 클릭됨!");
+		            try {
+		                let modalInstance = bootstrap.Modal.getInstance(modalElement);
+		                
+		                if (!modalInstance) {
+		                    modalInstance = new bootstrap.Modal(modalElement);
+		                }
+		                modalInstance.hide(); // ✅ Bootstrap 방식으로 모달 닫기
+		                setTimeout(() => {
+		                    modalElement.classList.remove("show");
+		                    modalElement.style.display = "none";
+		                    document.body.classList.remove("modal-open");
+		                    // 🔥 백그라운드 제거
+		                    document.querySelectorAll(".modal-backdrop").forEach((element) => element.remove());
+		                }, 300);
+		            } catch (error) {
+		                console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
+		                modalElement.classList.remove("show");
+		                modalElement.style.display = "none";
+		                document.body.classList.remove("modal-open");
+		                setTimeout(() => {
+		                    document.querySelectorAll(".modal-backdrop").forEach((element) => element.remove()); // 백그라운드 제거
+		                }, 300);
+		            }
+		        });
+		    } else {
+		        console.warn("❌ 모달 닫기 버튼을 찾을 수 없습니다.");
+		    }
 		});
 		// 모달 닫기 끝
+		
+		
 	</script>
 </body>
