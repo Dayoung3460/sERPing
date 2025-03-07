@@ -1,5 +1,5 @@
 .settings-panel {
-    .msgImg {
+    #msgImg {
         width: 100px;
         height: 100px;
         object-fit: cover;
@@ -119,6 +119,11 @@
         font-size: 16px;
         max-width: fit-content;
         word-wrap: break-word;
+        > img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
     }
 
     .received {
@@ -164,6 +169,9 @@
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        &.hide {
+            display: none;
+        }
     }
 
     .send-btn {
