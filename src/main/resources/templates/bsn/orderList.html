@@ -32,82 +32,85 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 시작 -->
 
       <div class="container">
-		<h3>주문 목록</h3>
+		<h2>주문 목록</h2>
 		<hr>
         <div class="row mb-3">
-	        <div class="col-12">
-	            <div class="card">
-	                <div class="card-body">
-	                    <h4 class="card-title">검색 조건</h4>
-	                    <p class="card-description">검색 조건을 선택하세요.</p>
-	                        <div class="d-flex align-items-center gap-3">
-	                            <!-- 라디오 버튼 -->
-	                            <div class="d-flex gap-3">
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="notSelect" checked onclick="toggleDateInputs(false)">
-	                                        사용안함
-	                                    </label>
-	                                </div>
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="orderDate" onclick="toggleDateInputs(true)">
-	                                        주문일자
-	                                    </label>
-	                                </div>
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="dueDate" onclick="toggleDateInputs(true)">
-	                                        납기일자
-	                                    </label>
-	                                </div>
-	                            </div>
-	
-	                            <!-- 날짜 입력 -->
-	                            <div class="d-flex gap-3">
-	                                <div>
-	                                    <label for="startDate">시작 날짜</label>
-	                                    <input type="date" class="form-control" id="startDate" name="startDate" disabled>
-	                                </div>
-	                                <div>
-	                                    <label for="endDate">끝 날짜</label>
-	                                    <input type="date" class="form-control" id="endDate" name="endDate" disabled>
-	                                </div>
-	                            </div>
-	                        </div>
-	
-	                       <div class="form-group m-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">검색 조건</h5>
+                    <!-- <p class="card-description"></p> -->
+                    <!--  <form name='searchForm' action="/bsn/order" class="forms-sample"> -->
+                        <div class="row align-items-center ">
+                            <!-- 라디오 버튼 -->
+                            <div class="col-2 mt-4 gap-3">
+                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption">
+                                	<option value="">선택</option>
+                                	<option value="orderDate">주문일자</option>
+                                	<option value="dueDate">납기일자</option>
+                                </select>    
+                            </div>
+
+                            <!-- 날짜 입력 -->
+                            <div class="col-auto gap-3">
+                                <div>
+                                    <label for="startDate">시작 날짜</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate" disabled>
+                                </div>
+                            </div>
+                            <div class="col-auto gap-3">
+                                <div>
+                                    <label for="endDate">끝 날짜</label>
+                                    <input type="date" class="form-control" id="endDate" name="endDate" disabled>
+                                </div>
+                            </div>
+                            <div class="col-3 form-group m-3">
 							    <label for="inputBhf">발주지점</label>
 							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
-						   </div>
-							<div class="col-12 text-center">
-	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
-	                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
-	                        </div>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
+							</div>
+                            
+                            
+                        </div>
+
+			
+                        
+                          <div class="row align-items-center ">
+						<div class="col-12 text-center">
+                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
+                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
+                        </div>
+                    <!-- </form> -->
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
         
         
         <div class="row">
         	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">주문 목록</h4>
+                		<h5 class="card-title">주문 목록</h5>
+                		
                 		<p class="card-description"></p>
                 		<div id="orderList"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
+               		 	<div class="text-center">
+               		 		<button class="btn btn-danger" id="cancelButton">선택한 주문취소</button>
+               		 	</div>
               		</div>
             	</div>
           	</div>
 
         </div>
+        
+    	
         <div class="row">
           	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">주문 상세</h4>
+                		<h5 class="card-title">주문 상세</h5>
                 		<p class="card-description"></p>
                 		<div id="orderDetail"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
@@ -119,7 +122,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">주문 변경 이력</h4>
+                		<h5 class="card-title">주문 변경 이력</h5>
                 		<p class="card-description"></p>
                 		<div id="orderHistory"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
@@ -127,11 +130,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
             	</div>
           	</div>
         </div>
-        <div class="row mt-3">
-	        <div class="col-12 text-center">
-	            <button class="btn btn-danger" id="cancelButton">선택한 주문취소</button>
-	        </div>
-    	</div>
+        
         <div th:include="bsn/modal/bsnModalTemplate :: ModalTemplate(
 						    	'cancelModal', 
 						    	'modal-md', 
@@ -158,12 +157,18 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  </script>
 	  
 <script>
-    function toggleDateInputs(enable) {
-      document.getElementById("startDate").disabled = !enable;
-      document.getElementById("endDate").disabled = !enable;
-      
-     
-    }
+function toggleDateInputs() {
+		let enable = true;
+		if(event.target.value == ''){
+			enable= false;
+		}
+  document.getElementById("startDate").disabled = !enable;
+  document.getElementById("endDate").disabled = !enable;
+  //console.log(companyNum);
+  //console.log(employeeNum);;
+  
+ 
+}
     
   //검색 조건 초기화
 	function reset(){
@@ -217,7 +222,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			{ header : "주문ID", name : "orderId", sortable : true, align: "left",},
 			{ header : "주문명", name : "orderName", width: 'auto',  sortable : true, align: "left",},
 			{ header : "발주코드", name : "orderCode", align: "left",},
-			{ header : "지점코드", name : "branchOfficeId", align: "left",},
+			{ header : "지점", name : "branchOfficeId", align: "left",},
 			{ header : "담당자", name : "employeeName", align: "left",},
 			{ header : "주문상태", name : "orderStatus", formatter: ({ value }) => formatOrderStatus(value),  sortable : true, align: "left",},
 			{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
@@ -274,7 +279,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	});
 	//검색
 	function search(){
-		let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
+		let selectedOption = document.getElementById('selectedOption').value; // 라디오 버튼 선택 값
 	    let startDate = document.getElementById("startDate").value; // 시작 날짜
 	    let endDate = document.getElementById("endDate").value; // 끝 날짜
 	    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
@@ -407,8 +412,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         { header: "상품명", name: "goodsName", align: "left", 
         //	width: 'auto' ,	
         },
-        { header: "옵션명", name: "optionName", align: "left", },
         { header: "상품코드", name: "goodsCode", align: "left",  },
+        { header: "옵션명", name: "optionName", align: "left", },
         { header: "옵션코드", name: "optionCode", align: "left",  },
         { header: "규격", name: "goodsStandard", align: "center",  },
         { header: "수량(box)", name: "quantity", align: "right",  },
@@ -430,9 +435,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     scrollX:false,
     scrollY:false,
     columns: [
-        { header: "이력유형", name: "historyType", formatter: ({ value }) => formatOrderStatus(value), },
+        { header: "이력유형", name: "historyType", formatter: ({ value }) => formatOrderStatus(value), align: "center", },
         { header: "이력내용", name: "historyContents",  width:720},
-        { header: "처리일", name: "registerDate", formatter: ({ value }) => formatDate(value, 'order'), },
+        { header: "처리일", name: "registerDate", formatter: ({ value }) => formatDate(value, 'order'), align: "center", },
 
     ],
     pageOptions: {

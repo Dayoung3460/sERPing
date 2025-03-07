@@ -374,9 +374,9 @@ document.getElementById("fileInput").addEventListener("change", function (event)
 if(sessionEmployeeNum) {
     getEmpList()
 } else {
-    showAlert('세션이 만료되었습니다. 다시 로그인해주세요.', 'danger')
+    // showAlert('세션이 만료되었습니다. 다시 로그인해주세요.', 'danger')
     setTimeout(() => {
         window.location.href = "/login";
-    }, 2000)
+    }, 1000)
 }
 
