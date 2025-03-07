@@ -8,6 +8,7 @@ import java.util.Date;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
  *  </pre>
 */
 @Log4j2
+@CrossOrigin("*")
 @RestController	//★★★
 @RequestMapping("/erp/rest/*")
 public class FTPFileUploadController {
