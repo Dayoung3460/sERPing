@@ -24,11 +24,17 @@
 <input type="hidden" id="sessionEmployeeNum" th:value="${session.employeeNum}"/>
 <input type="hidden" id="sessionAuthority" th:value="${session.authority}"/>
 <div class="text-center mt-4">
-  <h3 class="fw-bold text-primary fade-in">환영합니다<i class="mdi mdi-beach"></i> <span class="text-dark" th:text="${session.employeeName}"> </span>님!</h3>
+  <h3 class="fw-bold text-primary fade-in">
+    환영합니다
+    <i class="mdi mdi-beach"></i>
+    <span class="text-dark" th:if="${session.employeeName}" th:text="${session.employeeName}"></span>
+    <span class="text-dark" th:unless="${session.employeeName}" sec:authentication="name"></span>
+    님!
+  </h3>
 </div>
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation" id="calendar-tab">
-      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" >일정</button>
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#calendar-tab-pane" type="button" role="tab" aria-controls="calendar-tab-pane" >일정</button>
     </li>
     <li class="nav-item" role="presentation" id="approval-tab">
       <button class="nav-link " data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" >결재</button>
@@ -38,7 +44,7 @@
     </li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+    <div class="tab-pane fade" id="calendar-tab-pane" role="tabpanel" aria-labelledby="calendar-tab" tabindex="0">
       <div class="row">
         <p id="clicked-event"></p>
         <div id="calendar" style="height: 600px;">
@@ -89,7 +95,7 @@
           </div>
           <!-- 그리드 -->
           <div id="table-container">
-            <div id="grid"></div>
+            <div id="approvalGrid"></div>
             <div id="pagination" class="tui-pagination"></div>
           </div>
         </div>
@@ -101,7 +107,7 @@
           <div class="search-grid" >
             <div class="d-flex flex-wrap align-items-center gap-3">
               <div class="card-body" >
-                <div id="custom-container">
+                <div id="custom-container1">
                   <div class="row mb-4" >
                     <div class="w-25">
                       <label class="label-search me-2 form-label " style="text-align:center">제목</label>
@@ -147,6 +153,74 @@
   <script src="/js/mainpage/approval.js"></script>
 
 <script>
+  const calendarTab = document.getElementById('calendar-tab')
+  const approvalTab = document.getElementById('approval-tab')
+  const boardTab = document.getElementById('board-tab')
+
+  const calendarBtn = calendarTab.getElementsByTagName('button')[0]
+  const approvalBtn = approvalTab.getElementsByTagName('button')[0]
+  const boardBtn = boardTab.getElementsByTagName('button')[0]
+
+  const calendarContent = document.getElementById('calendar-tab-pane')
+  const approvalContent = document.getElementById('approval-tab-pane')
+  const boardContent = document.getElementById('board-tab-pane')
+
+  calendarTab.addEventListener('click', () => {
+    sessionStorage.setItem("tabNo", 1)
+  })
+  document.getElementById('approval-tab').addEventListener('click', () => {
+    sessionStorage.setItem("tabNo", 2)
+  })
+  document.getElementById('board-tab').addEventListener('click', () => {
+    sessionStorage.setItem("tabNo", 3)
+  })
+
+  const activeTab = (tabNo) => {
+    calendarBtn.classList.remove('active')
+    approvalBtn.classList.remove('active')
+    boardBtn.classList.remove('active')
+
+    calendarContent.classList.remove('show', 'active');
+    approvalContent.classList.remove('show', 'active');
+    boardContent.classList.remove('show', 'active');
+
+    if(tabNo === 1) {
+      calendarBtn.classList.add('active')
+      calendarContent.classList.add('show', 'active')
+      approvalBtn.classList.remove('active')
+      boardBtn.classList.remove('active')
+      approvalContent.classList.remove('show', 'active')
+      boardContent.classList.remove('show', 'active')
+    } else if (tabNo === 2) {
+      setTimeout(() => {
+        approvalGrid.refreshLayout()
+      }, 300)
+      approvalBtn.classList.add('active')
+      approvalContent.classList.add('show', 'active')
+      calendarBtn.classList.remove('active')
+      boardBtn.classList.remove('active')
+      calendarContent.classList.remove('show', 'active')
+      boardContent.classList.remove('show', 'active')
+    } else {
+      boardBtn.classList.add('active')
+      boardContent.classList.add('show', 'active')
+      calendarBtn.classList.remove('active')
+      approvalBtn.classList.remove('active')
+      calendarContent.classList.remove('show', 'active')
+      approvalContent.classList.remove('show', 'active')
+    }
+  }
+
+  let tabNo = 1
+  let sessionTabNo = sessionStorage.getItem('tabNo')
+  if(sessionTabNo) {
+    tabNo = Number(sessionStorage.getItem('tabNo'))
+    activeTab(tabNo)
+  }
+
+  boardTab.addEventListener('click', () => {
+    boardGrid.refreshLayout()
+  })
 
   let sessionCompanyNum = [[${session.companyNum}]];
 
@@ -186,11 +260,6 @@
     ],
     data: boardDataSource
   });
-
-  let boardTab = document.getElementById('board-tab')
-  boardTab.addEventListener('click', () => {
-    boardGrid.refreshLayout()
-  })
 
   document.addEventListener("click", function (event) {
     const button = event.target.closest(".move-btn");
