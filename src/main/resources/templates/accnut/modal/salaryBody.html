@@ -2,10 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8">
 <style>
-.tui-grid-cell.tui-grid-cell-has-footer {
-    display: table-cell !important;
-    background-color: #f8f9fa; /* 푸터 배경색 */
-    font-weight: bold;
+/* 푸터(합계 부분) 전체를 중앙 정렬 */
+.tui-grid-summary-area {
+    text-align: center !important;
+}
+
+/* 개별 셀 내 텍스트를 중앙 정렬 */
+.tui-grid-summary-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center !important;
 }
 
 </style>
@@ -59,9 +66,9 @@
 			summary : {
 				height: 40,
 		        position: 'bottom', // or 'top
-		        align: "center",
 		        columnContent: {
 		        	paymentAmount : {
+		        		align: "center",
 		        		template: function(valueMap) {
 		        			return `총합: ${valueMap.sum}`
 		        		}
