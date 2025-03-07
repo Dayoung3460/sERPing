@@ -189,19 +189,28 @@
 //✅ 삭제 버튼 렌더러 (전역으로 이동)
   class DeleteRenderer {
       constructor(props) {
-          const el = document.createElement("button");
-          el.textContent = "삭제";
-          el.className = "btnDelete btn btn-danger btn-sm";
-          el.addEventListener("click", () => {
-              // ✅ 올바른 그리드 객체에서 해당 행 삭제
-              warehousinglistGrid.removeRow(props.rowKey);
-          });
-          this.el = el;
-      }
-      getElement() {
-          return this.el;
-      }
-  }
+    	// 부모 div 추가
+	        const wrapper = document.createElement('div');
+	        wrapper.style.display = 'flex';
+	        wrapper.style.justifyContent = 'center';
+	        wrapper.style.alignItems = 'center';
+	        wrapper.style.height = '100%';
+	
+	        const el = document.createElement('button');
+	        el.textContent = '삭제';
+	        el.className = 'btnDelete btn btn-outline-danger btn-sm';
+	        el.addEventListener('click', () => {
+	            grid.removeRow(props.rowKey); // 클릭 시 해당 행 삭제
+	        });
+	
+	        wrapper.appendChild(el); // 버튼을 div 내부에 추가
+	        this.el = wrapper; // wrapper를 요소로 설정
+	    }
+	
+	    getElement() {
+	        return this.el;
+	    }
+	}
   
 //✅ 동적으로 input 값이 변경될 때 빈 제조일자 자동 입력
   document.querySelector("#manufactureDateInput").addEventListener("input", function () {

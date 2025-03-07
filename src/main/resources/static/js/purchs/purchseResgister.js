@@ -124,10 +124,12 @@ function initPurchaseGrid() {
         el: document.getElementById('grid'),
         scrollX :false,
         scrollY : false,
-        bodyHeight: 500, // ✅ 자동 높이 조정
-        minBodyHeight: 600, // ✅ 최소 높이 지정 (필요에 따라 조정)
+        heightFitToContent: true, // ✅ 추가된 행이 보이도록 자동 높이 조정
+        minBodyHeight: 300, // ✅ 너무 작아지는 걸 방지하는 최소 높이 설정
+       
+       
         columns: [
-            { header: '상품코드', name: 'goodsCode' ,align: "left"},
+            { header: '상품코드', name: 'goodsCode' ,align: "left" },
             { header: '상품명', name: 'goodsName',align: "left" },
             { header: '옵션코드', name: 'optionCode' ,hidden: true},
             { header: '옵션명', name: 'optionName' ,align: "left"},
@@ -319,15 +321,7 @@ function setupModalCloseEvent() {
   
 }
 
-// ✅ 특정 행을 강조 (반짝거리는 효과)
-/*function highlightRow(rowKey) {
-    const rowElement = document.querySelector(`[data-row-key="${rowKey}"]`);
-    if (rowElement) {
-        rowElement.classList.add("highlight-row");
-        setTimeout(() => rowElement.classList.remove("highlight-row"), 1500); // 1.5초 후 효과 제거
-    }
-}
-*/
+
 
 //수량과 단가 변경 시 공급가격 자동 계산
 function calculateSupplyPrice(rowKey) {

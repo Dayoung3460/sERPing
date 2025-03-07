@@ -341,7 +341,7 @@ GROUP BY
     )}
 </insert>
 
-<!-- 상품재고갯수 -->
+
 <!-- 상품재고갯수 -->
 <select id="goodsNum" resultType="ProductDTO">
     WITH AggregatedData AS (
@@ -403,7 +403,7 @@ GROUP BY
 </select>
 
 
-<!-- 상품 수 카운트 -->
+
 <!-- 상품 수 카운트 -->
 <select id="goodsNumcount" resultType="int">
     WITH AggregatedData AS (
