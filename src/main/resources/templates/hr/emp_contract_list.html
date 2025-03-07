@@ -1,135 +1,178 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layouts/layout}" lang="en"
+<html layout:decorate="~{layouts/layout}" lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>근로계약조회</title>
-    
-    <!-- TOAST UI -->
-    <link rel="stylesheet" href="https://uicdn.toast.com/tui.grid/latest/tui-grid.css">
-    <script src="https://uicdn.toast.com/tui.grid/latest/tui-grid.js"></script>
+<meta charset="UTF-8">
+<title>근로계약 조회</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-		.custom-swal-popup {
-		    word-wrap: break-word;  /* 긴 문장 자동 줄바꿈 */
-		    white-space: pre-line;  /* \n도 줄바꿈 적용 */
-		    padding: 24px;          /* 적당한 패딩 */
-		    max-height: 80vh;       /* 내용이 많으면 스크롤 */
-		    overflow-y: auto;       /* 세로 스크롤 자동 */
-		}
-    </style>
+<!-- ✅ Toast Grid -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.grid/latest/tui-grid.css">
+<script src="https://uicdn.toast.com/tui.grid/latest/tui-grid.js"></script>
+
+<!-- ✅ Bootstrap -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .custom-swal-popup {
+        word-wrap: break-word;
+        white-space: pre-line;
+        padding: 24px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .btn-sm {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+</style>
 </head>
 
 <body layout:fragment="content">
 
-<div class="container mt-3">
+<div class="container mt-4">
     <h2>근로계약 조회</h2>
     <hr>
 
-    <div class="row">
-        <!-- 오른쪽: 근로 계약 조회 -->
-        <div class="col-md-12">
-            <div class="mb-3">
-                <input type="text" class="form-control" id="searchKeyword" placeholder="사원명 검색">
-                <button class="btn btn-primary mt-2" onclick="loadContracts()">검색</button>
+    <!-- 🔎 검색 필터 -->
+    <div class="card p-3 mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <label class="form-label">사원명 검색</label>
+                <input type="text" class="form-control" id="searchEmployeeName" placeholder="사원명 입력">
             </div>
-            <div id="contractGrid"></div>
+            <div class="col-md-3">
+                <label class="form-label">계약 상태</label>
+                <select class="form-select" id="searchContractStatus">
+                    <option value="">전체</option>
+                    <option value="CS001">진행중</option>
+                    <option value="CS002">종료</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">계약 유형</label>
+                <select class="form-select" id="searchContractType">
+                    <option value="">전체</option>
+                    <option value="ET001">정규직</option>
+                    <option value="ET002">계약직</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">계약 기간</label>
+                <div class="d-flex">
+                    <input type="date" class="form-control me-2" id="searchStartDate">
+                    <span class="mx-1">~</span>
+                    <input type="date" class="form-control" id="searchEndDate">
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-primary" onclick="searchContracts()">🔍 검색</button>
+            <button class="btn btn-secondary" onclick="resetFilters()">⟲ 초기화</button>
         </div>
     </div>
+
+    <!-- 📊 계약 목록 -->
+    <div id="contractGrid"></div>
 </div>
 
-<!-- 사원 선택 모달 -->
-<div class="modal fade" id="employeeSelectModal" tabindex="-1" aria-labelledby="employeeSelectModalLabel" aria-hidden="true">
+<!-- 📄 근로계약서 보기 모달 -->
+<div class="modal fade" id="contractModal" tabindex="-1" aria-labelledby="contractModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">사원 선택</h5>
+                <h5 class="modal-title">근로계약서 보기</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div id="employeeGrid"></div>
+                <iframe id="contractViewer" width="100%" height="500px"></iframe>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// ✅ 사원 선택 기능
-document.addEventListener("DOMContentLoaded", function () {
-    const employeeGrid = new tui.Grid({
-        el: document.getElementById('employeeGrid'),
-        columns: [
-            { header: "사원번호", name: "employeeNum" },
-            { header: "이름", name: "employeeName" },
-            { header: "부서", name: "departmentName" },
-            { header: "선택", name: "select", formatter: () => '<button class="btn btn-success btn-sm selectEmployee">선택</button>' }
-        ]
-    });
+const header = document.querySelector('meta[name="_csrf_header"]').content;
+const token = document.querySelector('meta[name="_csrf"]').content;
 
-    window.loadEmployees = function () {
-        fetch("/hr/rest/emp/list")
-            .then(response => response.json())
-            .then(data => employeeGrid.resetData(data))
-            .catch(error => alert("사원 목록 로드 실패"));
-    };
-
-    document.getElementById("employeeGrid").addEventListener("click", function (event) {
-        if (event.target.classList.contains("selectEmployee")) {
-            const row = employeeGrid.getRow(event.target.closest("tr").rowIndex);
-            document.getElementById("employeeNum").value = row.employeeNum;
-            document.getElementById("employeeSelectModal").querySelector(".btn-close").click();
-        }
-    });
-});
-
-// ✅ 계약 등록
-function submitContract() {
-    const contractData = {
-        employeeNum: document.getElementById("employeeNum").value,
-        contractType: document.getElementById("contractType").value,
-        contractStartDate: document.getElementById("contractStartDate").value,
-        contractEndDate: document.getElementById("contractEndDate").value,
-        salary: document.getElementById("salary").value
-    };
-
-    fetch("/hr/rest/contract/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contractData)
-    })
-    .then(response => response.text())
-    .then(() => {
-        alert("계약 등록 성공");
-        loadContracts(); // 등록 후 목록 갱신
-    })
-    .catch(() => alert("등록 실패"));
-}
-
-// ✅ 계약 목록 조회
-function loadContracts() {
-    fetch("/hr/rest/contract/list")
-        .then(response => response.json())
-        .then(data => contractGrid.resetData(data))
-        .catch(() => alert("계약 목록 불러오기 실패"));
-}
-
-// ✅ 계약 목록 그리드 초기화
-const contractGrid = new tui.Grid({
-    el: document.getElementById('contractGrid'),
+// ✅ Toast Grid 초기화
+const grid = new tui.Grid({
+    el: document.getElementById("contractGrid"),
+    scrollX: false,
+    scrollY: true,
     columns: [
-        { header: "사원번호", name: "employeeNum" },
-        { header: "이름", name: "employeeName" },
-        { header: "계약 유형", name: "contractType" },
-        { header: "계약 시작일", name: "contractStartDate" },
-        { header: "급여", name: "salary" }
+        { header: "계약번호", name: "contractNum", align: "center", width: 80 },
+        { header: "사원명", name: "employeeName", align: "center", width: 150 },
+        { header: "계약 유형", name: "contractType", align: "center", width: 120 },
+        { header: "계약 시작일", name: "contractStartDate", align: "center", width: 120 },
+        { header: "계약 종료일", name: "contractEndDate", align: "center", width: 120 },
+        { header: "급여 (월)", name: "monthlySalary", align: "center", width: 120, formatter: ({ value }) => value.toLocaleString() + "원" },
+        { header: "계약 상태", name: "contractStatus", align: "center", width: 100, formatter: ({ value }) => value === "CS001" ? "🟢 진행중" : "🔴 종료" },
+        { header: "계약서", name: "contractNum", align: "center", width: 150, 
+            formatter: function({ row }) {
+                return `
+                    <button class="btn btn-info btn-sm" onclick="viewContract(${row.employeeNum})">보기</button>
+                    <button class="btn btn-success btn-sm" onclick="downloadContract(${row.employeeNum})">다운로드</button>
+                `;
+            }
+        }
     ]
 });
-</script> 
+
+// ✅ 검색 실행
+function searchContracts() {
+    const params = {
+        employeeName: document.getElementById("searchEmployeeName").value,
+        contractStatus: document.getElementById("searchContractStatus").value,
+        contractType: document.getElementById("searchContractType").value,
+        startDate: document.getElementById("searchStartDate").value,
+        endDate: document.getElementById("searchEndDate").value
+    };
+
+    fetch("/hr/rest/search", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": token
+        },
+        body: JSON.stringify(params)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("📊 계약 데이터:", data);
+        grid.resetData(data);
+    })
+    .catch(error => console.error("❌ 검색 실패:", error));
+}
+
+// ✅ 필터 초기화
+function resetFilters() {
+    document.getElementById("searchEmployeeName").value = "";
+    document.getElementById("searchContractStatus").value = "";
+    document.getElementById("searchContractType").value = "";
+    document.getElementById("searchStartDate").value = "";
+    document.getElementById("searchEndDate").value = "";
+
+    searchContracts();
+}
+
+// ✅ 계약서 보기
+function viewContract(employeeNum) {
+    document.getElementById("contractViewer").src = `/hr/rest/contract/report?employeeNum=${employeeNum}`;
+    new bootstrap.Modal(document.getElementById("contractModal")).show();
+}
+
+// ✅ 계약서 다운로드
+function downloadContract(employeeNum) {
+    window.location.href = `/hr/rest/contract/report/down?employeeNum=${employeeNum}`;
+}
+
+// ✅ 페이지 로드 시 자동 검색 실행
+document.addEventListener("DOMContentLoaded", searchContracts);
+</script>
 
 </body>
 </html>

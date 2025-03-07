@@ -12,6 +12,7 @@ public class EmpContractSearchDTO {
     private String searchKeyword;  // 검색어
     private Long departmentNum;    // 부서 번호
     private String departmentName; // 부서명
+    private Long parentDepartmentNum; // ✅ 부모 부서 번호 (하위 부서 검색용)
     private String contractType;   // 계약 유형 (정규직, 계약직 등)
     private String contractStatus; // 계약 상태 (활성, 만료 등)
     private String startDate;      // 검색 기간 시작일
