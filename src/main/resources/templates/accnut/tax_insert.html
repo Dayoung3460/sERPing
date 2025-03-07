@@ -230,7 +230,15 @@
 						    	'정산 선택', 
 						    	'accnut/modal/closingSearchBody', 
 						    	'accnut/modal/closingSearchFooter'
-						    )"></div>						    
+						    )"></div>
+		<!-- 세금계산서 모달 -->
+		 <div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+						    	'taxLookModal', 
+						    	'modal-xl', 
+						    	'세금계산서', 
+						    	'accnut/modal/taxBody', 
+						    	'accnut/modal/taxFooter'
+						    )"></div>
 		
 	</div>
 	
@@ -238,11 +246,11 @@
 	var session = sessionData;
 	var result = {};
 	var rowData = {};
+	var taxnum;
 	
-	/*
-	var modalElement = document.getElementById('optSearchModal');
-	var modalInstance = new bootstrap.Modal(modalElement);
-	*/
+
+	var modalElement = document.getElementById('taxLookModal');
+	var modalInstance = new bootstrap.Modal(modalElement);	
 	
 	document.addEventListener("DOMContentLoaded", ()=> {
 		getCompanyInfo(session.companyNum);
@@ -455,6 +463,8 @@
 			 	if(data.status == "success"){
 			 		showAlert('지급 처리 되었습니다.', 'success');				 		
 			 		resetBtn();
+			 		taxnum = data.result;
+			 		modalInstance.show();
 			 	} else {
 			 		showAlert('지급 처리에 실패하였습니다. 다시 시도해주세요.', 'danger');
 			 	}
