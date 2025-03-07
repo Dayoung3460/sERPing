@@ -1,28 +1,6 @@
 <body>
-<!-- <script>
 
-  // 브라우저 sessionStorage에서 값 가져오기
-  const vendorEmail = sessionStorage.getItem("vendorEmail"); 
-  const employeeEmail = sessionStorage.getItem("employeeEmail");
-
-  // 값이 있으면 폼에 대입
-  if (employeeEmail) {
-    document.getElementById("fromEmail").value = employeeEmail;
-  }
-  if (vendorEmail) {
-    document.getElementById("toEmail").value = vendorEmail;
-  }
-
-</script>
- -->
-	<!-- 로딩 스피너 (정 중앙 배치) -->
-	<!-- <div class="d-flex align-items-center justify-content-center spinner-overlay" style="display:none;">
-	  <div class="spinner-border" role="status">
-	    <span class="visually-hidden">Loading...</span>
-	  </div>
-	</div> -->
-
-   <div class="container my-4">
+   <div class="container my-0" style="margin-top: 0;">
     <h2 class="mb-4">발주서 보내기</h2>
     <form id="mailForm" th:action="@{/mail/send}" method="post" enctype="multipart/form-data">
       <!-- CSRF 토큰 (Spring Security 사용 시) -->
@@ -48,7 +26,6 @@
       
       <!-- 수신 정보 -->
       <hr>
-      <h4 class="mt-4">수신정보</h4>
       <div class="mb-3">
         <label for="toEmail" class="form-label">메일수신주소</label>
         <input type="email" id="toEmail" name="toEmail" class="form-control" required>
