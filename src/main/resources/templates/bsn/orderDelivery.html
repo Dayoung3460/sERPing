@@ -31,14 +31,14 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h3>이동 출고 관리</h3>
+		<h2>이동 출고 관리</h2>
 		<hr>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
 	                <div class="card-body">
-	                    <h4 class="card-title">검색 조건</h4>
-	                    <p class="card-description">검색 조건을 선택하세요.</p>
+	                    <h5 class="card-title">검색 조건</h5>
+	                    <p class="card-description"></p>
 	                        <div class="d-flex align-items-center gap-3">
 	                            <!-- 라디오 버튼 -->
 	                            <div class="d-flex gap-3">
@@ -92,7 +92,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">출고 목록</h4>
+                		<h5 class="card-title">출고 목록</h5>
                 		<p class="card-description">이동 출고 처리할 주문을 선택</p>
                 		<div id="orderList"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
@@ -107,7 +107,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h4 class="card-title">출고 상세 목록</h4>
+                		<h5 class="card-title">출고 상세 목록</h5>
                 		<p class="card-description">출고 예약된 LOT를 조회하고 싶으면 상품을 선택하세요.</p>
                 		<div id="deliDetail"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
@@ -119,7 +119,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6 grid-margin stretch-card">
 			    <div class="card">
 			        <div class="card-body">
-			        	<h4 class="card-title">LOT 예약 목록</h4>
+			        	<h5 class="card-title">LOT 예약 목록</h5>
 			            <p class="card-description">해당 상품에 대한 LOT 예약 목록입니다.</p>
 			         	<div class="d-flex justify-content-end gap-3 mt-3">
 			                <button type="button" class="btn btn-primary px-4" id="registerButton">LOT등록</button>
