@@ -30,20 +30,25 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 시작 -->
   <div class="container">
 	
-    <h3>주문 등록</h3>
+    <h2>주문 등록</h2>
 	<hr>
     <!-- 🔍 검색 조건 -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">검색 조건</h4>
-                    <p class="card-description">검색 조건을 선택하세요.</p>
+                    <h5 class="card-title">검색 조건</h5>
+                    <p class="card-description"></p>
                     <!--  <form name='searchForm' action="/bsn/order" class="forms-sample"> -->
-                        <div class="d-flex align-items-center gap-3">
+                        <div class="row align-items-center ">
                             <!-- 라디오 버튼 -->
-                            <div class="d-flex gap-3">
-                                <div class="form-check">
+                            <div class="col-2 d-flex gap-3">
+                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption">
+                                	<option value="">선택</option>
+                                	<option value="orderDate">주문일자</option>
+                                	<option value="dueDate">납기일자</option>
+                                </select>    
+                                <!-- <div class="form-check">
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="optionsRadios" value="notSelect" checked onclick="toggleDateInputs(false)">
                                         사용안함
@@ -60,11 +65,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                                         <input type="radio" class="form-check-input" name="optionsRadios" value="dueDate" onclick="toggleDateInputs(true)">
                                         납기일자
                                     </label>
-                                </div>
+                                </div> -->
                             </div>
 
                             <!-- 날짜 입력 -->
-                            <div class="d-flex gap-3">
+                            <div class="col-auto d-flex gap-3">
                                 <div>
                                     <label for="startDate">시작 날짜</label>
                                     <input type="date" class="form-control" id="startDate" name="startDate" disabled>
@@ -74,13 +79,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                                     <input type="date" class="form-control" id="endDate" name="endDate" disabled>
                                 </div>
                             </div>
+                            <div class="col-3 form-group m-3">
+							    <label for="inputBhf">발주지점</label>
+							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+							</div>
+                            
+                            
                         </div>
 
-                        <div class="form-group m-3">
-						    <label for="inputBhf">발주지점</label>
-						    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
-						</div>
+			
                         
+                          <div class="row align-items-center ">
 						<div class="col-12 text-center">
                         	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
                         	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
@@ -88,6 +97,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                     <!-- </form> -->
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
@@ -97,8 +107,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-md-9 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">검색 결과</h4>
-                    <p class="card-description">지점측 발주 요청 목록</p>
+                    <h4 class="card-title">발주 요청 목록</h4>
+                    <p class="card-description"></p>
                     <div id="orderList"></div>
                     <div id="pagination" class="tui-pagination"></div>
                 </div>
@@ -109,8 +119,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-md-3 col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">선택한 발주 요청 정보</h4>
-                    <p class="card-description">선택한 발주 정보를 표시합니다.</p>
+                    <h5 class="card-title">발주 요청 정보</h5>
+                    <p class="card-description"></p>
                     <div id="selectedOrder"></div>
                 </div>
             </div>
@@ -122,8 +132,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">📦 선택한 발주 상세 </h4>
-                    <p class="card-description">상품 목록</p>
+                    <h5 class="card-title">발주 상품 목록</h5>
+                    <p class="card-description"></p>
                     <div id="orderDetailList"></div>
                     <div id="pagination" class="tui-pagination"></div>
                 </div>
@@ -177,7 +187,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  <script>
 	  
 	  <!-- 검색창 날짜 비활성 -->
-	  	function toggleDateInputs(enable) {
+	  	function toggleDateInputs() {
+	  		let enable = true;
+	  		if(event.target.value == ''){
+	  			enable= false;
+	  		}
 	      document.getElementById("startDate").disabled = !enable;
 	      document.getElementById("endDate").disabled = !enable;
 	      //console.log(companyNum);
@@ -214,7 +228,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			//rowHeaders: ['checkbox'],
 			columns: [ 
 				{ header : "주문코드", name : "orderCode", align: "left",},
-				{ header : "지점코드", name : "branchOfficeId", align: "left",},
+				{ header : "지점", name : "branchOfficeId", align: "left",},
 				{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), sortable : true, align: "center",},
 				{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), sortable : true, align: "center",},
 				{ header : "비고", name : "remark", formatter: ({ value }) => truncate(value, 10), align: "left",},
@@ -267,7 +281,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			if (selectedRow) {
 		        document.querySelector('#selectedOrder').innerHTML = `
 		            <p><strong>주문 코드:</strong> ${selectedRow.orderCode}</p>
-		            <p><strong>지점ID:</strong> ${selectedRow.branchOfficeId}</p>
+		            <p><strong>지점:</strong> ${selectedRow.branchOfficeId}</p>
 		            <p><strong>주문일:</strong> ${formatDate(selectedRow.orderDate, 'order')}</p>
 		            <p><strong>납기일:</strong> ${formatDate(selectedRow.dueDate, 'due')}</p>
 		            ${selectedRow.remark ? `<p><strong>비고:</strong> ${selectedRow.remark}</p>` : ''}
@@ -349,7 +363,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 
 		//검색
 		function search(){
-			let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
+			let selectedOption = document.getElementById('selectedOption').value; 
 		    let startDate = document.getElementById("startDate").value; // 시작 날짜
 		    let endDate = document.getElementById("endDate").value; // 끝 날짜
 		    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
