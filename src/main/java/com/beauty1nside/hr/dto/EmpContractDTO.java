@@ -46,6 +46,7 @@ public class EmpContractDTO {
     private String terminationReason; // 계약 해지 사유
     private String contractFilePath; // 계약서 파일 경로
     
+    
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date registerDate; // 등록일
 
