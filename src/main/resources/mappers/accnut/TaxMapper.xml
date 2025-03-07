@@ -18,7 +18,7 @@
 			#{pk},
 			#{from.bsnNum}, #{from.coName}, #{from.representor}, #{from.address}, #{from.status}, #{from.cate}, #{from.email},     
 			#{to.id}, #{to.name}, #{to.manager}, #{to.address}, #{to.status}, #{to.cate}, #{to.email2}, #{to.email3},
-			#{total.date}, #{total.note}, #{total.total}, #{total.supply}, #{total.tax}, #{total.companyNum}
+			TO_DATE(#{total.date}, 'YYYY-MM-DD'), #{total.note}, #{total.total}, #{total.supply}, #{total.tax}, #{total.companyNum}
 		)
 	</insert>
 	
