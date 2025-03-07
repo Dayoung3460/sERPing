@@ -127,8 +127,23 @@ public class EmpServiceImpl implements EmpService {
 		 * empDTO.setStatus("ST001"); // 재직 상태 if (empDTO.getEmploymentType() == null)
 		 * empDTO.setEmploymentType("ET001");
 		 */
+    	
+        // ✅ 사원번호 길이 체크 (5~20자)
+        if (empDTO.getEmployeeId().length() < 5 || empDTO.getEmployeeId().length() > 20) {
+            throw new IllegalArgumentException("사원 ID는 5~20자리여야 합니다.");
+        }
 
-        // ✅ 중복 이메일 확인
+        // ✅ 사원번호 형식 검증 (영문, 숫자, 언더바만 허용)
+        if (!empDTO.getEmployeeId().matches("^[A-Za-z0-9_]+$")) {
+            throw new IllegalArgumentException("사원 ID는 영문, 숫자, 언더바(_)만 사용할 수 있습니다.");
+        }
+
+        // ✅ 사원 ID 중복 확인
+        if (isEmployeeIdExists(empDTO.getEmployeeId())) {
+            throw new DuplicateKeyException("이미 등록된 사원 ID입니다.");
+        }
+
+        // ✅ 이메일 중복 확인
         if (checkEmailExists(empDTO.getEmail())) {
             throw new DuplicateKeyException("이미 등록된 이메일입니다.");
         }
@@ -137,6 +152,11 @@ public class EmpServiceImpl implements EmpService {
         empMapper.insertEmployee(empDTO);
         
         
+    }
+    
+    @Override
+    public boolean isEmployeeIdExists(String employeeId) {
+        return empMapper.checkEmpIDExists(employeeId) > 0; // ✅ 변환 적용
     }
 
 	@Override

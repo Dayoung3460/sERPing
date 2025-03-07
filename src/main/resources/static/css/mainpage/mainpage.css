@@ -7,9 +7,6 @@
 
 }
 
-label {
-    width: 70px;
-}
 
 .lock {
     display: none;
@@ -59,7 +56,7 @@ label {
         border: none;
         > i {
             font-size: 20px;
-            padding-left: 10px;
+            padding: 10px;
         }
     }
 
@@ -73,11 +70,11 @@ label {
         text-align: center;
     }
 
-    .move-btn {
+    .mainpage-move-btn {
         border: none;
         > i{
             font-size: 20px;
-            padding-left: 10px;
+            padding: 10px 8px 0 10px;
         }
     }
 }

@@ -51,4 +51,11 @@ public class ChatServiceImpl implements ChatService {
     chatMapper.insertMsg(messageDTO);
     return chatMapper.getMsgJustSent(messageDTO.getRoomId());
   }
+  
+  @Override
+  @Transactional
+  public MessageDTO sendImg(MessageDTO messageDTO) {
+    chatMapper.insertImgPath(messageDTO);
+    return chatMapper.getMsgJustSent(messageDTO.getRoomId());
+  }
 }

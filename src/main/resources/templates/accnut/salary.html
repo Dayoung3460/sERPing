@@ -6,76 +6,81 @@
 <head>
 <meta charset="UTF-8">
 <title>급여 처리</title>
+<style>
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		<div>
-			<h2>급여 처리</h2>
-		</div>
-
-    <!-- 검색창 -->
-		<div class="search-grid">
-			<div class="row 1row">
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">직원</span>
-					<input type="text" name="employeeName" id="employeeName" class="col-8 input-box">
-				</div>
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">부서</span>
-					<select name="department" id="department" class="col-8 input-box">
-						<option value="" selected>전체</option>
-						
-
-					</select>
-				</div>
-			</div>
-			<div class="row 2row">
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">표시수량</span>
-					<select name="display_amount" id="display_amount" class="col-8 input-box" onchange="changeDisplay()">
-						<option value="5" selected>5</option>
-						<option value="10">10</option>
-						<option value="20">20</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
-					</select>
+		<h2 class="mt-2 mb-2"><b>급여 처리</b></h2>
+		<hr>
+		<div class="row">
+	    	<!-- 검색창 -->
+			<div id="custom-container">
+				<div class="row">
+					<div class="col-md-5 mt-1 mb-1">
+						<label class="form-label">직원</label>
+						<input type="text" name="employeeName" id="employeeName" class="form-control input-box">
+					</div>
+					<div class="col-md-5 mt-1 mb-1">
+						<label class="form-label">부서</label>
+						<select name="department" id="department" class="form-control input-box">
+							<option value="" selected>전체</option>
+						</select>
+					</div>
+				
+					<div class="col-md-2 mt-4 mb-2">
+						<button type="button" class="btn btn-primary" style="margin: 0px 17px" onclick="search()">검색</button>
+						<button type="button" class="btn btn-secondary" onclick="reset()">초기화</button>
+					</div>
 				</div>
 			</div>
-			<div class="row 3row">
-				<div class="col-4"></div>
-				<button type="button" class="btn btn-primary col-1" onclick="search()">검색</button>
-				<div class="col-1"></div>
-				<button type="button" class="btn btn-secondary col-1" onclick="reset()">초기화</button>
+			<div class="col-md-12 stretch-card mt-2 mb-5">
+				<div class="card">
+					<div class="card-body">
+						<div id="rayout-container" class="row mb-3">
+							<div class="col-9"></div>
+							<!-- 그리드 표시 수량 인풋 -->
+							<div class="col-3 row ">
+								<div class="col-3"></div>
+								<span class="label-search col-5" style="font-size: 1em">표시수량</span>
+								<select name="display_amount" id="display_amount" class="col-4 input-box" onchange="changeDisplay()">
+									<option value="5" selected>5</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="50">50</option>
+									<option value="100">100</option>
+								</select>
+							</div>
+						</div>
+						<!-- 그리드 -->
+						<div id="table-container">
+							<div id="grid"></div>
+							<div id="pagination" class="tui-pagination"></div>
+						</div>
+				    	<!-- 하부 버튼 -->
+						<div class="button-bar row">
+							<button type="button" style="margin: 0px 10px;" class="btn btn-primary col-2 btnPayment" data-bs-toggle="modal" data-bs-target="#salaryModal">일괄처리</button>
+						</div>
+						<!-- 자산 등록 -->
+						<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+										    	'salaryModal', 
+										    	'modal-lg', 
+										    	'일괄 처리', 
+										    	'accnut/modal/salaryBody',
+										    	'accnut/modal/salaryFooter'
+										    )"></div>
+					</div>
+				</div>
 			</div>
-
 		</div>
-		<!-- 그리드 -->
-		<div id="table-container">
-			<div id="grid"></div>
-			<div id="pagination" class="tui-pagination"></div>
-		</div>
-    <!-- 하부 버튼 -->
-		<div class="button-bar row">
-			<div class="col-1"></div>
-			<button type="button" class="btn btn-secondary col-2 btnPayment" data-bs-toggle="modal" data-bs-target="#salaryModal">일괄처리</button>
-			<div class="col-7"></div>
-		</div>
-		
-		
-		<!-- 자산 등록 -->
-		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
-						    	'salaryModal', 
-						    	'modal-lg', 
-						    	'일괄 처리', 
-						    	'accnut/modal/salaryBody',
-						    	'accnut/modal/salaryFooter'
-						    )"></div>
-		
-		
 	</div>
 
 <script>
@@ -108,14 +113,14 @@
 		},
 		rowHeaders: ['checkbox'],
 		columns: [
-			{ header : "직원", name : "employeeName",  },
+			{ header : "직원", name : "employeeName", align: 'center'},
       { header : "부서", name : "department",  },
-      { header : "급여", name : "salary",  },
-      { header : "초과수당", name : "excessAllowance",  },
-      { header : "보너스", name : "bonus",  },
-      { header : "부대비용", name : "incidentailCost",  },
-      { header : "공제항목", name : "deductionItem",  },
-      { header : "지급금액", name : "paymentAmount",  },
+      { header : "급여", name : "salary", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+      { header : "초과수당", name : "excessAllowance", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+      { header : "보너스", name : "bonus", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+      { header : "부대비용", name : "incidentalCost", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+      { header : "공제항목", name : "deductionItem", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+      { header : "지급금액", name : "paymentAmount", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
 		],
 		data : dataSource,
 	});

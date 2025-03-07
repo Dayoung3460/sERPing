@@ -5,60 +5,13 @@
 /* 상품명 & 상품코드 병합된 셀 스타일 */
 
 
-/* ✅ 내부 요소에서 강제 스크롤 제거 */
-.tui-grid-body-area {
-    overflow: hidden !important;
+#productGrid {
+    width: 100% !important;
+    min-width: 100px !important; /* 모달을 벗어나지 않도록 설정 */
+    overflow-x: hidden !important; /* 가로 스크롤 제거 */
 }
 
-
-.merged-cell {
-    background-color: #f8f9fa !important; /* 연한 회색 */
-    font-weight: bold;
-    text-align: left;
-    padding: 10px;
-}
-
-
-/* ✅ 헤더(컬럼명) 부분 테두리 */
-.tui-grid-header-area {
-    border-bottom: 2px solid #ccc !important; /* 헤더와 바디 구분 */
-}
-
-/* ✅ 셀(Cell) 테두리 설정 */
-.tui-grid-cell {
-    border-right: 1px solid #ddd !important;
-    border-bottom: 1px solid #ddd !important;
-}
-
-/* ✅ 마지막 컬럼의 테두리 없애기 (디자인 개선) */
-.tui-grid-cell:last-child {
-    border-right: none !important;
-}
-
-/* ✅ 마지막 행의 테두리 없애기 (디자인 개선) */
-.tui-grid-body-area .tui-grid-cell:last-child {
-    border-bottom: none !important;
-}
-
-/* ✅ 헤더(컬럼명) 배경색 & 글씨 스타일 */
-.tui-grid-header-cell {
-    background-color: #f1f1f1 !important; /* 헤더 배경색 */
-    font-weight: bold;
-    text-align: center;
-    border-right: 1px solid #ddd !important;
-}
-
-/* ✅ 줄 간격 스타일 조정 */
-.tui-grid-row {
-    border-bottom: 1px solid #ddd !important;
-}
-
-/* ✅ hover(마우스 오버) 시 강조 효과 */
-.tui-grid-cell:hover {
-    background-color: #f9f9f9 !important;
-}
-
-#custom-Modal-container{
+#custom-modal-container{
 	background-color: #f8f9fa; /* 연한 회색 배경 */
 	padding: 20px;
 	border-radius: 10px;
@@ -69,7 +22,7 @@
 
 </style>
 <!-- 검색창 -->
-<div class="search-grid" id="custom-Modal-container">
+<div class="search-grid" id="custom-modal-container">
     <div class="d-flex flex-wrap align-items-center gap-3">
         <div class="d-flex align-items-center">
             <span class="label-search me-2">상품명</span>
@@ -204,7 +157,7 @@ function initProductGrid() {
 
         productGrid = new tui.Grid({
             el: document.getElementById('productGrid'),
-            data: productDataSource,  
+            data: productDataSource,
             pageOptions: {
                 useClient: false,
                 perPage: 10,
@@ -214,23 +167,19 @@ function initProductGrid() {
                 { header: "상품명", 
                   name: "goodsName", 
                   rowSpan: true,
-                  renderer: {
-                      type: CustomTextRenderer
-                  },
+            
                   className: "merged-cell"
                   },
                 { header: "상품코드", 
                   name: "goodsCode", 
                   rowSpan: true,
-                  renderer: {
-                      type: CustomTextRenderer
-                  },
+     
                   className: "merged-cell"
                   }, 
-                { header: "옵션명", name: "optionName" },
-                { header: "옵션번호", name: "optionCode" },
-                { header: "브랜드", name: "brandName" },
-                { header: "규격", name: "goodsStandard"}
+                { header: "옵션명", name: "optionName" ,align: "left" },
+                { header: "옵션번호", name: "optionCode",align: "left", },
+                { header: "브랜드", name: "brandName",align: "left", },
+                { header: "규격", name: "goodsStandard",align: "center",hidden: true}
                
             ],
             rowClassName: function(row) {

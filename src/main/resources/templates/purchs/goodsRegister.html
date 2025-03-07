@@ -26,13 +26,43 @@
 	    min-width: 120px; /* 최소 너비 설정 */
 	    padding: 10px 20px; /* 패딩 조정 */
 	}
+	h3 {
+    font-weight: 900; /* 매우 굵게 */
+	}
+	
+
+	#grid-container {
+	    flex-grow: 1; /* ✅ 남은 공간을 모두 차지 */
+	    min-height: 100px; /* ✅ 최소 높이 설정 */
+	    overflow: auto; /* ✅ 스크롤 가능 */
+	}
+	
+	/* ✅ Toast Grid 크기 조정 */
+	#myGrid {
+	    width: 100%;
+	    height: 100%; /* 부모 요소 높이에 맞춤 */
+	    min-height: 100px; /* 최소 높이 */
+	    max-height: 700px; /* 너무 커지지 않도록 제한 */
+	}
+	
+	/* ✅ 버튼 고정 */
+	.button-container {
+	    position: relative;
+	    bottom: 0;
+	    background: white;
+	    padding: 10px;
+	    text-align: center;
+	}
+
+	
+	
 
 
 </style>
 </head>
 <body layout:fragment="content">
 <div class="container mt-4" >
-	<h2 class="mb-4">상품 등록</h2>
+	<h2 style="font-weight: 900;">상품 등록</h2>
 	<hr>
     	<!-- <input type="hidden" id="csrfToken" name="_csrf" th:value="${_csrf.token}"> -->
     	<div id="custom-container">
@@ -84,7 +114,7 @@
 	                <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (
 	                    'vendorModal',
 	                    'modal-xl',
-	                    '거래처 조회',
+	                    '공급처 조회',
 	                    'purchs/modal/vendorTable',
 	                    'purchs/modal/brandFooter'
 	                )"></div>
@@ -100,14 +130,17 @@
 	        <div class="col-md-3">
 	            <label class="form-label">판매가</label>
 	            <input type="text" class="form-control" name="goodsPrice" id="goodsPrice" th:value="${ProductDTO.goodsPrice}">
+	            
 	        </div>
 	        <div class="col-md-3">
 	            <label class="form-label">공급가액</label>
 	            <input type="text" class="form-control" name="goodsSupplyPrice" id="goodsSupplyPrice" th:value="${ProductDTO.goodsSupplyPrice}">
+	           
 	        </div>
 	        <div class="col-md-3">
 	            <label class="form-label">규격</label>
 	            <input type="text" class="form-control" name="goodsStandard" id="goodsStandard" th:value="${ProductDTO.goodsStandard}">
+	            
 	        </div>
 	    </div>
 	
@@ -266,6 +299,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
             el: document.getElementById('myGrid'), // 컨테이너 엘리먼트
             scrollX :false,
             scrollY : false,
+            bodyHeight: 'auto',
             rowHeaders: ['checkbox'], 
             columns: [ 
                 {header : "옵션코드" , name:"optionCode",className: "tui-grid-cell-readonly"},
@@ -285,9 +319,10 @@ const token = document.querySelector('meta[name="_csrf"]').content;
                 }
             ],
             data: dataSource
+         
         });
         	 
-     	;
+
 
         
         
@@ -397,7 +432,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
    	    }
    	});
     
-    //거래처 모달 작업 
+    //공급처 모달 작업 
     // 모달이 열릴 때 그리드 다시 그리기
     document.getElementById('vendorModal').addEventListener('shown.bs.modal', function () {
 	    console.log("📢 모달이 열림. 그리드 리프레시 실행!");

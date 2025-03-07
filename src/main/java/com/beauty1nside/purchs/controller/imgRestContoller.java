@@ -124,27 +124,27 @@ public class imgRestContoller {
 			log.info("경로{}",imgUrl);
 			
 			// 상품 리스트 가져오기
-			    List<ProductDTO> productList = productService.getProductlist(dto);
-			    
-			    if (productList.isEmpty()) {
-			        log.warn("⚠️ 상품 리스트가 비어 있습니다.");
-			    } else {
-			        for (ProductDTO product : productList) {
-			            if (product.getGoodsImage() == null || product.getGoodsImage().isEmpty()) {
-			                product.setGoodsImage(imgUrl + "default.jpg"); // ✅ 기본 이미지 설정
-			                log.warn("⚠️ 상품 이미지 없음, 기본 이미지 적용: {}", product.getGoodsImage());
-			            } else {
-			                product.setGoodsImage(imgUrl + product.getGoodsImage()); // ✅ 최종 경로 설정
-			                log.info("✅ 최종 이미지 경로 확인: {}", product.getGoodsImage());
-			            }
-			        }
-			    }
-
+//			    List<ProductDTO> productList = productService.getProductlist(dto);
+//			    
+//			    if (productList.isEmpty()) {
+//			        log.warn("⚠️ 상품 리스트가 비어 있습니다.");
+//			    } else {
+//			        for (ProductDTO product : productList) {
+//			            if (product.getGoodsImage() == null || product.getGoodsImage().isEmpty()) {
+//			                product.setGoodsImage(imgUrl + "default.jpg"); // ✅ 기본 이미지 설정
+//			                log.warn("⚠️ 상품 이미지 없음, 기본 이미지 적용: {}", product.getGoodsImage());
+//			            } else {
+//			                product.setGoodsImage(imgUrl + product.getGoodsImage()); // ✅ 최종 경로 설정
+//			                log.info("✅ 최종 이미지 경로 확인: {}", product.getGoodsImage());
+//			            }
+//			        }
+//			    }
+//
 
 			 
 			//grid배열 처리 
 			GridArray grid = new GridArray();
-			Object result = grid.getArray(paging.getPage(), productService.productcount(dto), productList);
+			Object result = grid.getArray(paging.getPage(), productService.productcount(dto), productService.getProductlist(dto));
 			return result;
 		
 		}

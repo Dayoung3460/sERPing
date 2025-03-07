@@ -5,107 +5,82 @@
       
 
 <body layout:fragment="content">
+
  
-    <style>
-	    #custom-container{
-			background-color: #f8f9fa; /* 연한 회색 배경 */
-			padding: 20px;
-			border-radius: 10px;
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
-			margin-bottom: 20px;
-		
-		}
-        .container { max-width: 100%; margin: 20px auto; }
-        .header-box { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 10px; }
-        .search-container { margin-bottom: 15px; }
-        .pagination-container { text-align: center; margin-top: 10px; }
-        .btn-search { background-color: #28a745; color: white; }
-        .btn-reset { background-color: #007bff; color: white; }
-        .btn-register { background-color: #28a745; color: white; margin-top: 10px; }
-        
-       /* ✅ 전체 그리드의 스크롤 제거 */
-		#productGrid {
-		    width: 100% !important;
-		    min-width: 1200px;  /* 최소 너비 설정 */
-		    height: auto !important;
-		}
+ <style>
+    /* 전체 컨테이너 크기 조정 */
+    .container {
+        max-width: 1200px; /* 상품 등록 페이지와 동일한 크기로 설정 */
+        margin: 0 auto; /* 가운데 정렬 */
+    }
 
-		
-		/* ✅ 내부 요소에서 강제 스크롤 제거 */
-		.tui-grid-body-area {
-		    overflow: hidden !important;
-		}
-		
-		/* ✅ 세로 스크롤 없애기 */
-		.tui-grid-container {
-		    max-width: 100% !important;
-		    overflow-x: auto !important;  /* 가로 스크롤 가능하도록 변경 */
-		}
+    /* 검색 박스 */
+    #custom-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        max-width: 1200px; /* 상품 등록 페이지와 동일한 크기 */
+    }
 
-		
-		/* 상품명 & 상품코드 병합된 셀 스타일 */
-		.merged-cell {
-		    background-color: #f8f9fa !important; /* 연한 회색 */
-		    font-weight: bold;
-		    text-align: left !important;
-		    vertical-align: middle !important;  /* 수직 중앙 정렬 */
-		    line-height: normal !important;
-		    padding: 15px !important;
-		   
-		}
-	
-		
-		/* ✅ 그리드 전체 테두리 추가 */
-		.tui-grid-container {
-		    border: 1px solid #ddd !important; /* 전체 그리드 박스 테두리 */
-		    border-radius: 5px; /* 둥근 테두리 */
-		    overflow: hidden; /* 모서리 깔끔하게 정리 */
-		}
-		
-		/* ✅ 헤더(컬럼명) 부분 테두리 */
-		.tui-grid-header-area {
-		    border-bottom: 2px solid #ccc !important; /* 헤더와 바디 구분 */
-		}
-		
-		/* ✅ 셀(Cell) 테두리 설정 */
-		.tui-grid-cell {
-		    border-right: 1px solid #ddd !important;
-		    border-bottom: 1px solid #ddd !important;
-		}
-		
-		/* ✅ 마지막 컬럼의 테두리 없애기 (디자인 개선) */
-		.tui-grid-cell:last-child {
-		    border-right: none !important;
-		}
-		
-		/* ✅ 마지막 행의 테두리 없애기 (디자인 개선) */
-		.tui-grid-body-area .tui-grid-cell:last-child {
-		    border-bottom: none !important;
-		}
-		
-		/* ✅ 헤더(컬럼명) 배경색 & 글씨 스타일 */
-		.tui-grid-header-cell {
-		    background-color: #f1f1f1 !important; /* 헤더 배경색 */
-		    font-weight: bold;
-		    text-align: center;
-		    border-right: 1px solid #ddd !important;
-		}
-		
-		/* ✅ 줄 간격 스타일 조정 */
-		.tui-grid-row {
-		    border-bottom: 1px solid #ddd !important;
-		}
-		
-		/* ✅ hover(마우스 오버) 시 강조 효과 */
-		.tui-grid-cell:hover {
-		    background-color: #f9f9f9 !important;
-	}
+    /* Toast Grid 크기 조정 */
+    #productGrid, #lotGrid {
+        max-width: 100%;
+        min-width: 1200px; /* 상품 등록 페이지의 그리드 크기와 동일하게 조정 */
+        overflow-x: auto;
+    }
 
+    /* Toast Grid 내부 요소 크기 조정 */
+    .tui-grid-container {
+        max-width: 100%;
+        overflow-x: auto; /* 가로 스크롤 가능하도록 설정 */
+        border-radius: 5px;
+    }
+
+    /* 검색 버튼 조정 */
+    .btn-search, .btn-reset {
+        min-width: 120px; /* 상품 등록 페이지의 버튼과 동일한 크기 */
+        padding: 10px 20px;
+    }
+
+    /* 반응형 조정 */
+    @media (max-width: 1024px) {
+        .container {
+            max-width: 95%;
+        }
+        .tui-grid-container {
+            max-width: 95%;
+            min-width: auto;
+            overflow-x: auto;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            max-width: 100%;
+        }
+        .tui-grid-container {
+            max-width: 100%;
+            min-width: auto;
+            overflow-x: auto;
+        }
+        .btn-search, .btn-reset {
+            min-width: 100px;
+            padding: 8px 16px;
+        }
+    }
+    
+    /* 그리드 선택하면 생기는 색상 */
+		.tui-grid-row-highlight {
+		    background-color: #d7fffe !important; /* f0f8ff 연한 하늘색 */
+		}
 </style>
-
+ 
 
 <div class="container mt-4">
-	<h2 class="mb-4">상품 조회</h2>
+	<h2 class="mb-4" style="font-weight: 900;">상품 재고 조회</h2>
+	<hr>
 	   <!-- 검색창 -->
 	<div class="search-grid" id="custom-container">
 	    <div class="d-flex flex-wrap align-items-center gap-3">
@@ -138,7 +113,8 @@
 	</div>
 	<!-- LOT 정보 (초기에는 숨김) -->
     <div id="lot-container" class="mt-5" style="display: none;">
-        <h3 class="mb-3">옵션별 LOT 조회</h3>
+        <h2 class="mb-3" style="font-weight: 900;">옵션별 LOT 조회</h2>
+        <hr>
         <div id="lotGrid"></div>
         <div id="lotPagination" class="tui-pagination"></div>
     </div>
@@ -172,6 +148,7 @@ let productGrid;
 let lotGrid;
 let selectedOptionNum = null;
 let selectedCompanyNum = [[${session.companyNum}]];
+let selectedRowKey = null;
 
 function initProductGrid() {
     console.log("✅ initProductGrid() 실행");
@@ -216,17 +193,17 @@ function initProductGrid() {
         },
         bodyHeight: 'auto', 
         columns: [
-            { header: "상품명", name: "goodsName", rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
-            { header: "상품코드", name: "goodsCode", rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
-            { header: "옵션명", name: "optionName" },
-            { header: "옵션코드", name: "optionCode" },
-            { header: "브랜드", name: "brandName" },
-            { header: "규격", name: "goodsStandard"},
-            { header: "입고수", name: "totalInputQuantity"},
-            { header: "출고수", name: "totalOutputQuantity"},
-            { header: "재입고수", name: "totalRestockQuantity"},
-            { header: "총재고수", name: "totalQuantity"},
-            { header: "안전재고", name: "optionSafetyInvoice"},
+            { header: "상품명", name: "goodsName", align: "left",rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } ,minWidth: 200 },
+            { header: "상품코드", name: "goodsCode", align: "left",rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
+            { header: "옵션명", name: "optionName" ,align: "left"},
+            { header: "옵션코드", name: "optionCode",align: "left"},
+            { header: "브랜드", name: "brandName",align: "left" },
+            { header: "규격", name: "goodsStandard",align: "center"},
+            { header: "입고수", name: "totalInputQuantity",align: "left",formatter:(row)=>numberFormat(row.value)},
+            { header: "출고수", name: "totalOutputQuantity",align: "left",formatter:(row)=>numberFormat(row.value)},
+            { header: "재입고수", name: "totalRestockQuantity",align: "left",formatter:(row)=>numberFormat(row.value)},
+            { header: "총재고수", name: "totalQuantity",align: "left",formatter:(row)=>numberFormat(row.value)},
+            { header: "안전재고", name: "optionSafetyInvoice",align: "left",formatter:(row)=>numberFormat(row.value)},
         ]
     });
 
@@ -234,6 +211,13 @@ function initProductGrid() {
 
     // 옵션명을 클릭하면 LOT 정보를 가져오는 이벤트 추가
     productGrid.on("click", function(event) {
+    	if (selectedRowKey !== null) {
+    		productGrid.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+        }
+    	// 클릭한 행에 강조 효과 추가
+		productGrid.addRowClassName(event.rowKey, 'tui-grid-row-highlight');
+		 // 현재 강조된 행을 기록
+        selectedRowKey = event.rowKey;
         const rowKey = event.rowKey;
         const columnName = event.columnName;
         const rowData = productGrid.getRow(rowKey);
@@ -317,15 +301,15 @@ function initLotGrid(callback) {
         pageOptions: { useClient: false, perPage: 5 },
         bodyHeight: 'auto',
         columns: [
-            { header: "LOT 번호", name: "goodsLotNum" },
-            { header: "상품 코드", name: "goodsCode" },
-            { header: "상품명", name: "goodsName" },
-            { header: "옵션 코드", name: "optionCode" },
-            { header: "옵션명", name: "optionName" },
-            { header: "창고명", name: "warehouseName" },
-            { header: "총 재고 수량", name: "totalQuantity" },
-            { header: "입고일", name: "warehousingDate" },
-            { header: "소비기한", name: "goodsConsumptionDate" }
+            { header: "LOT 번호", name: "goodsLotNum" ,align: "left",minWidth: 200 },
+            { header: "상품 코드", name: "goodsCode" ,align: "left"},
+            { header: "상품명", name: "goodsName" ,align: "left"},
+            { header: "옵션 코드", name: "optionCode",align: "left"},
+            { header: "옵션명", name: "optionName" ,align: "left"},
+            { header: "창고명", name: "warehouseName",align: "left" },
+            { header: "총 재고 수량", name: "totalQuantity" ,formatter:(row)=>numberFormat(row.value),align: "right"},
+            { header: "입고일", name: "warehousingDate",align: "center" },
+            { header: "소비기한", name: "goodsConsumptionDate",align: "center" }
         ]
     });
 

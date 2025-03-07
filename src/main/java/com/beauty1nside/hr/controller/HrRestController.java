@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.beauty1nside.common.FileConfig;
 import com.beauty1nside.common.GridArray;
 import com.beauty1nside.common.Paging;
 import com.beauty1nside.hr.dto.EmpDTO;
@@ -39,8 +41,7 @@ import lombok.extern.log4j.Log4j2;
 	public class HrRestController {
 		final EmpService empService;
 		final PasswordEncoder passwordEncoder;
-		
-		private static final String UPLOAD_DIR = "src/main/resources/static/file/image/mypage/profile/";
+		final FileConfig fileConfig;
 		
 		@GetMapping("/emp/list")
 		public Object empList(@RequestParam(name = "perPage", defaultValue = "2", required = false) int perPage, 
@@ -104,7 +105,7 @@ import lombok.extern.log4j.Log4j2;
 	    
 	    // 🔹 사원 등록 API
 	    @PostMapping("/emp/register")
-	    public ResponseEntity<String> registerEmployee(EmpDTO empDTO,
+	    public ResponseEntity<Map<String, String>> registerEmployee(EmpDTO empDTO,
 	    											   @RequestPart(value = "image", required = false) MultipartFile file, HttpSession session) {
 	    	
 	    	log.info("empDTO={}",empDTO);
@@ -115,17 +116,34 @@ import lombok.extern.log4j.Log4j2;
 	        
 	        // ✅ `companyNum`이 없거나 유효하지 않으면 접근 차단
 	        if (sessionCompanyNum == null || sessionCompanyNum <= 0) {
-	            return ResponseEntity.status(403).body("잘못된 접근입니다. (세션에 회사번호 없음)");
+	            return ResponseEntity.status(403).body(Map.of("error", "잘못된 접근입니다. (세션에 회사번호 없음)"));
 	        }
 	
 	        // ✅ DTO의 `companyNum`을 세션 값으로 설정 (보안 강화)
 	        empDTO.setCompanyNum(sessionCompanyNum);
 	
+	        
+	        // ✅ 한글 포함 여부 확인
+	        if (!empDTO.getEmployeeId().matches("^[A-Za-z0-9_]+$")) {
+	            return ResponseEntity.status(400).body(Map.of("error", "사원 ID는 영문, 숫자, 언더바(_)만 사용할 수 있습니다."));
+	        }
 	    	
-	    	//ssn 합치기
-	    	String newSsn = empDTO.getFirstSsn()+"-"+ passwordEncoder.encode(empDTO.getSecondSsn());
-	    	
-	    	empDTO.setSsn(newSsn);
+	     // 주민등록번호 입력 검증
+	        if (empDTO.getFirstSsn() == null || empDTO.getFirstSsn().isBlank() ||
+	            empDTO.getSecondSsn() == null || empDTO.getSecondSsn().isBlank()) {
+	            log.warn("🚨 주민번호가 입력되지 않음, 등록 중단!");
+	            return ResponseEntity.status(400).body(Map.of("error", "주민등록번호를 입력해주세요."));
+	        }
+
+	        // 🔹 길이 검증 추가
+	        if (!empDTO.getFirstSsn().matches("\\d{6}") || !empDTO.getSecondSsn().matches("\\d{7}")) {
+	            log.warn("🚨 주민번호 형식 오류: 앞자리={}, 뒷자리={}", empDTO.getFirstSsn(), empDTO.getSecondSsn());
+	            return ResponseEntity.status(400).body(Map.of("error", "주민등록번호는 앞 6자리, 뒤 7자리 숫자로 입력해주세요."));
+	        }
+
+	        // ✅ 주민번호 암호화 저장
+	        String newSsn = empDTO.getFirstSsn() + "-" + passwordEncoder.encode(empDTO.getSecondSsn());
+	        empDTO.setSsn(newSsn);
 	    	
 	    	//비밀번호: 생년월일 8자리
 	    	String ssnFirstPart = empDTO.getFirstSsn();
@@ -151,25 +169,46 @@ import lombok.extern.log4j.Log4j2;
 	        // ✅ 파일이 존재하는 경우에만 업로드 수행
 	        if (file != null && !file.isEmpty()) {
 	            try {
+	            	// c:에 저장
+	            	String imgPath = fileConfig.getUploadpath();
 	                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-	                Path uploadPath = Paths.get("src/main/resources/static/file/image/mypage/profile/" + fileName);
+	                Path uploadPath = Paths.get(imgPath + fileName);
 	                Files.createDirectories(uploadPath.getParent());
 	                Files.write(uploadPath, file.getBytes());
 	                
-	                String imageUrl = "/file/image/mypage/profile/" + fileName;
-	                empDTO.setProfileImage(imageUrl);
+	                // 이미지 경로이름 
+	                String imageUrl = fileConfig.getImgpath();
+	                empDTO.setProfileImage(imageUrl + fileName);
 	            } catch (Exception e) {
 	                log.error("❌ 파일 업로드 실패:", e);
-	                return ResponseEntity.status(500).body("파일 업로드 실패");
+	                return ResponseEntity.status(500).body(Map.of("error", "파일 업로드 실패"));
 	            }
 	        } else {
-	            log.info("🚨 프로필 이미지 없음, 기본 이미지 적용");
-	            empDTO.setProfileImage("/file/image/mypage/profile/noProfileImg.jpg"); // 기본 이미지 설정
+	            //log.info("🚨 프로필 이미지 없음, 기본 이미지 적용");
+	            //empDTO.setProfileImage("/file/image/mypage/profile/noProfileImg.jpg"); // 기본 이미지 설정
+	            log.info("🚨 프로필 이미지 없음, `null`로 설정");
+	            empDTO.setProfileImage(null); // 기본 이미지 설정을 없애고 `null` 저장
 	        }
 	
 	        // ✅ 사원 등록 실행
-	        empService.registerEmployee(empDTO);
-	        return ResponseEntity.ok("사원 등록 성공! 사번: " + empDTO.getEmployeeId());
+	        try {
+	            empService.registerEmployee(empDTO);
+	            return ResponseEntity.ok(Map.of("message", "사원 등록 성공!"));
+	        } catch (DuplicateKeyException e) {
+	            String errorMessage = e.getMessage(); // 예외 메시지 가져오기
+	            log.error("❌ 중복 오류 발생: {}", errorMessage);
+
+	            if (errorMessage.contains("사원 ID")) {
+	                return ResponseEntity.status(409).body(Map.of("error", "이미 등록된 사원 ID입니다."));
+	            } else if (errorMessage.contains("이메일")) {
+	                return ResponseEntity.status(409).body(Map.of("error", "이미 등록된 이메일입니다."));
+	            }
+
+	            return ResponseEntity.status(409).body(Map.of("error", "중복된 데이터가 존재합니다."));
+	        } catch (Exception e) {
+	            log.error("❌ 사원 등록 실패:", e);
+	            return ResponseEntity.status(500).body(Map.of("error", "등록 중 오류 발생"));
+	        }
 	    }
 	    
 	    @GetMapping("/emp/new-employee-id")
@@ -322,5 +361,15 @@ import lombok.extern.log4j.Log4j2;
 		 * getSalariesByEmployee(@PathVariable Long employeeNum) { return
 		 * ResponseEntity.ok(empService.getSalariesByEmployee(employeeNum)); }
 		 */
+	    
+	    @GetMapping("/emp/check-employee-id")
+	    public ResponseEntity<Map<String, Object>> checkEmployeeId(@RequestParam("employeeId") String employeeId) {
+	        boolean exists = empService.isEmployeeIdExists(employeeId);
+
+	        if (exists) {
+	            return ResponseEntity.status(409).body(Map.of("error", "이미 사용 중인 사원 ID입니다."));
+	        }
+	        return ResponseEntity.ok(Map.of("message", "사용 가능한 사원 ID입니다."));
+	    }
 	    
 	}

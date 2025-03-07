@@ -2,27 +2,13 @@
 
 <body>
  
-    <style>
-	    #custom-container{
-			background-color: #f8f9fa; /* 연한 회색 배경 */
-			padding: 20px;
-			border-radius: 10px;
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
-			margin-bottom: 20px;
-		
-		}
-        .container { max-width: 100%; margin: 20px auto; }
-        .header-box { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 10px; }
-        .search-container { margin-bottom: 15px; }
-        .pagination-container { text-align: center; margin-top: 10px; }
-        .btn-search { background-color: #28a745; color: white; }
-        .btn-reset { background-color: #007bff; color: white; }
-        .btn-register { background-color: #28a745; color: white; margin-top: 10px; }
+   <style>
+
         
        /* ✅ 전체 그리드의 스크롤 제거 */
 		#productGrid {
 		    width: 100% !important;
-		    min-width: 1200px;  /* 최소 너비 설정 */
+		    min-width: 100%;  /* 최소 너비 설정 */
 		    height: auto !important;
 		}
 
@@ -101,9 +87,8 @@
 
 
 <div class="container mt-4">
-	<h2 class="mb-4">상품 조회</h2>
 	   <!-- 검색창 -->
-	<div class="search-grid" id="custom-container">
+	<div class="search-grid" id="custom-modal-container">
 	    <div class="d-flex flex-wrap align-items-center gap-3">
 	        <div class="d-flex align-items-center">
 	            <span class="label-search me-2">상품명</span>
@@ -136,7 +121,9 @@
 
 </div>
 
-<script>
+ <script>
+
+console.log("갯수그리드")
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOMContentLoaded 실행됨");
 
@@ -149,20 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.warn("❌ productNumGrid 요소를 찾을 수 없습니다.");
     }
 });
-// ✅ 텍스트를 굵게하고 정렬하는 렌더러
-class CustomTextRenderer {
-    constructor(props) {
-        const el = document.createElement('div');
-        el.innerText = props.value;
-        el.style.padding = '10px';
-        el.style.fontWeight = 'bold';
-        el.style.textAlign = 'left';
-        this.el = el;
-    }
-    getElement() {
-        return this.el;
-    }
-}
+
 
 let productNumGrid;
 
@@ -211,21 +185,22 @@ function initProductNumGrid() {
         },
         bodyHeight: 'auto', 
         columns: [
-            { header: "상품명", name: "goodsName", rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
-            { header: "상품코드", name: "goodsCode", rowSpan: true, className: "merged-cell", renderer: { type: CustomTextRenderer } },
-            { header: "옵션명", name: "optionName" },
-            { header: "옵션번호", name: "optionCode" },
-            { header: "브랜드", name: "brandName" },
-            { header: "규격", name: "goodsStandard"},
-            { header: "입고수량", name: "totalInputQuantity"},
-            { header: "출고수량", name: "totalOutputQuantity"},
-            { header: "총재고", name: "totalQuantity"},
-            { header: "안전재고", name: "optionSafetyInvoice"},
+            { header: "상품명", name: "goodsName",  align: "left",rowSpan: true, className: "merged-cell", },
+            { header: "상품코드", name: "goodsCode", align: "left",rowSpan: true, className: "merged-cell",  },
+            { header: "옵션명", name: "optionName" , align: "left"},
+            { header: "옵션번호", name: "optionCode" , align: "left"},
+            { header: "브랜드", name: "brandName", align: "left" },
+            { header: "규격", name: "goodsStandard", align: "center"},
+            { header: "입고수량", name: "totalInputQuantity", align: "right",formatter:(row)=>numberFormat(row.value)},
+            { header: "출고수량", name: "totalOutputQuantity", align: "right",formatter:(row)=>numberFormat(row.value)},
+            { header: "총재고", name: "totalQuantity", align: "right",formatter:(row)=>numberFormat(row.value)},
+            { header: "안전재고", name: "optionSafetyInvoice", align: "right",formatter:(row)=>numberFormat(row.value)},
         ]
     });
 
     console.log("✅ 상품 그리드 초기화 완료");
-
+    
+ 
     
 }
 
@@ -268,10 +243,6 @@ function resetNumFilters() {
 }
 
 </script>
-
-
-
-
 </body>
 
 

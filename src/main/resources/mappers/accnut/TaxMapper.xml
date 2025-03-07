@@ -43,7 +43,38 @@
 		WHERE th.tax_num = #{pk}	
 	</select>
 
-
+	<select id="list" resultType="map" parameterType="com.beauty1nside.accnut.dto.TaxSearchDTO">
+		SELECT tax_num AS "taxNum", to_rgno AS "toRgno", to_co_name AS "toCoName", to_name AS "toName", to_address AS "toAddress", to_status AS "toStatus", to_cate AS "toCate", TO_CHAR(rgdate, 'YYYY-MM-DD') AS "rgdate", note AS "note", total AS "total", supply AS "supply", tax AS "tax" 
+		FROM (SELECT /*+INDEX_DESC(accnut_tax_header PK_ACCNUT_TAX_HEADER)*/ rownum rn, tax_num, to_rgno, to_co_name, to_name, to_address, to_status, to_cate, rgdate, note, total, supply, tax 
+		      FROM accnut_tax_header
+      <![CDATA[
+			  WHERE rownum <= #{end}
+      		  AND 
+		]]>
+		<include refid="searchInfo"></include>
+			  ) 
+		WHERE rn >= #{start}
+	
+	</select>
+	
+	<select id="count">
+		SELECT count(tax_num)
+		FROM accnut_tax_header
+		<where>
+			<include refid="searchInfo"></include>
+		</where>
+	</select>
+	
+	<sql id="searchInfo">
+		company_num = #{companyNum}
+		<if test="toRgno != null and toRgno != 0">
+			AND to_rgno = #{toRgno}
+		</if>
+		<if test="rgdate != null and ! rgdate.equals('')">
+			AND rgdate = #{rgdate}
+		</if>
+	
+	</sql>
 
 
 

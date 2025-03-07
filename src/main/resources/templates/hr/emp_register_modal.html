@@ -85,6 +85,35 @@
 	justify-content: center;
 }
 
+.custom-swal-popup {
+    word-wrap: break-word;  /* 긴 문장 자동 줄바꿈 */
+    white-space: pre-line;  /* \n도 줄바꿈 적용 */
+    padding: 24px;          /* 적당한 패딩 */
+    max-height: 80vh;       /* 내용이 많으면 스크롤 */
+    overflow-y: auto;       /* 세로 스크롤 자동 */
+}
+
+/* 프로필 이미지 박스 */
+.profile-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* 정사각형 */
+    height: 200px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    overflow: hidden;
+}
+
+/* 프로필 이미지 스타일 */
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
 </style>
 
 <title>사원 등록 모달</title>
@@ -132,19 +161,21 @@
 
 									<!-- 사원 정보 입력 -->
 									<div class="col-md-9">
-										<div class="row mb-2 align-items-center">
-											<div class="col-md-6">
-												<label class="fw-bold">사원번호</label>
-												<div class="d-flex align-items-center">
-													<input type="text" class="form-control me-2"
-														id="employeeIdInput" disabled>
-												</div>
+
+
+											<div class="mb-2">
+											    <label class="fw-bold">사원ID</label>
+											    <div class="input-group">
+											        <input type="text" class="form-control" id="employeeIdInput" maxlength="12" disabled>
+											        <button type="button" class="btn btn-outline-secondary" id="toggleAutoGenerate">자동 생성</button>
+											    </div>
 											</div>
-											<div class="col-md-6">
+
+											<div class="mb-2">
 												<label class="fw-bold" >사원명</label> <input type="text"
 													class="form-control" id="employeeName" placeholder="사원명을 입력하세요">
 											</div>
-										</div>
+
 										
 										<div class="row mb-2 align-items-center">
 											<div class="mb-2">
@@ -268,10 +299,10 @@
 
 					<!--  모달 푸터 -->
 					<div class="modal-footer bg-light">
-						<button class="btn btn-outline-secondary btn-icon" type="reset"
+						<button class="btn btn-secondary" type="reset"
 							id="resetBtn">초기화</button>
-						<button class="btn btn-danger btn-icon" data-bs-dismiss="modal">취소</button>
-						<button class="btn btn-primary btn-icon" id="registerBtn"
+						<button class="btn btn-danger" data-bs-dismiss="modal">취소</button>
+						<button class="btn btn-primary" id="registerBtn"
 							type="button">등록</button>
 					</div>
 				</div>

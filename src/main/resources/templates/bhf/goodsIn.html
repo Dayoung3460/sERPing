@@ -22,7 +22,7 @@
 </head>
 <body layout:fragment="content">
 	<div class="container">
-		<h3 class="mt-2 mb-2"><b>상품 입고</b></h3>
+		<h2 class="mt-2 mb-2"><b>상품 입고</b></h2>
 		<hr>
 		<div class="row">
 			<div id="custom-container">
@@ -57,14 +57,14 @@
 					<div class="card-body">
 						<div id="rayout-container" class="row mb-3">
 							<h5 class=" col-sm-9"><b>주문 상세</b></h5>
-							<span class="label-search col-sm-1" style="font-size: 1em">표시수량</span>
+<!-- 							<span class="label-search col-sm-1" style="font-size: 1em">표시수량</span>
 							<select name="display_amount" id="display_amount" class="col-sm-1 input-box" onchange="changeDisplay()">
 								<option value="5" selected>5</option>
 								<option value="10">10</option>
 								<option value="20">20</option>
 								<option value="50">50</option>
 								<option value="100">100</option>
-							</select>
+							</select> -->
 						</div>
 						<div id="orderDtl"></div>
 						<div id="pagination" class="tui-pagination"></div>
@@ -186,10 +186,10 @@
 		// 주문 상세 테이블
 		const grid2 = new Grid({
 			el: document.getElementById('orderDtl'), 
-			pageOptions: {
+/* 			pageOptions: {
 				useClient: false,
 				perPage: 5,
-			},
+			}, */
 			columns: [ 
 				{ header : "상품코드", name : "goodsCode", hidden : 1},
 				{ header : "옵션코드", name : "optionCode", hidden : 1},

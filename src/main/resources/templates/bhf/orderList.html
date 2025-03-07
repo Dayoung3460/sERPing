@@ -22,7 +22,7 @@
 </head>
 <body layout:fragment="content">
 	<div class="container">
-		<h3 class="mt-2 mb-2"><b>입고 요청 조회</b></h3>
+		<h2 class="mt-2 mb-2"><b>입고 요청 조회</b></h2>
 		<hr>
 		<div class="row">
 			<div id="custom-container">
@@ -71,7 +71,7 @@
 					<div class="card-body">
 						<div id="rayout-container" class="row mb-3">
 							<h5 class=" col-sm-9"><b>요청서 상세</b></h5>
-							<span class="label-search col-sm-1" style="font-size: 1em">표시수량</span>
+							<span class="label-search col-sm-1" style="font-size: 1em; margin: 10px 0px;">표시수량</span>
 							<select name="display_amount" id="display_amount" class="col-sm-1 input-box" onchange="changeDisplay()">
 								<option value="5" selected>5</option>
 								<option value="10">10</option>
@@ -163,6 +163,7 @@
 				{ header : "요청일자", name : "orderDate", align: 'center'},
 				{ header : "납기일자", name : "dueDate", align: 'center'},
 				{ header : "진행상태", name : "progressStatus", align: 'center'},
+				{ header : "품목", name : "countName", align: 'left', width: 300},
 				{ header : "비고", name : "remark", align: 'left', width: 400}
 			],
 			data: dataSource

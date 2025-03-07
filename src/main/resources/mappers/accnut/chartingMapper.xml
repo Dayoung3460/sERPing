@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beauty1nside.accnut.mapper.ChartingMapper">
+	
+	<select id="chartinfo" resultType="com.beauty1nside.accnut.dto.SellingDTO" parameterType="com.beauty1nside.accnut.dto.SellingSearchDTO">
+		SELECT b.result_date, 
+		       b.office_id, 
+		       b.option_code, 
+		       b.option_name, 
+		       b.goods_name,
+		       b.sell_qy, 
+		       b.minus_qy, 
+		       fn_get_option_price(b.option_code) AS price, 
+		       b.total_price
+		FROM (  SELECT rownum rn, a.*
+		        FROM (  SELECT 
+        					   TO_CHAR(c.result_date, 'YYYY-MM-DD') result_date,
+		                       c.office_id,
+		                       c.option_code,
+		                       c.option_name,
+		                       c.goods_name,
+		                       SUM(c.sell_qy) AS sell_qy,
+		                       SUM(c.qy) AS minus_qy,
+		                       SUM(c.total_price) AS total_price
+		                       
+		                FROM (SELECT br.branch_office_id AS office_id,
+		                             brd.option_code,
+		                             brd.goods_name,
+		                             brd.goods_name || '-' || brd.option_name AS option_name,
+		                             br.request_date AS result_date, 
+		                             0 - NVL(brd.quantity, 0) AS qy,
+		                             0 AS sell_qy,
+		                             company_num,
+		                             fn_get_option_price(brd.option_code) * (0 - NVL(brd.quantity, 0)) AS total_price
+		                             
+		                      FROM bhf_returning br JOIN bhf_returning_detail brd
+		                             ON (br.returning_code = brd.returning_code)
+		                             
+		                      WHERE brd.returning_reason IN ('파손', '찌그러짐')
+		                      
+		                UNION ALL
+		                
+		                      SELECT branch_office_id AS office_id, 
+		                             option_code, 
+		                             goods_name,
+		                             goods_name || '-' || option_name AS option_name, 
+		                             mediation_date AS result_date, 
+		                             NVL(quantity, 0) - NVL(mediation_quantity, 0) AS qy,
+		                             0 AS sell_qy,
+		                             company_num,
+		                             fn_get_option_price(option_code) * (NVL(quantity, 0) - NVL(mediation_quantity, 0)) AS total_price
+		                             
+		                      FROM bhf_goods_mediation
+		                      
+		                UNION ALL
+		                
+		                        SELECT bc.branch_office_id AS office_id,
+		                               bcd.option_code,
+		                               bcd.goods_name,
+		                               bcd.goods_name || '-' ||bcd.option_name AS option_name,
+		                               bc.closing_date AS result_date,
+		                               0 AS qy,
+		                               bcd.bnf_sle_qy AS sell_qy,
+		                               company_num,
+		                               fn_get_option_price(bcd.option_code) * (bcd.bnf_sle_qy) AS total_price
+		                               
+		                        FROM bhf_closing bc JOIN bhf_closing_detail bcd
+		                        
+		                        ON (bc.closing_code = bcd.closing_code)
+		                      ) c
+		                      
+		                WHERE c.company_num = #{companyNum}
+		                
+		                <include refid="searchInfo"></include>
+		                
+		                GROUP BY 
+		                		 TO_CHAR(result_date, 'YYYY-MM-DD'),
+		                         office_id, 
+		                         option_code, 
+		                         option_name,
+		                         goods_name
+		                         
+		                HAVING SUM(c.sell_qy) > 0
+		                
+		                ORDER BY result_date desc, 
+		                         office_id, 
+		                         option_code 
+                     ) a
+        	 ) b
+
+		WHERE b.rn >= 1
+		<![CDATA[
+		AND b.rn <= 99999	
+		]]>
+	</select>
+	
+	
+	<sql id="searchInfo">
+		<if test="startDate != null and ! startDate.equals('')">
+		AND c.result_date >= #{startDate}
+		</if>
+		
+		<if test="endDate != null and ! endDate.equals('')">
+		<![CDATA[
+		AND c.result_date <= #{endDate}
+		]]>
+		</if>
+		
+		<if test="officeId != null and ! officeId.equals('')">
+		AND c.office_id = #{officeId}
+		</if>
+		
+		<if test="optionCode != null and ! optionCode.equals('')">
+		AND c.option_code = #{optionCode}
+		</if>
+		
+		<if test="goodsName != null and ! goodsName.equals('')">
+		AND c.goods_name = #{goodsName}
+		</if>
+	</sql>
+	
+	<select id="comSeachDept" resultType="com.beauty1nside.hr.dto.DeptDTO">
+		select DEPARTMENT_NAME
+		from HR_DEPARTMENT
+		where COMPANY_NUM = #{companyNum}
+		and PARENT_DEPARTMENT_NUM in ( select DEPARTMENT_NUM from HR_DEPARTMENT where DEPARTMENT_NAME = '지점' )
+		
+		<!-- select pr.DEPARTMENT_NAME
+		from HR_DEPARTMENT hr
+		left join HR_DEPARTMENT pr
+		on hr.DEPARTMENT_NUM = pr.PARENT_DEPARTMENT_NUM
+		where hr.COMPANY_NUM = #{companyNum}
+		and hr.DEPARTMENT_NAME = '지점' -->
+	</select>
+</mapper>

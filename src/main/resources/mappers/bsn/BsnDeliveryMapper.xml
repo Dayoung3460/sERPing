@@ -138,7 +138,7 @@ LEFT JOIN purchs_warehousing_body pwb ON bdl.goods_lot_num = pwb.goods_lot_num
 LEFT JOIN bsn_delivery_detail bdd ON bdl.delivery_detail_id = bdd.delivery_detail_id
 LEFT JOIN bsn_order_detail bod ON bdd.order_detail_id = bod.order_detail_id
 LEFT JOIN (
-    SELECT order_detail_id,
+    SELECT DISTINCT order_detail_id,
            REGEXP_SUBSTR(goods_standard, '\d+', 2, 1) / REGEXP_SUBSTR(goods_standard, '\d+', 1, 1) AS goods_standard_ratio
     FROM bsn_order_detail
 ) ratio_table ON bod.order_detail_id = ratio_table.order_detail_id

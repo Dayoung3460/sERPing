@@ -20,6 +20,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	#cancelButton {
 	   visibility: hidden;
 	}
+	/* 그리드 선택하면 생기는 색상 */
+	.tui-grid-row-highlight {
+		    background-color: #f0f8ff !important; /* 연한 하늘색 */
+	}
   </style>
 
 </head>
@@ -29,6 +33,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 
       <div class="container">
 		<h3>주문 목록</h3>
+		<hr>
         <div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -71,16 +76,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                            </div>
 	                        </div>
 	
-	                        <div class="form-group m-3">
-	                            <label for="selectBhf">발주지점</label>
-	                            <select class="form-control" id="selectBhf">
-	                            	<option>all</option>
-	                                <option>발주지점1</option>
-	                                <option>발주지점2</option>
-	                                <option>발주지점3</option>
-	                                <option>yedam</option>
-	                            </select>
-	                        </div>
+	                       <div class="form-group m-3">
+							    <label for="inputBhf">발주지점</label>
+							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+						   </div>
 							<div class="col-12 text-center">
 	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
 	                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
@@ -96,7 +95,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
             	<div class="card">
               		<div class="card-body">
                 		<h4 class="card-title">주문 목록</h4>
-                		<p class="card-description">그리드 - 검색한 주문 리스트 출력</p>
+                		<p class="card-description"></p>
                 		<div id="orderList"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
               		</div>
@@ -153,6 +152,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 끝 -->
   <!-- 세션정보 -->
   	  <script th:inline="javascript">
+  	    let departmentNum = [[${session.departmentNum}]];
 	  	let companyNum = [[${session.companyNum}]];
 	  	//let employeeNum = [[${session.employeeNum}]];
 	  </script>
@@ -179,8 +179,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     	document.getElementById("startDate").value = "";
     	document.getElementById("endDate").value = "";
     	// 발주지점 선택 값 초기화
-        document.getElementById("selectBhf").value = "all";
-        console.log(OrderListDataSource);
+        document.getElementById("selectBhf").value = "";
+    	
+    	search();
+        //console.log(OrderListDataSource);
 
 	}
     
@@ -195,23 +197,32 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	};
 	
 	
+	const detailDataSource = {
+			api: {
+				readData: { url: '/bsn/rest/order/list/detail', method: 'GET', initParams: { page: 1, orderId:"0" }},
+			},
+			contentType: 'application/json'
+	};
+	
 	//상품 테이블
 	const orderList = new Grid({
 			el: document.getElementById('orderList'), // 컨테이너 엘리먼트
+			scrollX:false,
+		    scrollY:false,
 			pageOptions: {
 			useClient: false,
 			perPage: 10,
 		},
 		columns: [ 
-			{ header : "주문ID", name : "orderId", sortable : true},
-			{ header : "주문명", name : "orderName", width: 'auto',  sortable : true},
-			{ header : "발주코드", name : "orderCode"},
-			{ header : "지점코드", name : "branchOfficeId"},
-			{ header : "담당자", name : "employeeName"},
-			{ header : "주문상태", name : "orderStatus", formatter: ({ value }) => formatOrderStatus(value),  sortable : true},
-			{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-			{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
-			{ header : "비고", name : "remark", width: 'auto'},
+			{ header : "주문ID", name : "orderId", sortable : true, align: "left",},
+			{ header : "주문명", name : "orderName", width: 'auto',  sortable : true, align: "left",},
+			{ header : "발주코드", name : "orderCode", align: "left",},
+			{ header : "지점코드", name : "branchOfficeId", align: "left",},
+			{ header : "담당자", name : "employeeName", align: "left",},
+			{ header : "주문상태", name : "orderStatus", formatter: ({ value }) => formatOrderStatus(value),  sortable : true, align: "left",},
+			{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
+			{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
+			{ header : "비고", name : "remark", width: 'auto', align: "left",},
 		],
 		data: OrderListDataSource
 	});
@@ -266,9 +277,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
 	    let startDate = document.getElementById("startDate").value; // 시작 날짜
 	    let endDate = document.getElementById("endDate").value; // 끝 날짜
-	    let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+	    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+	    let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
 	    
-	    console.log(selectedOption, startDate, endDate, selectedBhf);
+	    //console.log(selectedOption, startDate, endDate, selectedBhf);
 	    
 	    let params = {
 	    		"companyNum": companyNum,
@@ -284,6 +296,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	}
 	
 	//주문 클릭 시 상세 불러오기
+	let selectedRowKey = null;
+	
 	orderList.on('click', (ev) => {
 		
 		
@@ -292,9 +306,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	        return;
 	    }
 	    
-	    //console.log(rowKey);
+	  //선택한 키가 있다면 색강조 제거
+	    if (selectedRowKey !== null) {
+	    	orderList.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+	    }
+	    
+		// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+		orderList.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+		selectedRowKey = ev.rowKey;
+	    
+		//
 	    const rowData = orderList.getRow(rowKey); // 클릭한 행 데이터 가져오기
-	    console.log(rowData.orderId);
 	    if (rowData && rowData.orderId) {
 	    	selectedRow = rowData;
 	        loadOrderDetail(rowData.orderId); // 상세 정보 불러오기
@@ -302,7 +324,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	        loadOrderHistory(rowData.orderId);
 	     	// 상태가 'VS001'이면 버튼을 보이고, 아니면 숨김
 	     	const cancelButton = document.getElementById('cancelButton');
-	        if (rowData.orderStatus === 'VS001') {
+	        if (rowData.orderStatus === 'VS001' && departmentNum !== 0) {	//부서번호 조건 걸기(나중에)////////////////////////
 	        	cancelButton.style.visibility = 'visible';
 	        } else {
 	        	cancelButton.style.visibility = 'hidden';
@@ -317,6 +339,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	        return;
 	    }
 		
+		orderDetailGrid.readData(1, {orderId});
+		/*
 	    fetch(`/bsn/rest/order/list/detail?orderId=${orderId}`)
 	    	
 	        .then(response => {
@@ -344,6 +368,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	            }
 	        })
 	        .catch(error => console.error('Error fetching order detail:', error));
+		*/
 	}
 	function loadOrderHistory(orderId) {
 		if (!orderId) {
@@ -376,22 +401,25 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	//상세 그리드 형식
 	const orderDetailGrid = new Grid({
     el: document.getElementById('orderDetail'),
+    scrollX:false,
+    scrollY:false,
     columns: [
-        { header: "상품명", name: "goodsName", 
+        { header: "상품명", name: "goodsName", align: "left", 
         //	width: 'auto' ,	
         },
-        { header: "옵션명", name: "optionName", },
-        { header: "상품코드", name: "goodsCode",  },
-        { header: "옵션코드", name: "optionCode",  },
-        { header: "규격", name: "goodsStandard",  },
-        { header: "수량(box)", name: "quantity",  },
+        { header: "옵션명", name: "optionName", align: "left", },
+        { header: "상품코드", name: "goodsCode", align: "left",  },
+        { header: "옵션코드", name: "optionCode", align: "left",  },
+        { header: "규격", name: "goodsStandard", align: "center",  },
+        { header: "수량(box)", name: "quantity", align: "right",  },
         //{ header: "단가", name: "unitPrice",  },
         //{ header: "총액", name: "totalPrice",  }
     ],
     pageOptions: {
         useClient: false,
-        perPage: 5
-    }
+        perPage: 10
+    },
+    data:detailDataSource
 	
 	
 	});
@@ -399,10 +427,12 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	//이력 그리드 형식
 	const orderHistoryGrid = new Grid({
     el: document.getElementById('orderHistory'),
+    scrollX:false,
+    scrollY:false,
     columns: [
-        { header: "이력유형", name: "historyType", formatter: ({ value }) => formatOrderStatus(value), width:"auto" },
-        { header: "처리일", name: "registerDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', },
-        { header: "이력내용", name: "historyContents",  },
+        { header: "이력유형", name: "historyType", formatter: ({ value }) => formatOrderStatus(value), },
+        { header: "이력내용", name: "historyContents",  width:720},
+        { header: "처리일", name: "registerDate", formatter: ({ value }) => formatDate(value, 'order'), },
 
     ],
     pageOptions: {

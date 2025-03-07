@@ -8,28 +8,33 @@
 >
 <head>
   <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <style>
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body layout:fragment="content">
 <input type="hidden" id="sessionEmployeeNum" th:value="${session.employeeNum}"/>
 <input type="hidden" id="sessionAuthority" th:value="${session.authority}"/>
-  <div class="row">
-    <div class="col-md-12 grid-margin">
-      <div class="row">
-        <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-          <div sec:authorize="isAuthenticated()">
-            환영합니다. <span sec:authentication="name" class="h4"></span>님!
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="text-center mt-4">
+  <h3 class="fw-bold text-primary fade-in">환영합니다<i class="mdi mdi-beach"></i> <span class="text-dark" th:text="${session.employeeName}"> </span>님!</h3>
+</div>
   <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">일정</button>
+    <li class="nav-item" role="presentation" id="calendar-tab">
+      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" >일정</button>
     </li>
     <li class="nav-item" role="presentation" id="approval-tab">
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" aria-selected="false">결재</button>
+      <button class="nav-link " data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" >결재</button>
+    </li>
+    <li class="nav-item" role="presentation" id="board-tab">
+      <button class="nav-link " data-bs-toggle="tab" data-bs-target="#board-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" >게시판</button>
     </li>
   </ul>
   <div class="tab-content">
@@ -38,7 +43,6 @@
         <p id="clicked-event"></p>
         <div id="calendar" style="height: 600px;">
         </div>
-
       </div>
     </div>
     <div class="tab-pane fade" id="approval-tab-pane" role="tabpanel" aria-labelledby="approval-tab" tabindex="0">
@@ -76,10 +80,6 @@
                   </select>
                 </div>
               </div>
-<!--              <div class="row w-100">-->
-<!--                -->
-<!--              </div>-->
-
             </div>
             <div class="mt-4 d-flex justify-content-center search-btn">
               <button type="button" class="btn btn-primary px-3 py-2" onclick="search()">검색</button>
@@ -95,16 +95,159 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
-      ...
-    </div>
-    <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
-      ...
+    <div class="tab-pane fade" id="board-tab-pane" role="tabpanel" aria-labelledby="board-tab" tabindex="0">
+      <div class="row board">
+        <div class="container">
+          <div class="search-grid" >
+            <div class="d-flex flex-wrap align-items-center gap-3">
+              <div class="card-body" >
+                <div id="custom-container">
+                  <div class="row mb-4" >
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label " style="text-align:center">제목</label>
+                      <input type="text" class="form-control " id="boardTitle">
+                    </div>
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label " style="text-align:center">작성자</label>
+                      <input type="text" class="form-control" id="boardEmployeeName">
+                    </div>
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label" style="text-align:center">분류</label>
+                      <select name="progressStatus" id="boardCategory" class="form-control">
+                        <option value="" selected>분류 선택</option>
+                        <option value="공지">공지</option>
+                        <option value="행사">행사</option>
+                      </select>
+                    </div>
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label" style="text-align:center">작성일</label>
+                      <input type="date" class="form-control" id="boardDate">
+                    </div>
+
+                  </div>
+                  <div style="text-align : center" class="mb-4">
+                    <button class="btn btn-primary" onclick="search()">검색</button>
+                    <button class="btn btn-secondary" onclick="reset()">초기화</button>
+                  </div>
+                </div>
+
+                <div id="board"></div>
+                <div id="pagination" class="tui-pagination"></div>
+                <div style="text-align : right">
+                  <button type="button" class="boardInsert btn btn-success">글 쓰기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <script src="/js/mainpage/calendar.js"></script>
   <script src="/js/mainpage/approval.js"></script>
 
+<script>
+
+  let sessionCompanyNum = [[${session.companyNum}]];
+
+  const boardDataSource = {
+    api: {
+      readData: { url: '/bhf/rest/board/list', method: 'GET', initParams: { page: 1, companyNum: sessionCompanyNum }},
+    },
+    contentType: 'application/json'
+
+  };
+
+  //게시판
+  const boardGrid = new tui.Grid({
+    el: document.getElementById('board'),
+    pageOptions: {
+      useClient: false,
+      perPage: 5,
+    },
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      { header : "번호", name : "boardId", align: 'center', width: 100},
+      { header : "분류", name : "boardCategory", align: 'center', width: 200},
+      { header : "제목", name : "boardTitle", align: 'center'},
+      { header : "작성자", name : "employeeName", align: 'center', width: 150},
+      { header : "작성일", name : "boardDate", align: 'center', width: 150},
+      {
+        header: "글보기",
+        name: "moveToPage",
+        width: 50,
+        formatter: ({ row }) => {
+          return `<button class="move-btn" data-id="${row.boardId}">
+                                  <i class="mdi mdi-arrow-right-bold"></i>
+                                </button>`;
+        }
+      }
+    ],
+    data: boardDataSource
+  });
+
+  let boardTab = document.getElementById('board-tab')
+  boardTab.addEventListener('click', () => {
+    boardGrid.refreshLayout()
+  })
+
+  document.addEventListener("click", function (event) {
+    const button = event.target.closest(".move-btn");
+    if (button) {
+      const dataset = button.dataset; // 버튼에서 data-id 값 가져오기
+      window.location.href = `/bhf/erpBoardDTL?boardId=${dataset.id}`;
+    }
+    const insert = event.target.closest(".boardInsert");
+    if (insert) {
+      window.location.href = `/bhf/erpBoardInsert`;
+    }
+  });
+
+  // 검색 함수
+  function search(){
+
+    let boardCategory = document.querySelector('#boardCategory').value;
+    let boardEmployeeName = document.querySelector('#boardEmployeeName').value;
+    let boardTitle = document.querySelector('#boardTitle').value;
+    let boardDate = document.querySelector('#boardDate').value;
+
+    let parameter = {};
+
+    parameter.boardCategory = boardCategory
+    parameter.employeeName = boardEmployeeName;
+    parameter.boardTitle = boardTitle;
+
+    if(boardDate != ''){
+      parameter.boardDate = boardDate;
+    }
+
+    boardGrid.setRequestParams(parameter);
+    boardGrid.readData();
+
+    OLDnodata();
+  }
+
+  // 검색 초기화 함수
+  function reset(){
+
+    let boardTitle = document.querySelector('#boardTitle').value = '';
+    let boardEmployeeName = document.querySelector('#boardEmployeeName').value = '';
+    let boardCategory = document.querySelector('#boardCategory').value = '';
+    let boardDate = document.querySelector('#boardDate').value = '';
+
+    boardGrid.setRequestParams({companyNum: sessionCompanyNum});
+    boardGrid.readData();
+  }
+
+  function OLDnodata(){
+    setTimeout( () => {
+      let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
+      nodata.innerHTML = '해당하는 데이터가 없습니다.';
+    }, 100)
+  }
+
+</script>
 </body>
 
 </html>

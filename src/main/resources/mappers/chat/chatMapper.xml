@@ -46,6 +46,7 @@
             g.employee_num,
             g.msg_content,
             g.send_date,
+            g.img_path,
             h.employee_name
         FROM grpwr_chat_message g
                  join hr_employee h on g.employee_num = h.employee_num
@@ -71,12 +72,31 @@
                  )
     </insert>
 
+    <insert id="insertImgPath"
+            parameterType="com.beauty1nside.chat.dto.MessageDTO"
+    >
+        INSERT INTO grpwr_chat_message (
+            msg_id,
+            room_id,
+            employee_num,
+            img_path,
+            send_date
+        ) VALUES (
+                     GRPWR_CAHT_MESSAGE_SEQ.nextval,
+                     #{roomId},
+                     #{employeeNum},
+                     #{imgPath},
+                     sysdate
+                 )
+    </insert>
+
     <select id="getMsgList">
         select g.MSG_ID,
                g.ROOM_ID,
                g.EMPLOYEE_NUM,
                g.MSG_CONTENT,
                g.SEND_DATE,
+                g.img_path,
                h.employee_name
         from grpwr_chat_message g
             join hr_employee h on g.employee_num = h.employee_num

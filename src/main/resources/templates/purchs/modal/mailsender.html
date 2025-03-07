@@ -82,15 +82,7 @@
       .then(data => {
         if(data.status === "success") {
         	  // SweetAlert2를 이용해 성공 모달 표시
-            Swal.fire({
-              icon: 'success',
-              title: '메일 발송 성공',
-              text: '메일이 성공적으로 발송되었습니다.',
-              confirmButtonText: '확인'
-            }).then(() => {
-              // 사용자가 확인 버튼을 누르면 페이지를 리로드
-              location.reload();
-            });
+        	  showAlert("메일 발송 성공","success");
           } else {
             Swal.fire({
               icon: 'error',
@@ -111,6 +103,15 @@
           // 📌 요청 완료 후 스피너 숨기기
           //spinner.style.display = "none";
         });
+            Swal.fire({
+              icon: 'success',
+              title: '메일 발송 성공',
+              text: '메일이 성공적으로 발송되었습니다.',
+              confirmButtonText: '확인'
+            }).then(() => {
+              // 사용자가 확인 버튼을 누르면 페이지를 리로드
+              //location.reload();
+            });
       });
   </script>
 

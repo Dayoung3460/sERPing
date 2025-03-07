@@ -1,9 +1,7 @@
 @charset "UTF-8";
 
 /* 전체 컨테이너 크기 조정 */
-.container {
-    max-width: 1400px;
-}
+
 
 /* 검색 필터 영역 */
 .search-box {

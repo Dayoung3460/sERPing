@@ -223,4 +223,52 @@ where company_num = #{companyNum}
 and purchase_num = #{purchaseNum}
 </update>
 
+
+<!-- 주문서 내역 조회 -->
+<select id="orderlist" resultType="OrderlistDTO">
+SELECT * FROM (
+    SELECT 
+        o.order_id,
+        o.order_name,
+        o.order_date,
+        o.due_date,
+        od.goods_code,
+        od.goods_name,
+        od.option_code,
+        od.option_name,
+        od.goods_standard,
+        od.quantity,
+        ROW_NUMBER() OVER (ORDER BY o.due_date DESC) AS RN
+    FROM bsn_order o
+    JOIN bsn_order_detail od 
+        ON o.order_id = od.order_id  
+    WHERE o.company_num = #{companyNum}
+    AND o.order_status = 'VS001'
+    <include refid="searchOrderListInfo"/>
+) WHERE RN BETWEEN #{start} AND #{end}  
+</select>
+
+
+<!-- 주문서 내역 개수 조회 -->
+<select id="countOrderList" resultType="int">
+SELECT COUNT(*)
+FROM bsn_order o
+JOIN bsn_order_detail od 
+    ON o.order_id = od.order_id  
+WHERE o.company_num = #{companyNum}
+AND o.order_status = 'VS001'
+<include refid="searchOrderListInfo"/>
+</select>
+
+<!-- 검색 조건 추가 -->
+<sql id="searchOrderListInfo">
+    <if test="startDate != null and startDate != ''">
+        AND o.due_date >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    </if>
+    <if test="endDate != null and endDate != ''">
+        AND o.due_date <![CDATA[ <= ]]> TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    </if>
+</sql>
+
+
 </mapper>

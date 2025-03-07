@@ -9,35 +9,33 @@
 <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
 </head>
 <body layout:fragment="content">
-  <div class="container">
-    <!-- 메뉴이름 -->
-		<div>
-			<h2>거래대장 등록</h2>
+	<div class="container">
+		<!-- 메뉴이름 -->
+		<h2 class="mt-2 mb-2"><b>거래대장 등록</b></h2>
+		<hr>
+		<div class="row">
+			<div class="col-md-12 stretch-card mt-5 mb-5">
+				<div class="card">
+					<div class="card-body">
+		
+						<!-- 등록 grid -->
+						<div class="grid-content">
+							<div class="row mb-2">
+								<div class="col-10"></div>
+								<button type="button" style="margin: 0px 50px;" class="btn btn-primary col-1" id="addBtn">행추가</button>
+							</div>
+							<div id="grid"></div>
+							<!-- 하단 버튼 -->
+							<div class="underBtn mt-5" style="text-align : center">
+								<button style="margin: 0px 10px;" class="btn btn-primary" onclick="insertBtn()">등록</button>
+								<button style="margin: 0px 10px;" class="btn btn-secondary" onclick="resetBtn()">초기화</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-
-    <!-- 등록 grid -->
-     <div class="grid-content">
-      <div class="row">
-        <div class="col-11"></div>
-        <button type="button" class="btn btn-primary col-1" id="addBtn">행추가</button>
-      </div>
-      <div id="grid"></div>
-     </div>
-     <hr>
-     <!-- 하단 버튼 -->
-      <div class="underBtn row">
-        <div class="col-4"></div>
-        <div class="col-4 row">
-          <div class="col-1"></div>
-          <button type="button" class="btn btn-secondary col-4" onclick="resetBtn()">초기화</button>
-          <div class="col-2"></div>
-          <button type="button" class="btn btn-success col-4" onclick="insertBtn()">등록</button>
-          <div class="col-1"></div>
-        </div>
-        <div class="col-4"></div>
-      </div>
-
-  </div>
+	</div>
 
   <script>
   	var session = sessionData;
@@ -139,7 +137,10 @@
     
     function insertBtn() {
     	grid.blur();
-    	grid.request('createData');
+    	grid.request('createData', {
+    		showConfirm: false,
+    		showErrorMessage: false
+    	});
     	grid.resetData([]);
     	showAlert('등록되었습니다.', 'success')
     	

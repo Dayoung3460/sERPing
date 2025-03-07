@@ -1,14 +1,22 @@
 // ✅ 삭제 버튼 렌더러 (전역으로 이동)
 class DeleteRenderer {
     constructor(props) {
+		// 부모 div 추가
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.height = '100%';
+        
         const el = document.createElement("button");
         el.textContent = "삭제";
-        el.className = "btnDelete btn btn-danger btn-sm";
+        el.className = 'btnDelete btn btn-outline-danger btn-sm';
         el.addEventListener("click", () => {
             // ✅ 올바른 그리드 객체에서 해당 행 삭제
             purchaseGrid.removeRow(props.rowKey);
         });
-        this.el = el;
+          wrapper.appendChild(el); // 버튼을 div 내부에 추가
+		  this.el = wrapper; // wrapper를 요소로 설정
     }
     getElement() {
         return this.el;
@@ -62,6 +70,46 @@ const companyNum = document.getElementById("companyNum").value;
 	    console.warn("❌ 창고 모달 닫기 버튼을 찾을 수 없습니다.");
 	} 
 	
+	// ✅ 모달이 열릴 때 그리드 레이아웃을 새로고침
+    const goodsNumModal = document.getElementById('goodsNumModal');
+
+    if (goodsNumModal) {
+        goodsNumModal.addEventListener('shown.bs.modal', function () {
+            console.log("📢 상품 재고 조회 모달 열림");
+
+            setTimeout(() => {
+                if (window.productNumGrid) {
+                    productNumGrid.refreshLayout();
+                    console.log("✅ productNumGrid 레이아웃 리프레시 완료");
+                } else {
+                    console.warn("❌ productNumGrid가 정의되지 않음");
+                }
+            }, 300); // ✅ 300ms 대기 후 실행 (모달 렌더링 완료될 시간 확보)
+        });
+    } else {
+        console.warn("❌ goodsNumModal 요소를 찾을 수 없음");
+    }
+    
+    // ✅ 모달이 열릴 때 그리드 레이아웃을 새로고침
+    const orderlistModal = document.getElementById('orderlistModal');
+
+    if (orderlistModal) {
+        orderlistModal.addEventListener('shown.bs.modal', function () {
+            console.log("📢 주문서 조회 모달 열림");
+
+            setTimeout(() => {
+                if (window.orderListGrid) {
+                    orderListGrid.refreshLayout();
+                    console.log("✅ orderListGrid 레이아웃 리프레시 완료");
+                } else {
+                    console.warn("❌ orderListGrid가 정의되지 않음");
+                }
+            }, 300); // ✅ 300ms 대기 후 실행 (모달 렌더링 완료될 시간 확보)
+        });
+    } else {
+        console.warn("❌ orderListGrid 요소를 찾을 수 없음");
+    }
+	
 	
     
 });
@@ -75,26 +123,27 @@ function initPurchaseGrid() {
     window.purchaseGrid = new tui.Grid({
         el: document.getElementById('grid'),
         scrollX :false,
-        scrollY : true,
+        scrollY : false,
         bodyHeight: 500, // ✅ 자동 높이 조정
         minBodyHeight: 600, // ✅ 최소 높이 지정 (필요에 따라 조정)
         columns: [
-            { header: '상품코드', name: 'goodsCode' },
-            { header: '상품명', name: 'goodsName' },
+            { header: '상품코드', name: 'goodsCode' ,align: "left"},
+            { header: '상품명', name: 'goodsName',align: "left" },
             { header: '옵션코드', name: 'optionCode' ,hidden: true},
-            { header: '옵션명', name: 'optionName' },
+            { header: '옵션명', name: 'optionName' ,align: "left"},
 			{ header: '옵션번호', name: 'optionNum' , hidden: true},
-            { header: '거래처명', name: 'vendorName' },
-			{ header: '거래처번호', name: 'vendorId' , hidden: true},
-            { header: '규격', name: 'goodsStandard' },
-            { header: '수량', name: 'purchaseQuantity',editor: { type: "text", useFormatter: false } },
-            { header: '단가', name: 'purchaseUnitPrice',editor: { type: "text", useFormatter: false }},
-            { header: '공급가격', name: 'purchaseSupplyPrice' },
-            { header: '부가세', name: 'purchaseVat' },
+            { header: '공급처명', name: 'vendorName' ,align: "left"},
+			{ header: '공급처번호', name: 'vendorId' , hidden: true},
+            { header: '규격', name: 'goodsStandard' ,align: "center"},
+            { header: '수량', name: 'purchaseQuantity',editor: { type: "text", useFormatter: false } ,align: "right"},
+            { header: '단가', name: 'purchaseUnitPrice',editor: { type: "text", useFormatter: false },align: "right"},
+            { header: '공급가격', name: 'purchaseSupplyPrice' ,align: "right"},
+            { header: '부가세', name: 'purchaseVat' ,align: "right"},
             { header: '발주계획바디번호', name: 'orderPlanBodyNum' , hidden: true},
             {
                     header : "삭제"
                     ,name: "delete"
+                    ,align: "center"
                     ,renderer: {
                     type: DeleteRenderer // 삭제버튼 정의 렌더러
                     }  
@@ -292,7 +341,7 @@ function calculateSupplyPrice(rowKey) {
     let supplyPrice = quantity * unitPrice;
 
     // ✅ 계산된 공급가격을 Grid에 업데이트 (실제 값은 숫자, 화면에 표시할 때만 `,` 추가)
-    purchaseGrid.setValue(rowKey, "purchaseSupplyPrice", formatNumberWithCommas(supplyPrice.toFixed(2)));
+    purchaseGrid.setValue(rowKey, "purchaseSupplyPrice", formatNumberWithCommas(supplyPrice));
 
     updateVat(); // ✅ 부가세 즉시 업데이트
 }
@@ -312,7 +361,7 @@ function updateVat() {
         let vat = applyVat ? supplyPrice * 0.1 : 0; // ✅ 부가세 계산
 
         // ✅ 부가세 업데이트 (화면에 표시할 때 `,` 추가)
-        purchaseGrid.setValue(rowIndex, "purchaseVat", formatNumberWithCommas(vat.toFixed(2)));
+        purchaseGrid.setValue(rowIndex, "purchaseVat", formatNumberWithCommas(vat));
     });
 
     console.log("✅ 부가세 적용 여부:", applyVat ? "적용됨" : "미적용");
@@ -335,14 +384,46 @@ function purchaseRegister() {
     const gridData = purchaseGrid.getCheckedRows();
 
     if (gridData.length === 0) {
-        alert("발주할 상품이 없습니다.");
+        showAlert("발주할 상품이 없습니다.","danger");
         return;
     }
+    
+ 
+    // ✅ 납기일자 선택 여부 확인
+	const purchaseDueDate = document.getElementById("purchaseDueDate").value;
+	if (!purchaseDueDate) {
+	    showAlert("납기일자를 등록하세요.", "danger");
+	    return;
+	}
+	
+	// ✅ 발주일 가져오기
+	const purchaseDate = document.getElementById("purchaseDate").value;
+	
+	// ✅ 발주일과 납기일 비교
+	const purchaseDateObj = new Date(purchaseDate);
+	const dueDateObj = new Date(purchaseDueDate);
+	
+	// ✅ 날짜 유효성 검사
+	if (dueDateObj < purchaseDateObj) {
+	    showAlert("납기일은 발주일보다 이후 날짜여야 합니다.", "danger");
+	    return;
+	}
+
+    
+     // ✅ 수량이 입력되지 않았거나 0인 경우 알림
+	for (let item of gridData) {
+	    let quantity = item.purchaseQuantity ? parseInt(item.purchaseQuantity.toString().replace(/,/g, '')) || 0 : 0; // 안전하게 처리
+	    if (quantity <= 0) {
+	        showAlert("수량을 입력하세요.", "danger");
+	        return;
+	    }
+	}
+
 
     // ✅ VAT 체크박스 상태에 따라 플래그 설정
     const vatFlag = document.getElementById("vatChecked").checked ? 1 : 0;
 
-    // ✅ 거래처 ID 기준으로 그룹화
+    // ✅ 공급처 ID 기준으로 그룹화
     const groupedData = {};
     gridData.forEach((item) => {
         const vendorId = parseInt(item.vendorId) || 0;
@@ -397,15 +478,15 @@ function purchaseRegister() {
 		    .then(response => response.json())
 		    .then(data => {
 		        if (data.status === "success") {
-		            showAlert("발주 등록 성공", "success");
+		            showAlert("발주 등록 성공 하였습니다.", "success");
 		            setTimeout(() => location.reload(), 1000);
 		        } else {
-		            showAlert("발주 등록 실패", "danger");
+		            showAlert("발주 등록 실패 하였습니다.", "danger");
 		        }
 		    })
 		    .catch(error => {
 		        console.error("발주 등록 오류:", error);
-		        showAlert("서버 오류: " + error, "danger");
+		        
 		    });
 	
 	

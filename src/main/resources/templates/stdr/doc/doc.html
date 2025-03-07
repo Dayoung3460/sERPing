@@ -12,82 +12,87 @@
     <link rel="stylesheet" href="/css/stdr/doc.css"/>
 </head>
 <body layout:fragment="content">
-    <h3 class="mb-4">문서 조회</h3>
+<div class="container mt-4">
+    <h2 class="mb-4 fw-semibold">결재 문서 템플릿 목록</h2>
+    <hr/>
     <div id="table-container">
         <div id="grid"></div>
         <div id="pagination" class="tui-pagination"></div>
     </div>
-    <h3 class="mb-4">문서 등록</h3>
+    <h2 class="mb-4 fw-semibold">결재 문서 템플릿 등록</h2>
+    <hr/>
     <div id="custom-container">
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <label class="form-label">요청구분</label>
-            <input type="text" class="form-control" name="documentType" id="documentType">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label class="form-label">요청구분</label>
+                <input type="text" class="form-control" name="documentType" id="documentType">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">문서제목</label>
+                <input type="text" class="form-control" name="documentName"  id="documentName">
+            </div>
+            <div class="col-md-3 dropdown-dept">
+                <label class="form-label">결재부서</label>
+                <input type="text" class="form-control" name="deptName" id="deptName" placeholder="부서를 선택하세요" readonly>
+                <ul class="dropdown-menu" id="dropdownMenu"></ul>
+            </div>
+            <div class="col-md-3 dropdown-type">
+                <label class="form-label">결재종류</label>
+                <input type="text" class="form-control" name="approvalType" id="approvalType" placeholder="결재종류를 선택하세요" readonly>
+                <ul class="dropdown-menu" id="dropdownType">
+                    <li><a class="dropdown-item" data-type="IN">내부 결재</a></li>
+                    <li><a class="dropdown-item" data-type="OUT">외부(거래처) 결재</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="col-md-3">
-            <label class="form-label">문서제목</label>
-            <input type="text" class="form-control" name="documentName"  id="documentName">
-        </div>
-        <div class="col-md-3 dropdown-dept">
-            <label class="form-label">결재부서</label>
-            <input type="text" class="form-control" name="deptName" id="deptName" placeholder="부서를 선택하세요" readonly>
-            <ul class="dropdown-menu" id="dropdownMenu"></ul>
-        </div>
-        <div class="col-md-3 dropdown-type">
-            <label class="form-label">결재종류</label>
-            <input type="text" class="form-control" name="approvalType" id="approvalType" placeholder="결재종류를 선택하세요" readonly>
-            <ul class="dropdown-menu" id="dropdownType">
-                <li><a class="dropdown-item" data-type="IN">내부 결재</a></li>
-                <li><a class="dropdown-item" data-type="OUT">외부(거래처) 결재</a></li>
-            </ul>
-        </div>
-    </div>
-    <div id="editor"></div>
-    <button class="btn btn-primary mt-4 ml-auto d-block" id="addBtn">등록</button>
+        <div id="editor"></div>
+        <button class="btn btn-primary mt-4 ml-auto d-block" id="addBtn">등록</button>
 
-    <script src="/js/stdr/doc.js"></script>
-    <script>
-        let Grid = tui.Grid;
+        <script src="/js/stdr/doc.js"></script>
+        <script>
+            let Grid = tui.Grid;
 
-        const dataSource = {
-            api: {
-                readData: { url: '/api/stdr/document', method: 'GET', initParams: { page: 1 } },
-                contentType: 'application/json'
-            },
-        };
+            const dataSource = {
+                api: {
+                    readData: { url: '/api/stdr/document', method: 'GET', initParams: { page: 1 } },
+                    contentType: 'application/json'
+                },
+            };
 
-        const grid = new Grid({
-            el: document.querySelector('#grid'),
-            scrollX: false,
-            scrollY: false,
-            pageOptions: {
-                useClient: false,
-                perPage: 10,
-            },
-            columns: [
-                {header: "번호", name: "documentId", sortable: true},
-                {header: "요청구분", name: "documentType", sortable: true},
-                {header: "문서제목", name: "documentName", sortable: true},
-                {
-                    header: "문서 템플릿",
-                    name: "moveToPage",
-                    sortable: true,
-                    formatter: ({ row }) => {
-                        return `<button class="move-btn" data-id="${row.documentId}">
+            const grid = new Grid({
+                el: document.querySelector('#grid'),
+                scrollX: false,
+                scrollY: false,
+                pageOptions: {
+                    useClient: false,
+                    perPage: 10,
+                },
+                columns: [
+                    {header: "번호", name: "documentId", sortable: true, align: 'right'},
+                    {header: "요청구분", name: "documentType", sortable: true},
+                    {header: "문서제목", name: "documentName", sortable: true},
+                    {
+                        header: "문서 템플릿",
+                        name: "moveToPage",
+                        sortable: true,
+                        align: 'center',
+                        formatter: ({ row }) => {
+                            return `<button class="move-btn btn btn-outline-success p-0" data-id="${row.documentId}">
                                   <i class="mdi mdi-arrow-right-bold"></i>
                                 </button>`;
-                    }
-                },
-                {header: "결재부서", name: "deptName", sortable: true}
-            ],
-            data : dataSource,
-        });
+                        }
+                    },
+                    {header: "결재부서", name: "deptName", sortable: true, align: 'center'}
+                ],
+                data : dataSource,
+            });
 
-        const Editor = toastui.Editor;
-        const { tableMergedCell } = Editor.plugin;
+            const Editor = toastui.Editor;
+            const { tableMergedCell } = Editor.plugin;
 
-        const tableContent = `
-# 근태 수정 요청서
+            const tableContent = `
+# (템플릿 작성 예시) 근태 수정 요청서
+
 
 | 항목       |         |
 |-------------|--------|
@@ -105,81 +110,83 @@
 
 `;
 
-        const editor = new Editor({
-            el: document.querySelector('#editor'),
-            previewStyle: 'vertical',
-            height: '500px',
-            initialValue: tableContent,
-            initialEditType: 'wysiwyg',
-            plugins: [tableMergedCell],
-            hooks: {
-                // 사용자가 이미지를 추가하면 addImageBlobHook이 실행됨.
-                addImageBlobHook: async (blob, callback) => {
-                    try {
-                        const formData = new FormData();
-                        formData.append("image", blob);
+            const editor = new Editor({
+                el: document.querySelector('#editor'),
+                previewStyle: 'vertical',
+                height: '500px',
+                initialValue: tableContent,
+                initialEditType: 'wysiwyg',
+                plugins: [tableMergedCell],
+                hooks: {
+                    // 사용자가 이미지를 추가하면 addImageBlobHook이 실행됨.
+                    addImageBlobHook: async (blob, callback) => {
+                        try {
+                            const formData = new FormData();
+                            formData.append("image", blob);
 
-                        // 서버에 이미지 업로드 요청
-                        const response = await fetch('/api/stdr/document/img', {
-                            method: "POST",
-                            headers: {
-                                'header': header_csrf,
-                                'X-CSRF-Token': token_csrf
-                            },
-                            body: formData
-                        });
+                            // 서버에 이미지 업로드 요청
+                            const response = await fetch('/api/stdr/document/img', {
+                                method: "POST",
+                                headers: {
+                                    'header': header_csrf,
+                                    'X-CSRF-Token': token_csrf
+                                },
+                                body: formData
+                            });
 
-                        const result = await response.json(); // JSON 응답 받기
-                        const imageUrl = result.imageUrl; // 서버에서 받은 이미지 URL
+                            const result = await response.json(); // JSON 응답 받기
+                            const imageUrl = result.imageUrl; // 서버에서 받은 이미지 URL
 
-                        // 서버에서 업로드된 이미지의 URL을 반환하면, 해당 URL을 에디터에 자동 삽입.
-                        callback(imageUrl, "이미지 설명"); // 에디터에 이미지 추가
-                    } catch (error) {
-                        console.error("이미지 업로드 실패:", error);
-                        alert("이미지 업로드에 실패했습니다.");
+                            // 서버에서 업로드된 이미지의 URL을 반환하면, 해당 URL을 에디터에 자동 삽입.
+                            callback(imageUrl, "이미지 설명"); // 에디터에 이미지 추가
+                        } catch (error) {
+                            console.error("이미지 업로드 실패:", error);
+                            alert("이미지 업로드에 실패했습니다.");
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        const addBtn = document.getElementById('addBtn')
-        addBtn.addEventListener('click', () => {
-            addDocTemplate()
-        })
+            const addBtn = document.getElementById('addBtn')
+            addBtn.addEventListener('click', () => {
+                addDocTemplate()
+            })
 
-        const deptName = document.getElementById("deptName");
-        const dropdownMenu = document.getElementById("dropdownMenu");
-        const approvalType = document.getElementById("approvalType");
-        const dropdownType = document.getElementById("dropdownType");
+            const deptName = document.getElementById("deptName");
+            const dropdownMenu = document.getElementById("dropdownMenu");
+            const approvalType = document.getElementById("approvalType");
+            const dropdownType = document.getElementById("dropdownType");
 
-        // Input 클릭 시 드롭다운 표시
-        deptName.addEventListener("click", function () {
-            dropdownMenu.classList.toggle("show");
-        });
-        approvalType.addEventListener("click", function () {
-            dropdownType.classList.toggle("show");
-        });
+            // Input 클릭 시 드롭다운 표시
+            deptName.addEventListener("click", function () {
+                dropdownMenu.classList.toggle("show");
+            });
+            approvalType.addEventListener("click", function () {
+                dropdownType.classList.toggle("show");
+            });
 
-        // 다른 곳 클릭 시 드롭다운 숨김
-        document.addEventListener("click", function (event) {
-            if (!deptName.closest(".dropdown-dept").contains(event.target)) {
-                dropdownMenu.classList.remove("show");
-            }
-            if (!approvalType.closest(".dropdown-type").contains(event.target)) {
-                dropdownType.classList.remove("show");
-            }
-        });
+            // 다른 곳 클릭 시 드롭다운 숨김
+            document.addEventListener("click", function (event) {
+                if (!deptName.closest(".dropdown-dept").contains(event.target)) {
+                    dropdownMenu.classList.remove("show");
+                }
+                if (!approvalType.closest(".dropdown-type").contains(event.target)) {
+                    dropdownType.classList.remove("show");
+                }
+            });
 
-        getHqDeptList()
+            getHqDeptList()
 
-        document.addEventListener("click", function (event) {
-            const button = event.target.closest(".move-btn");
-            if (button) {
-                const dataset = button.dataset; // 버튼에서 data-id 값 가져오기
-                window.location.href = `/standard/doc/template?documentId=${dataset.id}`;
-            }
-        });
-    </script>
+            document.addEventListener("click", function (event) {
+                const button = event.target.closest(".move-btn");
+                if (button) {
+                    const dataset = button.dataset; // 버튼에서 data-id 값 가져오기
+                    window.location.href = `/standard/doc/template?documentId=${dataset.id}`;
+                }
+            });
+        </script>
     </div>
+</div>
+
 </body>
 </html>

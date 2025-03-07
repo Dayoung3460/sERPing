@@ -22,7 +22,8 @@
 	   			order_date, 
 	   			due_date,
 	   			remark
-		from ( 	select  rownum rn,
+		from ( 	select  /*+INDEX_DESC(BSN_ORDER PK_BSN_ORDER)*/
+						rownum rn,
 						d.delivery_id,
 				        o.order_code,
 				        d.delivery_date,

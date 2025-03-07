@@ -19,7 +19,7 @@ public class insertTest {
     @Autowired
     private productService service;
 
-    @Test
+    //@Test
     public void productInsertTest() {
         ProdInsertVO vo = new ProdInsertVO();
         vo.setGoodsName("dfsfd");

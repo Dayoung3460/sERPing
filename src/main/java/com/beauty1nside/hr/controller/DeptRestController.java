@@ -96,9 +96,17 @@ public class DeptRestController {
     
     //부서 수정
     @PutMapping("/dept/update")
-    public ResponseEntity<String> updateDepartment(@RequestBody DeptDTO dept) {
-        int result = deptService.updateDepartment(dept);
-        return result > 0 ? ResponseEntity.ok("부서 수정 성공") : ResponseEntity.badRequest().body("부서 수정 실패");
+    public ResponseEntity<String> updateDepartment(@RequestBody DeptDTO dto) {
+        try {
+            deptService.updateDepartment(dto);
+            return ResponseEntity.ok("✅ 부서 정보가 성공적으로 업데이트되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("❌ " + e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body("❌ " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("❌ 서버 오류 발생: " + e.getMessage());
+        }
     }
 
     // ✅ 특정 부서의 직원 수 조회 API

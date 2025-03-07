@@ -181,7 +181,8 @@
 		<table class="table total">
 			<tr>
 				<th class="menuTh totals"><span class="star">*</span> 작성일자</th>
-				<td colspan="2" class="totals longTd nopadding"><input type="date" name="regiserDate" id="regiserDate" class="form-control form-control-sm height-15" onchange="gridmonthchange()"></td>
+				<td colspan="2" class="totals longTd nopadding"><input type="date" name="regiserDate" id="regiserDate" class="form-control form-control-sm height-15" ></td>
+				<!-- onchange="gridmonthchange()"  -->
 				<th class="menuTh totals" >비고</th>
 				<td colspan="2" class="totals longTd"><input type="text" name="note" id="note" class="form-control form-control-sm height-15"></td>
 			</tr>
@@ -197,7 +198,9 @@
 		<!-- 품목 추가 버튼 -->
 		<p class="nomargin">※품목의 월은 작성일자의 월이 표시되고 변경은 작성일자 수정시 자동 반영됨</p>
 		<div class="row">
+		<!-- 
 			<button type="button" onclick="addgrid()" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2">품목추가</button>
+		 -->
 			<button type="button" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2" data-bs-toggle="modal" data-bs-target="#closingSearchModal">정산 선택</button>
 		</div>
 		<!-- 그리드로 정보 입력 -->
@@ -210,7 +213,7 @@
 			<button type="button" class="col-1" onclick="insertBtn()">등록</button>
 			<div class="col-4"></div>
 		</div>
-		 <!-- 상품 검색 모달 -->
+		 <!-- 상품 검색 모달
 		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
 						    	'optSearchModal', 
 						    	'', 
@@ -218,15 +221,24 @@
 						    	'accnut/modal/optSearchBody', 
 						    	'accnut/modal/optSearchFooter'
 						    )"></div>
+		  -->
 						    
 		<!-- 정산 검색 모달 -->
 		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
 						    	'closingSearchModal', 
 						    	'modal-xl', 
-						    	'상품 검색', 
+						    	'정산 선택', 
 						    	'accnut/modal/closingSearchBody', 
 						    	'accnut/modal/closingSearchFooter'
-						    )"></div>						    
+						    )"></div>
+		<!-- 세금계산서 모달 -->
+		 <div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+						    	'taxLookModal', 
+						    	'modal-xl', 
+						    	'세금계산서', 
+						    	'accnut/modal/taxBody', 
+						    	'accnut/modal/taxFooter'
+						    )"></div>
 		
 	</div>
 	
@@ -234,9 +246,11 @@
 	var session = sessionData;
 	var result = {};
 	var rowData = {};
+	var taxnum;
 	
-	var modalElement = document.getElementById('optSearchModal');
-	var modalInstance = new bootstrap.Modal(modalElement);
+
+	var modalElement = document.getElementById('taxLookModal');
+	var modalInstance = new bootstrap.Modal(modalElement);	
 	
 	document.addEventListener("DOMContentLoaded", ()=> {
 		getCompanyInfo(session.companyNum);
@@ -273,7 +287,7 @@
 		el : document.querySelector('#taxgrid'),
 		columns: [
 			{ header : "월", name : "month", width: 10, align:"center"},
-			{ header : "일", name : "day", width: 10, editor:"text", align:"center", onAfterChange: (ev)=> {
+			{ header : "일", name : "day", width: 10, align:"center", onAfterChange: (ev)=> {
 																												let newValue = ev.value.replace(/[^0-9]/g, "");
 																												// 날짜로 마지막 일수 가져오기
 																												let date = document.querySelector('#regiserDate').value;
@@ -290,7 +304,7 @@
 			},
 			{ header : "품목", name : "optionCode", align:"center"},
 			{ header : "규격", name : "standard", align:"center"},
-			{ header : "수량", name : "quantity", editor:"text", align:"center", width: 50, onAfterChange: (ev)=> {
+			{ header : "수량", name : "quantity", align:"center", width: 50, onAfterChange: (ev)=> {
 																													let newValue = ev.value.replace(/[^0-9]/g, "");
 																													let rowValue = grid.getRow(ev.rowKey);
 																													
@@ -320,20 +334,20 @@
 		],
 		data : [{}],
 	});
-
+/*
 	function addgrid(){
 		let value = document.querySelector("#regiserDate").value;
 		let month = value.substr(5, 2);
 		month = month < 10 ? month.slice(-1) : month;
 		grid.appendRow({"month": month});
 	}
-
 	function gridmonthchange(){
 		let value = document.querySelector("#regiserDate").value;
 		let month = value.substr(5, 2);
 		month = month < 10 ? month.slice(-1) : month;	
 		grid.setColumnValues("month", month)
 	}
+*/
 	
 	function gridClick() {
       grid.on("click", (ev)=>{
@@ -341,14 +355,16 @@
         	grid.removeRow(ev.rowKey);
         	displayTotal();
         }
+        /*
         if(ev.columnName == 'optionCode'){
         	rowData = grid.getRow(ev.rowKey);
             modalInstance.show();
             
         }
+        */
       })
     }
-	
+	/*
 	// 모달 열렸을 때 닫기 버튼 찾아서 닫기 할 함수
 	document.getElementById('optSearchModal').addEventListener('shown.bs.modal', function () {
 	    const closeButton = modalElement.querySelector('[data-bs-dismiss="modal"]');
@@ -375,7 +391,7 @@
             
         }
 	}
-	
+	*/
 	function displayTotal() {
 		
 		let totalInput = document.querySelector('#total');
@@ -412,6 +428,12 @@
 		document.querySelector('#note').value = "";
 		grid.resetData([{}]);
 		displayTotal();
+		let array = ["name2", "address2", "status2", "cate2", "manager2" ]
+		for(key of array){
+			document.querySelector(`#${key}`).innerHTML = "";
+		}
+		document.querySelector("#bhf").value = "";
+		
 		
 	}
 	
@@ -441,6 +463,8 @@
 			 	if(data.status == "success"){
 			 		showAlert('지급 처리 되었습니다.', 'success');				 		
 			 		resetBtn();
+			 		taxnum = data.result;
+			 		modalInstance.show();
 			 	} else {
 			 		showAlert('지급 처리에 실패하였습니다. 다시 시도해주세요.', 'danger');
 			 	}

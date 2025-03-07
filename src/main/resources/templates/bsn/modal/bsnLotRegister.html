@@ -4,31 +4,72 @@
 <meta charset="UTF-8">
  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css">
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    
+    
+    <style>
+    	.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+    </style>
 </head>
 <body>
-
-	<div id="registerGrid"></div>
+	<div id="loadingContents" style="display: none;">
+		<p><strong>요구 수량(box)</strong> :  [ <span id="demendQnt"></span> ]</p>
+		<p><strong>현재 예약 총 수량(box)</strong> :  [ <span id="totalQnt"></span> ]</p>
+		<div id="registerGrid" ></div>
+	</div>
+	
+	 <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
 	 
+	
 	<script>
         let registerGrid;
-
-
+        
+        
 		
         document.addEventListener("DOMContentLoaded", function () {
-            registerGrid = new tui.Grid({
+        	registerGrid = new tui.Grid({
+            	
                 el: document.getElementById('registerGrid'),
                 columns: [
-                    { header: 'LOT번호', name: 'goodsLotNum', },
-                    { header: '예약가능수량(box)', name: 'warehousingRemainingQuantity',  },
-                    { header: '유통기한', name: 'goodsConsumptionDate', formatter: ({ value }) => formatDate(value), },
-                    { header: 'LOT예약수량(box)', name: 'deliveryQnt', editor: 'text',  }
+                    { header: 'LOT번호', name: 'goodsLotNum',width:'auto' },
+                    { header: '예약가능수량(box)', name: 'warehousingRemainingQuantity'  },
+                    { header: '유통기한', name: 'goodsConsumptionDate', formatter: ({ value }) => formatDate(value) },
+                    { header: 'LOT예약수량(box)', name: 'deliveryQnt', editor: 'text'  }
                 ],
-                data: LotListDataSource,
+                data: [],
                 rowHeaders: ['rowNum', 'checkbox'],
                 pageOptions: {
                     useClient: false,
                     perPage: 50
-                }
+                },
+                dataSource: LotListDataSource 
+
             });
          	
         });
@@ -37,29 +78,27 @@
 
         // 모달이 열릴 때 데이터 업데이트
         document.getElementById('registerModal').addEventListener('shown.bs.modal', function () {
+			
+            
             if (registerGrid) {
             	
-                console.log(selectedRow);
-                console.log(companyNum);
+                //console.log(selectedRow);
                 loadLotDetail(selectedRow.optionCode, selectedRow.deliveryDetailId, companyNum);
-                registerGrid.reloadData();
-                registerGrid.refreshLayout();
+                
             }
         });
         
-        async function loadLotDetail(optionCode, deliveryDetailId, companyNum ) {
+        function loadLotDetail(optionCode, deliveryDetailId, companyNum ) {
         	if (!optionCode || !deliveryDetailId || !companyNum) {
                 console.warn("유효하지 않은 상세정보입니다.");
                 return;
             }
         	
+        	showLoading();
+        	
             fetch(`/bsn/rest/goods/lot?optionCode=${optionCode}&deliveryDetailId=${deliveryDetailId}&companyNum=${companyNum}`)
             	
-                .then(response => {
-        	            if (!response.ok) throw new Error(`HTTP 오류! 상태: ${response.status}`);
-        	            return response.json();
-        	     })
-        	     
+                .then(response => response.json())
                 .then(data => {
                     if (data && data.data && data.data.contents) {
                     	const detailData = data.data.contents; // 상세 데이터 저장
@@ -68,13 +107,22 @@
                     	registerGrid.resetData(detailData);
                     } else {
                         console.warn("상세 데이터가 없습니다.");
-                        //orderDetailGrid.resetData([]); // 빈 배열로 초기화
+                        resetData([]); // 빈 배열로 초기화
                     }
                 })
-                .catch(error => console.error('Error fetching order detail:', error));
+                .catch(error => console.error('Error fetching order detail:', error))
+            	.finally(() => {
+                	hideLoading(); // ✅ 로딩 종료
+                	document.getElementById('loadingContents').style.display = 'block';
+                	// ✅ 데이터를 로드한 후 레이아웃 새로고침
+                    setTimeout(() => {
+                        registerGrid.refreshLayout();
+                    }, 100);
+            	});
         }
         
      // 📌 REST API에서 데이터 가져오는 함수
+     
      const LotListDataSource = {
 		api: {
 			readData: { url: '/bsn/rest/goods/lot', method: 'GET', initParams: { page: 1 }},
@@ -83,27 +131,23 @@
 		contentType: 'application/json'
 	 };
      
-     function formatDate(dateString) {
-    	    if (!dateString) return ''; // 데이터가 없으면 빈 문자열 반환
-    	    const date = new Date(dateString);
-    	    if (isNaN(date)) return dateString; // 날짜 변환이 실패하면 원본 유지
-    	    
+     
+  // 로딩 화면 표시
+     function showLoading() {
+         document.getElementById('loadingOverlay').style.display = 'flex';
+     }
 
-    	    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    	}
+     // 로딩 화면 숨기기
+     function hideLoading() {
+         document.getElementById('loadingOverlay').style.display = 'none';
+     }
+     
      
   	
 		
      
      
-     // 테이블 데이터 없을때 나오는 문구
-		function REnodata(){
-			//console.log("조회중");
-			setTimeout( () => {
-				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
-				nodata.innerHTML = '해당하는 데이터가 없습니다.';
-			}, 100)
-		}
+     
     </script>
 </body>
 </html>

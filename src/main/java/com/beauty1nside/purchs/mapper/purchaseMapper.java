@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.beauty1nside.purchs.dto.OrderlistDTO;
+import com.beauty1nside.purchs.dto.OrderlistSearchDTO;
 import com.beauty1nside.purchs.dto.ProdUpdateVO;
 import com.beauty1nside.purchs.dto.PurchInsertVO;
 import com.beauty1nside.purchs.dto.PurchUpdateVO;
@@ -32,4 +34,9 @@ public interface purchaseMapper {
 	 
 	 //발주서 삭제
 	 int cancelPurchase(@Param("companyNum") int companyNum, @Param("purchaseNum") Long purchaseNum); 
+
+	 //주문서조회
+	 List<OrderlistDTO>orderlist(OrderlistSearchDTO dto);
+	 int countOrderList(OrderlistSearchDTO dto);
+
 }

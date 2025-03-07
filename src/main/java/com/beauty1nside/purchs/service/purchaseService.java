@@ -2,6 +2,8 @@ package com.beauty1nside.purchs.service;
 
 import java.util.List;
 
+import com.beauty1nside.purchs.dto.OrderlistDTO;
+import com.beauty1nside.purchs.dto.OrderlistSearchDTO;
 import com.beauty1nside.purchs.dto.PurchInsertVO;
 import com.beauty1nside.purchs.dto.PurchUpdateVO;
 import com.beauty1nside.purchs.dto.PurchaseDTO;
@@ -28,4 +30,8 @@ public interface purchaseService {
 	
 	 // 발주 취소 메서드
     boolean cancelPurchase(int companyNum, Long purchaseNum);
+    
+    //주문서 조회
+    public List<OrderlistDTO>getOrderlist(OrderlistSearchDTO dto);
+    int orderlistCount(OrderlistSearchDTO dto);
 }

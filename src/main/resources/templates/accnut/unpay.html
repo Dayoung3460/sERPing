@@ -6,59 +6,69 @@
 <head>
 <meta charset="UTF-8">
 <title>미지급금 처리</title>
+<style>
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		<div>
-			<h2>미지급금 처리</h2>
-		</div>
-
-    <!-- 검색창 -->
-		<div class="search-grid" id="custom-container">
-			<div class="row 1row">
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">거래처</span>
-					<input type="text" name="creditor" id="creditor" class="col-8 input-box">
-				</div>
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">지급예정일</span>
-					<input type="date" name="prearrangementDueDate" id="prearrangementDueDate" class="col-8 input-box">
-				</div>
-			</div>
-			<div class="row 2row">
-				<div class="col-1"></div>
-				<div class="col-5 row ">
-					<span class="label-search col-4">표시수량</span>
-					<select name="display_amount" id="display_amount" class="col-8 input-box" onchange="changeDisplay()">
-						<option value="5" selected>5</option>
-						<option value="10">10</option>
-						<option value="20">20</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
-					</select>
+		<h2 class="mt-2 mb-2"><b>미지급금 처리</b></h2>
+		<hr>
+		<div class="row">
+	    	<!-- 검색창 -->
+			<div class="search-grid" id="custom-container">
+				<div class="row">
+					<div class="col-md-5 mt-1 mb-1">
+						<label class="form-label">거래처</label>
+						<input type="text" name="creditor" id="creditor" class="form-control input-box">
+					</div>
+					<div class="col-md-5 mt-1 mb-1">
+						<label class="form-label">예정일자</label>
+						<input type="date" name="prearrangementDueDate" id="prearrangementDueDate" class="form-control input-box">
+					</div>
+					<div class="col-md-2 mt-4 mb-2">
+						<button type="button" class="btn btn-primary" style="margin: 0px 17px" onclick="search()">검색</button>
+						<button type="button" class="btn btn-secondary" onclick="reset()">초기화</button>
+					</div>
 				</div>
 			</div>
-			<div class="row 3row">
-				<div class="col-4"></div>
-				<button type="button" class="btn btn-primary col-1" onclick="search()">검색</button>
-				<div class="col-1"></div>
-				<button type="button" class="btn btn-secondary col-1" onclick="reset()">초기화</button>
+			<div class="col-md-12 stretch-card mt-2 mb-5">
+				<div class="card">
+					<div class="card-body">
+						<div id="rayout-container" class="row mb-3">
+							<div class="col-9"></div>
+							<!-- 그리드 표시 수량 인풋 -->
+							<div class="col-3 row ">
+								<div class="col-3"></div>
+								<span class="label-search col-5" style="font-size: 1em">표시수량</span>
+								<select name="display_amount" id="display_amount" class="col-4 input-box" onchange="changeDisplay()">
+									<option value="5" selected>5</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="50">50</option>
+									<option value="100">100</option>
+								</select>
+							</div>
+						</div>
+						<!-- 그리드 -->
+						<div id="table-container">
+							<div id="grid"></div>
+							<div id="pagination" class="tui-pagination"></div>
+						</div>
+				    	<!-- 하부 버튼 -->
+						<div class="button-bar row">
+							<button type="button" style="margin: 0px 10px;" class="btn btn-primary col-2">일괄처리</button>
+						</div>
+					</div>
+				</div>
 			</div>
-
-		</div>
-		<!-- 그리드 -->
-		<div id="table-container">
-			<div id="grid"></div>
-			<div id="pagination" class="tui-pagination"></div>
-		</div>
-    <!-- 하부 버튼 -->
-		<div class="button-bar row">
-			<div class="col-1"></div>
-			<button type="button" class="btn btn-secondary col-2">일괄처리</button>
-			<div class="col-7"></div>
 		</div>
 	</div>
 
@@ -88,8 +98,8 @@
 		columns: [	
 			{ header : "거래 내용", name : "debtName",  },
 			{ header : "거래처", name : "creditor",  },
-      { header : "지급예정일", name : "prearrangementDueDate",  },
-      { header : "금액", name : "amount",  },
+      { header : "지급예정일", name : "prearrangementDueDate", align: 'center'},
+      { header : "금액", name : "amount", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
     ],
 		data : dataSource,
 	});

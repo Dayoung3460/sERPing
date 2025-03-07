@@ -20,6 +20,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	.grid-row-selected {
     	background-color: #e86f6f;  
 	}
+	/* 그리드 선택하면 생기는 색상 */
+	.tui-grid-row-highlight {
+		    background-color: #f0f8ff !important; /* 연한 하늘색 */
+	}
 	
   </style>
 
@@ -27,7 +31,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h1>이동 출고 조회</h1>
+		<h3>이동 출고 조회</h3>
+		<hr>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
@@ -82,6 +87,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 							            </div>
 							            <div class="form-check">
 							                <input type="checkbox" class="form-check-input" id="statusCancelled" name="deliveryStatus" value="DS03">
+							                <label class="form-check-label" for="statusCancelled">지점입고완료</label>
+							            </div>
+							            <div class="form-check">
+							                <input type="checkbox" class="form-check-input" id="statusCancelled" name="deliveryStatus" value="DS04">
 							                <label class="form-check-label" for="statusCancelled">출고취소</label>
 							            </div>
 							        </div>
@@ -89,15 +98,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                        </div>
 	
 	                        <div class="form-group m-3">
-	                            <label for="selectBhf">발주지점</label>
-	                            <select class="form-control" id="selectBhf">
-	                            	<option>all</option>
-	                                <option>발주지점1</option>
-	                                <option>발주지점2</option>
-	                                <option>발주지점3</option>
-	                                <option>yedam</option>
-	                            </select>
-	                        </div>
+							    <label for="inputBhf">발주지점</label>
+							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+						    </div>
 	                        
 							<div class="col-12 text-center">
 	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
@@ -232,9 +235,9 @@ const orderList = new Grid({
 		{ header : "지점코드", name : "branchOfficeId"},
 		//{ header : "담당자번호", name : "employeeNum"},
 		{ header : "담당자", name : "employeeName"},
-		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true},
-		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
-		{ header : "출고일", name : "deliveryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true},
+		{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
+		{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
+		{ header : "출고일", name : "deliveryDate", formatter: ({ value }) => formatDate(value, 'due'), width: 'auto', sortable : true, align: "center",},
 		{ header : "출고상태", name : "deliveryStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 		{ header : "비고", name : "remark", width: 'auto'},
 	],
@@ -312,6 +315,7 @@ function reset(){
 	// 발주지점 선택 값 초기화
     document.getElementById("selectBhf").value = "all";
 
+    search();
 
 }
 
@@ -319,8 +323,9 @@ function search(){
 	let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
     let startDate = document.getElementById("startDate").value; // 시작 날짜
     let endDate = document.getElementById("endDate").value; // 끝 날짜
-    let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
     
+    let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
     //console.log(selectedOption, startDate, endDate, selectedBhf);
     
     let params = {
@@ -341,6 +346,8 @@ function search(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //출고 클릭 시 상세 불러오기
+let selectedRowKey = null;
+
 orderList.on('click', (ev) => {
 	
     const rowKey = ev.rowKey; // 클릭한 행의 키
@@ -348,7 +355,15 @@ orderList.on('click', (ev) => {
         return;
     }
     
-    //console.log(rowKey);
+  	//선택한 키가 있다면 색강조 제거
+    if (selectedRowKey !== null) {
+    	orderList.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+    }
+    
+ 	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+	orderList.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+	selectedRowKey = ev.rowKey;
+
     const rowData = orderList.getRow(rowKey); // 클릭한 행 데이터 가져오기
     selectDlivyId = rowData.deliveryId;
     
@@ -372,6 +387,8 @@ function loadDeliveryDetail(deliveryId) {
         return;
     }
 	
+	deliveryDetailGrid.readData(1, {deliveryId});
+	/*
     fetch(`/bsn/rest/deli/detail?deliveryId=${deliveryId}`)
     	
         .then(response => {
@@ -391,7 +408,15 @@ function loadDeliveryDetail(deliveryId) {
             }
         })
         .catch(error => console.error('Error fetching order detail:', error));
+	*/
 }
+
+const DeliveryDetailDataSource = {
+		api: {
+			readData: { url: '/bsn/rest/deli/detail', method: 'GET', initParams: { page: 1, deliveryId:"0" }},
+		},
+		contentType: 'application/json'
+};
 
 //상세 그리드 형식
 const deliveryDetailGrid = new Grid({
@@ -402,28 +427,39 @@ columns: [
     },
     { header: "옵션명", name: "optionName", },
     //{ header: "옵션코드", name: "optionCode",  },
-    { header: "요구수량(box)", name: "deliveryDemandQnt",  },
-    { header: "출고총수량(box)", name: "deliveryTotalQnt",  },
+    { header: "요구수량(box)", name: "deliveryDemandQnt", align: "right",  },
+    { header: "출고총수량(box)", name: "deliveryTotalQnt", align: "right",  },
     { header: "출고준비여부", name: "sufficiencyStatus", formatter: ({ value }) => formatStatus(value), sortable : true},
 
 ],
 pageOptions: {
     useClient: false,
     perPage: 5
-}
+},
+data:DeliveryDetailDataSource
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //출고 클릭 시 LOT상세 불러오기
+let selectedDetailRowKey = null;
+
 deliveryDetailGrid.on('click', (ev) => {
 	
     const rowKey = ev.rowKey; // 클릭한 행의 키
-    selectedRow = deliveryDetailGrid.getRow(rowKey);
     if (rowKey === null || rowKey === undefined) {
         return;
     }
+  	//선택한 키가 있다면 색강조 제거
+    if (selectedDetailRowKey !== null) {
+    	deliveryDetailGrid.removeRowClassName(selectedDetailRowKey, 'tui-grid-row-highlight');
+    }
     
+	// 클릭한 행에 강조 효과 추가 + 현재 선택한 키 등록
+	deliveryDetailGrid.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+	selectedDetailRowKey = ev.rowKey;
+    
+    selectedRow = deliveryDetailGrid.getRow(rowKey);
     const rowData = deliveryDetailGrid.getRow(rowKey); // 클릭한 행 데이터 가져오기
     console.log("선택한 출고 상세 ID : " + rowData.deliveryDetailId);
     
@@ -441,7 +477,8 @@ function loadDeliveryLotDetail(deliveryDetailId) {
         console.warn("유효하지 않은 주문 Id입니다.");
         return;
     }
-	
+	deliveryLotDetailGrid.readData(1, {deliveryDetailId});
+	/*
     fetch(`/bsn/rest/deli/lot/detail?deliveryDetailId=${deliveryDetailId}`)
     	
         .then(response => {
@@ -460,9 +497,17 @@ function loadDeliveryLotDetail(deliveryDetailId) {
             }
         })
         .catch(error => console.error('Error fetching order detail:', error));
+	*/
 }
 
 //상세 그리드 형식
+const LotDetailDataSource = {
+		api: {
+			readData: { url: '/bsn/rest/deli/lot/detail', method: 'GET', initParams: { page: 1, deliveryDetailId:"0" }},
+		},
+		contentType: 'application/json'
+};
+
 const deliveryLotDetailGrid = new Grid({
 el: document.getElementById('deliLotDetail'),
 rowHeaders: ['rowNum'],
@@ -479,7 +524,8 @@ columns: [
 pageOptions: {
     useClient: false,
     perPage: 5
-}
+},
+data:LotDetailDataSource
 });
 
 
