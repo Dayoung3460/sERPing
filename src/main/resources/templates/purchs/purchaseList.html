@@ -20,7 +20,7 @@
  	<style>
     /* ✅ 컨테이너 스타일 */
     #custom-container {
-        background-color: #f8f9fa; /* 연한 회색 배경 */
+        background-color: white; /* 연한 회색 배경 */
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
@@ -79,7 +79,7 @@
 	}
     
  
-  /* 📌 스피너를 화면 중앙에 배치 */
+  /* 스피너를 화면 중앙에 배치 */
   .spinner-overlay {
     position: fixed;
     top: 0;
@@ -92,7 +92,8 @@
     justify-content: center;
     z-index: 1050;
   }
-
+  
+ 
     
    
 </style>
@@ -102,7 +103,8 @@
 
 
 <div class="container mt-4">
-  <h2 class="mb-4">발주서 조회</h2>
+  <h2 class="mb-4" style="font-weight: 900;">발주서 조회</h2>
+  <hr>
   <!-- 검색 바 한 줄 정렬 -->
   <div id="custom-container" class="mb-3">
     <div class="row g-2 align-items-center">
@@ -167,9 +169,13 @@
     
     
     <!-- 발주서 등록 버튼 -->
-    <div class="text-end">
-        <button class="btn btn-primary">발주서 등록</button>
-    </div>
+     <!-- 발주서 등록 및 Excel 다운로드 버튼 -->
+	<div class="d-flex justify-content-end gap-2 mt-3">
+	    <a th:href="@{/purchs/purchaseRegister(menu='inventory')}" class="btn btn-success btn-custom">발주등록</a>
+	    <button class="btn btn-dark" onClick="downExcel()">Excel</button>
+	</div>
+
+    
   
 </div>
 
@@ -233,17 +239,17 @@
       constructor(props) {
           const el = document.createElement('button');
           el.textContent = 'EMAIL';
-          el.className = 'btn btn-danger btn-sm';
+          el.className = 'btn btn-outline-warning btn-sm';
           el.addEventListener('click', () => {
               console.log("메일 전송 버튼 클릭");
               const focusedCell = purchaselistGrid.getFocusedCell();
               if (!focusedCell) {
-                  alert("먼저 발주 행을 선택하세요.");
+                  showAlert("먼저 발주 행을 선택하세요.","danger");
                   return;
               }
               const rowData = purchaselistGrid.getRow(focusedCell.rowKey);
               if (!rowData) {
-                  alert("선택된 행의 데이터가 없습니다.");
+                  showAlert("선택된 행의 데이터가 없습니다.","danger");
                   return;
               }
               
@@ -252,7 +258,7 @@
               const employeeEmail = rowData.employee_email || rowData.employeeEmail;
               
               if (!vendorEmail || !employeeEmail) {
-                  alert("메일 전송에 필요한 이메일 정보가 없습니다.");
+                  showAlert("메일 전송에 필요한 이메일 정보가 없습니다.","danger");
                   return;
               }
               
@@ -300,7 +306,7 @@
       constructor(props = {}) {
           this.props = props; // 전달받은 props 저장
           const el = document.createElement('a');
-          el.innerText = "인쇄";
+          el.innerText = "조회";
           el.style.color = "#007bff";
           el.style.cursor = "pointer";
           el.style.textDecoration = "underline";
@@ -351,7 +357,7 @@
 	  // 그리드나 PrintRenderer를 통해 sessionStorage에 저장된 발주번호 사용
 	  const purchaseNum = sessionStorage.getItem("purchaseNum");
 	  if (!purchaseNum) {
-	    alert("발주번호가 존재하지 않습니다.");
+	    showAlert("발주번호가 존재하지 않습니다.","danger");
 	    return;
 	  }
 	  // 다운로드 엔드포인트 URL 구성 (/purchs/report/reportDownload 엔드포인트 사용)
@@ -391,18 +397,7 @@
                       perPage: 10,
                       companyNum: companyNum
                   },
-                  beforeRequest: function(request) {
-                      console.log("📢 서버로 요청 보내기 전 requestParams:", request.params);
-                  },
-                  afterResponse: function(response) {
-                      console.log("📢 서버 응답:", response);
-                      if (response.data && response.data.contents) {
-                          console.log("✅ 변환된 데이터:", response.data.contents);
-                          return { data: response.data.contents, totalCount: response.data.pagination.totalCount };
-                      }
-                      console.warn("⚠️ 서버 응답에 contents가 없습니다.");
-                      return { data: [], totalCount: 0 };
-                  }
+                 
               }
           },
           contentType: 'application/json',
@@ -418,19 +413,19 @@
           },
           bodyHeight: 'auto',
           columns: [
-              { header: "발주번호", name: "purchaseNum", rowSpan: true, renderer: { type: CustomTextRenderer } },
-              { header: "거래처명", name: "vendorName" },
-              { header: "담당자", name: "employeeName" },
-              { header: "상품명", name: "goodsName" },
-              { header: "옵션명", name: "optionName" },
-              { header: "금액", name: "purchaseTotalAmount" },
-              { header: "발주상태", name: "purchaseStatus" },
-              { header: "인쇄", name: "print", renderer: { type: PrintRenderer } },
-              { header: "EMAIL", name: "email", renderer: { type: EmailRenderer }, cellStyle: { textAlign: "center" } }
+              { header: "발주번호", name: "purchaseNum", rowSpan: true,align: "right", renderer: { type: CustomTextRenderer } },
+              { header: "공급처명", name: "vendorName" ,align: "left",},
+              { header: "담당자", name: "employeeName" ,align: "center",},
+              { header: "상품명", name: "goodsName" ,align: "left" ,minWidth: 200},
+              { header: "옵션명", name: "optionName" ,align: "left"},
+              { header: "금액", name: "purchaseTotalAmount",align: "right" ,formatter:(row)=>numberFormat(row.value)},
+              { header: "발주상태", name: "purchaseStatus",align: "center" },
+              { header: "발주서", name: "print", renderer: { type: PrintRenderer },align: "center" },
+              { header: "EMAIL", name: "email", align: "center",renderer: { type: EmailRenderer }, cellStyle: { textAlign: "center" } }
           ]
       });
 
-      console.log("✅ Toast Grid 초기화 완료");
+    
       
    // ✅ 발주서 클릭 시 상세 페이지로 이동
       purchaselistGrid.on("click", function(event) {
@@ -449,7 +444,7 @@
                   const url = `/purchs/purchaseModify?purchaseNum=${purchaseNum}&companyNum=${companyNum}`;
                   window.location.href = url;
               } else {
-                  console.error("❌ 데이터가 부족하여 페이지 이동 실패", rowData);
+                  console.error("데이터가 부족하여 페이지 이동 실패", rowData);
               }
           }
       });
@@ -497,14 +492,14 @@
   const closeButton = modalElement.querySelector('[data-bs-dismiss="modal"]');
   if (closeButton) {
       closeButton.addEventListener("click", function () {
-          console.log("✅ 인쇄 모달 닫기 버튼 클릭됨!");
+         
 
           try {
           	let modalInstance = bootstrap.Modal.getInstance("#printModal") || new bootstrap.Modal("#printModal");
               modalInstance.hide(); // ✅ Bootstrap 방식으로 모달 닫기
               
           } catch (error) {
-              console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
+             
               modalElement.classList.remove("show");
               modalElement.style.display = "none";
               document.body.classList.remove("modal-open");
@@ -521,28 +516,12 @@
   
 	//PDF 모달 닫힘 시 sessionStorage의 발주번호 삭제 (예: printModal)
 	  modalElement.addEventListener("hidden.bs.modal", function () {
-	      console.log("PDF 모달이 닫혔습니다. 발주번호 삭제");
+	    
 	      sessionStorage.removeItem("purchaseNum");
 	  });
 	
 	
 	
-	 /*  document.getElementById("mailsenderModal").addEventListener("shown.bs.modal", function () {
-		  console.log("📩 메일 모달 열림: sessionStorage에서 이메일 불러오기");
-
-		  const vendorEmail = sessionStorage.getItem("vendorEmail"); 
-		  const employeeEmail = sessionStorage.getItem("employeeEmail");
-
-		  console.log("📩 저장된 이메일:", { vendorEmail, employeeEmail });
-
-		  if (employeeEmail) {
-		    document.getElementById("fromEmail").value = employeeEmail;
-		  }
-		  if (vendorEmail) {
-		    document.getElementById("toEmail").value = vendorEmail;
-		  }
-		}); */
-
 	
 	// 메일 모달 요소 가져오기 (id가 "mailsenderModal"인 모달)
    const emailModal = document.getElementById("mailsenderModal");
@@ -551,7 +530,7 @@
 	    const emailCloseBtn = emailModal.querySelector('[data-bs-dismiss="modal"]');
 	    if (emailCloseBtn) {
 	      emailCloseBtn.addEventListener("click", function () {
-	        console.log("✅ 메일 모달 닫기 버튼 클릭됨!");
+	        
 	        // 직접 클래스 제거 방식으로 모달 숨기기
 	        emailModal.classList.remove("show");
 	        emailModal.style.display = "none";
@@ -569,7 +548,7 @@
 	    if (emailModal) {
 	        const observer = new MutationObserver(() => {
 	            if (!emailModal.classList.contains("show")) {
-	                console.log("✅ 메일 모달이 닫힘 - sessionStorage 삭제");
+	               
 	                sessionStorage.removeItem("vendorEmail");
 	                sessionStorage.removeItem("employeeEmail");
 	            }
@@ -577,20 +556,59 @@
 
 	        observer.observe(emailModal, { attributes: true });
 
-	        console.log("📢 MutationObserver: 메일 모달 감시 시작");
+	        
 	    } else {
 	        console.warn("❌ 메일 모달(mailsenderModal)을 찾을 수 없습니다.");
 	    }
 	    
 	    // 모달이 완전히 닫힌 후 sessionStorage에서 이메일 관련 값을 삭제
 	   emailModal.addEventListener("hidden.bs.modal", function () {
-	      console.log("✅ 메일 모달이 닫혔습니다. 이메일 sessionStorage 값 삭제");
+	      
 	      sessionStorage.removeItem("vendorEmail");
 	      sessionStorage.removeItem("employeeEmail");
 	    });
 	  } else {
 	    console.warn("❌ 메일 모달(mailsenderModal)을 찾을 수 없습니다.");
 	  }  
+	  
+	  function downExcel() {
+		    if (!purchaselistGrid) {
+		       
+		        showAlert("엑셀 다운로드를 실행할 수 없습니다. 데이터를 먼저 불러오세요.","danger");
+		        return;
+		    }
+
+		    // 📢 현재 날짜를 가져와서 YYYY-MM-DD 형식으로 변환
+		    const today = new Date();
+		    const formattedDate = today.toISOString().split('T')[0]; // "YYYY-MM-DD" 형식
+
+		    // 📢 모든 데이터를 가져온 후 특정 컬럼 제거 후 내보내기
+		    const rawData = purchaselistGrid.getData(); // 현재 그리드의 모든 데이터 가져오기
+		    console.log("📢 원본 데이터 확인:", rawData);
+
+		    // 📢 특정 컬럼(발주서, EMAIL) 제거
+		    const filteredData = rawData.map(({ print, email, ...rest }) => rest);
+		    console.log("📢 필터링된 데이터 확인 (발주서, EMAIL 제외):", filteredData);
+
+		    // 📢 엑셀 내보내기 옵션 설정
+		    const options = {
+		        fileName: `purchaseOrderlist_${formattedDate}.xlsx`, // ✅ 현재 날짜 포함된 파일명
+		        useFormattedValue: true, // 포맷된 값 적용 (예: 1,000 → 천 단위 구분 유지)
+		        includeHiddenColumns: false, // 숨겨진 컬럼 제외
+		    };
+
+		    try {
+		        // 📢 필터링된 데이터로 엑셀 내보내기 실행
+		        purchaselistGrid.export('xlsx', options, filteredData);
+		        console.log(`✅ 엑셀 다운로드 성공! 파일명: purchaseOrderlist_${formattedDate}.xlsx`);
+		    } catch (error) {
+		        console.error("❌ 엑셀 다운로드 오류 발생:", error);
+		        showAlert("엑셀 다운로드 중 오류가 발생했습니다.","danger");
+		    }
+		}
+
+
+
 </script>
 
 </body>
