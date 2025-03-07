@@ -443,7 +443,7 @@ public class BsnRestController {
 		dto.setEnd(paging.getLast());
 		
 		// 페이징 처리
-		paging.setTotalRecord(bsnCsService.countBhfReturningList(dto));
+		//paging.setTotalRecord(bsnCsService.getCountOfBsnCsReturningDetail(dto));
 		
 		// grid 배열 처리
 		GridArray grid = new GridArray();
@@ -464,7 +464,7 @@ public class BsnRestController {
 		dto.setEnd(paging.getLast());
 		
 		// 페이징 처리
-		//paging.setTotalRecord(bsnCsService.countBhfReturningList(dto));
+		//paging.setTotalRecord(bsnCsService.getCountOfBsnCsReturningDetail(dto));
 		
 		// grid 배열 처리
 		GridArray grid = new GridArray();

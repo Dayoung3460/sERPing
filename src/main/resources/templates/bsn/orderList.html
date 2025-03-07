@@ -203,6 +203,13 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	};
 	
 	
+	const detailDataSource = {
+			api: {
+				readData: { url: '/bsn/rest/order/list/detail', method: 'GET', initParams: { page: 1, orderId:"0" }},
+			},
+			contentType: 'application/json'
+	};
+	
 	//상품 테이블
 	const orderList = new Grid({
 			el: document.getElementById('orderList'), // 컨테이너 엘리먼트
@@ -337,6 +344,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	        return;
 	    }
 		
+		orderDetailGrid.readData(1, {orderId});
+		/*
 	    fetch(`/bsn/rest/order/list/detail?orderId=${orderId}`)
 	    	
 	        .then(response => {
@@ -364,6 +373,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	            }
 	        })
 	        .catch(error => console.error('Error fetching order detail:', error));
+		*/
 	}
 	function loadOrderHistory(orderId) {
 		if (!orderId) {
@@ -413,7 +423,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     pageOptions: {
         useClient: false,
         perPage: 10
-    }
+    },
+    data:detailDataSource
 	
 	
 	});

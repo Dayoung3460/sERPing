@@ -152,7 +152,12 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				branchOfficeId = rowData.branchOfficeId;
 				//console.log(returningCode, branchOfficeId);
 				
-				// 교환및반품 상세 조회 쿼리호출(orderCode)
+				
+				
+				// 교환및반품 상세 조회 쿼리호출
+				grid2.readData(1, {returningCode});
+				grid3.readData(1, {returningCode});
+				/*
 			    fetch('/bsn/rest/cs/returning/record?returningCode=' + returningCode, {
 			        method: 'GET',
 			        headers: {
@@ -172,16 +177,25 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		            
 			    })
 			    .catch(error => console.error("데이터 요청 실패:", error));
+				*/
 			}
 		});
 		
-		// 교환및반품 테이블 행 선택
-
+		
+		
 		
 		
 		
 		
 		// 교환및반품 상세 테이블
+		const detailDataSource = {
+				api: {
+					readData: { url: '/bsn/rest/cs/returning/record', method: 'GET', initParams: { page: 1, returningCode:"0" }},
+				},
+				contentType: 'application/json'
+				
+		};
+		
 		const grid2 = new Grid({
 			el: document.getElementById('returningDtl'), 
 			pageOptions: {
@@ -205,7 +219,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				//{ header : '폐기수량', name: 'DisuseQnt',   , align: "right",}
 
 			],
-			data: ""
+			data: detailDataSource
 		});
 		
 		const grid3 = new Grid({
@@ -232,7 +246,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				{ header : "입고 창고ID", name : 'warehouseId'},
 
 			],
-			data: ""
+			data: detailDataSource
 		});
 
 		
@@ -296,7 +310,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			console.log("nodata실행")
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
-				nodata.innerHTML = '해당하는 데이터가 없습니다.';
+				nodata.innerHTML = '반품 및 교환 처리 건이 존재하지 않습니다.';
 			}, 100)
 		}
 		
@@ -304,7 +318,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		function REDnodata(){
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[1];
-				nodata.innerHTML = '교환 및 반품 내역을 선택 해주세요';
+				nodata.innerHTML = '교환 및 반품 내역을 선택해야합니다.';
 			}, 100)
 		}
 		
@@ -312,7 +326,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		function REDPnodata(){
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[2];
-				nodata.innerHTML = '신청을 승인하시면 반품및 교환 절차를 진행할 수 있습니다.';
+				nodata.innerHTML = '교환 및 반품 내역을 선택해야합니다.';
 			}, 100)
 		}
 		

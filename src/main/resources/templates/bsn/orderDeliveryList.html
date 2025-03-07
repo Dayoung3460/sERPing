@@ -388,6 +388,8 @@ function loadDeliveryDetail(deliveryId) {
         return;
     }
 	
+	deliveryDetailGrid.readData(1, {deliveryId});
+	/*
     fetch(`/bsn/rest/deli/detail?deliveryId=${deliveryId}`)
     	
         .then(response => {
@@ -407,7 +409,15 @@ function loadDeliveryDetail(deliveryId) {
             }
         })
         .catch(error => console.error('Error fetching order detail:', error));
+	*/
 }
+
+const DeliveryDetailDataSource = {
+		api: {
+			readData: { url: '/bsn/rest/deli/detail', method: 'GET', initParams: { page: 1, deliveryId:"0" }},
+		},
+		contentType: 'application/json'
+};
 
 //상세 그리드 형식
 const deliveryDetailGrid = new Grid({
@@ -426,7 +436,8 @@ columns: [
 pageOptions: {
     useClient: false,
     perPage: 5
-}
+},
+data:DeliveryDetailDataSource
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -467,7 +478,8 @@ function loadDeliveryLotDetail(deliveryDetailId) {
         console.warn("유효하지 않은 주문 Id입니다.");
         return;
     }
-	
+	deliveryLotDetailGrid.readData(1, {deliveryDetailId});
+	/*
     fetch(`/bsn/rest/deli/lot/detail?deliveryDetailId=${deliveryDetailId}`)
     	
         .then(response => {
@@ -486,9 +498,17 @@ function loadDeliveryLotDetail(deliveryDetailId) {
             }
         })
         .catch(error => console.error('Error fetching order detail:', error));
+	*/
 }
 
 //상세 그리드 형식
+const LotDetailDataSource = {
+		api: {
+			readData: { url: '/bsn/rest/deli/lot/detail', method: 'GET', initParams: { page: 1, deliveryDetailId:"0" }},
+		},
+		contentType: 'application/json'
+};
+
 const deliveryLotDetailGrid = new Grid({
 el: document.getElementById('deliLotDetail'),
 rowHeaders: ['rowNum'],
@@ -505,7 +525,8 @@ columns: [
 pageOptions: {
     useClient: false,
     perPage: 5
-}
+},
+data:LotDetailDataSource
 });
 
 
