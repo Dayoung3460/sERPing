@@ -31,6 +31,9 @@
     <li class="nav-item" role="presentation" id="approval-tab">
       <button class="nav-link " data-bs-toggle="tab" data-bs-target="#approval-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" >결재</button>
     </li>
+    <li class="nav-item" role="presentation" id="board-tab">
+      <button class="nav-link " data-bs-toggle="tab" data-bs-target="#board-tab-pane" type="button" role="tab" aria-controls="approval-tab-pane" >게시판</button>
+    </li>
   </ul>
   <div class="tab-content">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
@@ -90,10 +93,150 @@
         </div>
       </div>
     </div>
+    <div class="tab-pane fade" id="board-tab-pane" role="tabpanel" aria-labelledby="board-tab" tabindex="0">
+      <div class="row board">
+        <div class="container">
+          <div class="search-grid" >
+            <div class="d-flex flex-wrap align-items-center gap-3">
+              <div class="card-body" >
+                <div id="custom-container">
+                  <div class="row mb-4" >
+                    <label class="col-sm-1" style="text-align:center">제목</label>
+                    <input type="text"class="col-sm-2" id="boardTitle">
+                    <label class="col-sm-1" style="text-align:center">작성자</label>
+                    <input type="text"class="col-sm-2" id="boardEmployeeName">
+                    <label class="col-sm-1" style="text-align:center">분류</label>
+                    <select name="progressStatus" id="boardCategory" class="col-sm-2">
+                      <option value="" selected>분류 선택</option>
+                      <option value="공지">공지</option>
+                      <option value="행사">행사</option>
+                    </select>
+                    <label class="col-sm-1" style="text-align:center">작성일</label>
+                    <input type="date"class="col-sm-2" id="boardDate">
+                  </div>
+                  <div style="text-align : center" class="mb-4">
+                    <button class="btn btn-primary" onclick="search()">검색</button>
+                    <button class="btn btn-primary" onclick="reset()">초기화</button>
+                  </div>
+                </div>
+
+                <div id="board"></div>
+                <div id="pagination" class="tui-pagination"></div>
+                <div style="text-align : right">
+                  <button type="button" class="boardInsert btn btn-primary">글 쓰기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="/js/mainpage/calendar.js"></script>
   <script src="/js/mainpage/approval.js"></script>
 
+<script>
+
+  let sessionCompanyNum = [[${session.companyNum}]];
+
+  const boardDataSource = {
+    api: {
+      readData: { url: '/bhf/rest/board/list', method: 'GET', initParams: { page: 1, companyNum: sessionCompanyNum }},
+    },
+    contentType: 'application/json'
+
+  };
+
+  //게시판
+  const boardGrid = new tui.Grid({
+    el: document.getElementById('board'),
+    pageOptions: {
+      useClient: false,
+      perPage: 5,
+    },
+    scrollX: false,
+    scrollY: false,
+    columns: [
+      { header : "번호", name : "boardId", align: 'center', width: 100},
+      { header : "분류", name : "boardCategory", align: 'center', width: 200},
+      { header : "제목", name : "boardTitle", align: 'center'},
+      { header : "작성자", name : "employeeName", align: 'center', width: 150},
+      { header : "작성일", name : "boardDate", align: 'center', width: 150},
+      {
+        header: "글보기",
+        name: "moveToPage",
+        width: 50,
+        formatter: ({ row }) => {
+          return `<button class="move-btn" data-id="${row.boardId}">
+                                  <i class="mdi mdi-arrow-right-bold"></i>
+                                </button>`;
+        }
+      }
+    ],
+    data: boardDataSource
+  });
+
+  let boardTab = document.getElementById('board-tab')
+  boardTab.addEventListener('click', () => {
+    boardGrid.refreshLayout()
+  })
+
+  document.addEventListener("click", function (event) {
+    const button = event.target.closest(".move-btn");
+    if (button) {
+      const dataset = button.dataset; // 버튼에서 data-id 값 가져오기
+      window.location.href = `/bhf/erpBoardDTL?boardId=${dataset.id}`;
+    }
+    const insert = event.target.closest(".boardInsert");
+    if (insert) {
+      window.location.href = `/bhf/erpBoardInsert`;
+    }
+  });
+
+  // 검색 함수
+  function search(){
+
+    let boardCategory = document.querySelector('#boardCategory').value;
+    let boardEmployeeName = document.querySelector('#boardEmployeeName').value;
+    let boardTitle = document.querySelector('#boardTitle').value;
+    let boardDate = document.querySelector('#boardDate').value;
+
+    let parameter = {};
+
+    parameter.boardCategory = boardCategory
+    parameter.employeeName = boardEmployeeName;
+    parameter.boardTitle = boardTitle;
+
+    if(boardDate != ''){
+      parameter.boardDate = boardDate;
+    }
+
+    boardGrid.setRequestParams(parameter);
+    boardGrid.readData();
+
+    OLDnodata();
+  }
+
+  // 검색 초기화 함수
+  function reset(){
+
+    let boardTitle = document.querySelector('#boardTitle').value = '';
+    let boardEmployeeName = document.querySelector('#boardEmployeeName').value = '';
+    let boardCategory = document.querySelector('#boardCategory').value = '';
+    let boardDate = document.querySelector('#boardDate').value = '';
+
+    boardGrid.setRequestParams({companyNum: sessionCompanyNum});
+    boardGrid.readData();
+  }
+
+  function OLDnodata(){
+    setTimeout( () => {
+      let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
+      nodata.innerHTML = '해당하는 데이터가 없습니다.';
+    }, 100)
+  }
+
+</script>
 </body>
 
 </html>
