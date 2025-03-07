@@ -137,7 +137,10 @@
     
     function insertBtn() {
     	grid.blur();
-    	grid.request('createData');
+    	grid.request('createData', {
+    		showConfirm: false,
+    		showErrorMessage: false
+    	});
     	grid.resetData([]);
     	showAlert('등록되었습니다.', 'success')
     	
