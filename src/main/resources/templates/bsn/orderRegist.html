@@ -295,7 +295,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		        console.warn("유효하지 않은 주문 코드입니다.");
 		        return;
 		    }
-
+		    detailGrid.readData(1, {orderCode});
+		    /*
 		    fetch(`/bsn/rest/bhfOrder/detail?orderCode=${orderCode}&perPage=5&page=1`)
 		        .then(response => {
 		            if (!response.ok) throw new Error(`HTTP 오류! 상태: ${response.status}`);
@@ -314,9 +315,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		            }
 		        })
 		        .catch(error => console.error('Error:', error));
+		    */
 		}
 
 		
+		const detailDataSource = {
+				api: {
+					readData: { url: '/bsn/rest/bhfOrder/detail', method: 'GET', 
+						initParams: { page: 1, orderCode:"0" }},
+				},
+				contentType: 'application/json'
+		};
 		
 		const detailGrid = new Grid({
 		    el: document.getElementById('orderDetailList'),
@@ -326,6 +335,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		        useClient: false,
 		        perPage: 5,
 		    },
+		    data:detailDataSource,
 		    columns: [
 		        //{ header: "발주상세코드", name: "orderDetailCode", },
 		        //{ header: "상품코드", name: "goodsCode" },

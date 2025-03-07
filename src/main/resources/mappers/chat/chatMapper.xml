@@ -46,6 +46,7 @@
             g.employee_num,
             g.msg_content,
             g.send_date,
+            g.img_path,
             h.employee_name
         FROM grpwr_chat_message g
                  join hr_employee h on g.employee_num = h.employee_num
@@ -95,6 +96,7 @@
                g.EMPLOYEE_NUM,
                g.MSG_CONTENT,
                g.SEND_DATE,
+                g.img_path,
                h.employee_name
         from grpwr_chat_message g
             join hr_employee h on g.employee_num = h.employee_num
