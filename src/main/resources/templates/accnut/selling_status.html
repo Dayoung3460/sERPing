@@ -16,12 +16,15 @@
 	.nav-tabs .nav-link {
 	    white-space: nowrap; /* 버튼 내용이 줄바꿈되지 않도록 설정 */
 	}
+	#custom-container{
+		background-color: white;
+	}
 </style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		<h3 class="mt-2 mb-2"><b>매출 통계</b></h3>
+		<h2 class="mt-2 mb-2"><b>매출 통계</b></h2>
 		<hr>
 		<div class="row">
 			<!-- 검색창 -->
@@ -33,12 +36,6 @@
 						<label class="form-label">지점</label>
 						<select name="officeId" id="officeId" class="form-select" style="height: 46px;">
 							<option value="" selected>전체</option>
-							<option value="대구점" >대구점</option>
-							<option value="대구중구점" >대구중구점</option>
-							<option value="부산점" >부산점</option>
-							<option value="서대문점" >서대문점</option>
-							<option value="태전동점" >태전동점</option>
-							<option value="홍대점" >홍대점</option>
 						</select>
 					</div>
 					<div class="col-md-2 mt-1 mb-1">
@@ -68,16 +65,16 @@
 		-->
 		<nav class="p-0 m-0 d-flex justify-content-start">
 		    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-		    	<button class="nav-link border active fw-bold" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-st"
+		    	<button class="nav-link border fw-bold active " id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-st"
 		            type="button" role="tab" aria-controls="#nav-st" aria-selected="false">지점별 매출 통계</button>
 		        
-		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-sv"
+		        <button class="nav-link border fw-bold" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-sv"
 		            type="button" role="tab" aria-controls="#nav-sv" aria-selected="false">상품별 매출 통계</button>
 		            
-		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
+		        <button class="nav-link border fw-bold" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-fp"
 		            type="button" role="tab" aria-controls="#nav-fp" aria-selected="true">지점별 매출 비중</button>
 		            
-		        <button class="nav-link border" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-rg"
+		        <button class="nav-link border fw-bold" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-rg"
 		            type="button" role="tab" aria-controls="#nav-rg" aria-selected="false">상품별 매출 비중</button>
 		    </div>
 		</nav>
@@ -136,7 +133,7 @@
 	}
 	
 	/*
-	* 차팅그리드
+	* 돔 로드!!
 	*/
 	document.addEventListener("DOMContentLoaded",()=>{
 		document.querySelectorAll(".input-box").forEach(input => {
@@ -146,6 +143,8 @@
                 }
             });
         });
+		
+		deptCall();
 		
 		let yesterday = new Date();
 		let STyesterday = new Date();
@@ -162,6 +161,27 @@
         //최초 차트 생성
 		charting(null, null, STformattedDate, formattedDate);
 	});
+	
+	
+	//부서 항목 불러오기
+	function deptCall(){
+		const url = `/accnut/rest/selling/deptcall/${sessionData.companyNum}`;
+		fetch( url, {
+			method : "GET",
+			headers : {
+				'Content-Type': 'application/json'
+			}
+		})
+		.then( result => result.json() )
+		.then( result => {
+			let tag = '';
+			result.forEach(ele=>{
+				tag += `<option value="${ele.departmentName}" >${ele.departmentName}</option>`;
+			});
+			console.log(tag);
+			document.querySelector("#officeId").innerHTML += tag;
+		})
+	}
 	
 	function charting(officeId, goodsName, startDate, endDate){
 		
