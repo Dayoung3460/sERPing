@@ -43,7 +43,15 @@
 		  pdfjsLib.getDocument(reportUrl).promise.then(pdf => {
 		    console.log('PDF loaded, total pages:', pdf.numPages);
 		    // 첫 페이지만 렌더링 (필요시 여러 페이지 지원 가능)
-		    pdf.getPage(1).then(page => {
+		    let pageSel = document.querySelector("#page");
+		    pageSel.querySelectorAll("option").forEach(opt => {
+		    	opt.remove();
+		    })
+		    for(let i = 1; i <= pdf.numPages; i++){
+				
+		    }
+		    
+		    pdf.getPage(page).then(page => {
 		      const scale = 1.5; // 확대/축소 비율
 		      const viewport = page.getViewport({ scale });
 		      // 캔버스 크기 설정
