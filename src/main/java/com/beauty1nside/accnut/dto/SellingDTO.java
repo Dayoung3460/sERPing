@@ -13,4 +13,6 @@ public class SellingDTO {
 	int companyNum;
 	int price;
 	long totalPrice;
+	//표하연이 넣음
+	private String goodsName;
 }

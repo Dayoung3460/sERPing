@@ -30,5 +30,14 @@ public interface DeptMapper {
     
     // 부서가 없는 직원 수 조회
     int countEmployeesWithoutDepartment(Long companyNum);
+    
+    // 하위부서까지 포함한 직원 수 조회
+    int countTotalEmployeesByDepartment(Long departmentNum);
+    
+    // 부서명 변경 (개별 부서)
+    int updateDepartmentName(DeptDTO dto);
+    
+    // 부서 상태 변경 (하위 부서 포함)
+    int updateDepartmentStatus(DeptDTO dto);
 
 }

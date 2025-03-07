@@ -771,4 +771,29 @@ end;
 /
 
 select * from accnut_tax_header;
+
+SELECT tax_num, to_rgno, to_co_name, to_name, to_address, to_status, to_cate, rgdate, note, total, supply, tax 
+FROM (SELECT /*+INDEX_DESC(accnut_tax_header PK_ACCNUT_TAX_HEADER)*/ rownum rn, tax_num, to_rgno, to_co_name, to_name, to_address, to_status, to_cate, rgdate, note, total, supply, tax 
+      FROM accnut_tax_header
+<![CDATA[
+      WHERE rownum <= #{end}
+      AND 
+]]>
+      company_num = #{companyNum}
+      );
+      select * from accnut_tax_detail;
+
 select * from accnut_tax_detail;
+
+select * from accnut_tax_header;
+
+select * from purchse_goods;
+SELECT th.*, TO_CHAR(rgdate, 'YYYY') AS "year", TO_CHAR(rgdate,'MM') AS "month", TO_CHAR(rgdate, 'DD') AS "day" , 12 - length(total) AS "blank", NVL(note, ' ') AS "notnullnote"
+
+FROM accnut_tax_header th;
+
+select supply, tax, 
+FROM accnut_tax_header th;
+
+
+select TO_CHAR(sysdate, 'Month') from dual;

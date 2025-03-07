@@ -92,6 +92,28 @@
     max-height: 80vh;       /* 내용이 많으면 스크롤 */
     overflow-y: auto;       /* 세로 스크롤 자동 */
 }
+
+/* 프로필 이미지 박스 */
+.profile-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* 정사각형 */
+    height: 200px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    overflow: hidden;
+}
+
+/* 프로필 이미지 스타일 */
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
 </style>
 
 <title>사원 등록 모달</title>
@@ -144,7 +166,7 @@
 											<div class="mb-2">
 											    <label class="fw-bold">사원ID</label>
 											    <div class="input-group">
-											        <input type="text" class="form-control" id="employeeIdInput" disabled>
+											        <input type="text" class="form-control" id="employeeIdInput" maxlength="12" disabled>
 											        <button type="button" class="btn btn-outline-secondary" id="toggleAutoGenerate">자동 생성</button>
 											    </div>
 											</div>
@@ -277,7 +299,7 @@
 
 					<!--  모달 푸터 -->
 					<div class="modal-footer bg-light">
-						<button class="btn btn-outline-secondary" type="reset"
+						<button class="btn btn-secondary" type="reset"
 							id="resetBtn">초기화</button>
 						<button class="btn btn-danger" data-bs-dismiss="modal">취소</button>
 						<button class="btn btn-primary" id="registerBtn"

@@ -27,6 +27,7 @@ const grid = new Grid({
             header: "결재요청 날짜",
             name: "inApprovalRequestDate",
             sortable: true,
+            align: 'center',
             width: 150,
             formatter: ({value}) => {
                 return formatDateTime(value)
@@ -64,7 +65,7 @@ const grid = new Grid({
         {header: "요청 내용", name: "inApprovalRequestContent", sortable: true, hidden: true},
         {header: "요청 내용 확인", name: "moveToPage", sortable: true,
             formatter: ({ row }) => {
-                return `<button class="move-btn btn btn-outline-success p-0" data-id="${row.inApprovalId}">
+                return `<button class="mainpage-move-btn btn btn-outline-success p-0" data-id="${row.inApprovalId}">
                           <i class="mdi mdi-arrow-right-bold"></i>
                         </button>`;
             },
@@ -116,7 +117,7 @@ document.addEventListener("click", function (event) {
 });
 
 document.addEventListener("click", function (event) {
-    const button = event.target.closest(".move-btn");
+    const button = event.target.closest(".mainpage-move-btn");
     if (button) {
         const dataset = button.dataset; // 버튼에서 data-id 값 가져오기
         window.location.href = `/mainpage/approval?inApprovalId=${dataset.id}`;

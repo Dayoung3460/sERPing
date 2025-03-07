@@ -122,6 +122,11 @@ import lombok.extern.log4j.Log4j2;
 	        // ✅ DTO의 `companyNum`을 세션 값으로 설정 (보안 강화)
 	        empDTO.setCompanyNum(sessionCompanyNum);
 	
+	        
+	        // ✅ 한글 포함 여부 확인
+	        if (!empDTO.getEmployeeId().matches("^[A-Za-z0-9_]+$")) {
+	            return ResponseEntity.status(400).body(Map.of("error", "사원 ID는 영문, 숫자, 언더바(_)만 사용할 수 있습니다."));
+	        }
 	    	
 	     // 주민등록번호 입력 검증
 	        if (empDTO.getFirstSsn() == null || empDTO.getFirstSsn().isBlank() ||
@@ -164,14 +169,16 @@ import lombok.extern.log4j.Log4j2;
 	        // ✅ 파일이 존재하는 경우에만 업로드 수행
 	        if (file != null && !file.isEmpty()) {
 	            try {
+	            	// c:에 저장
 	            	String imgPath = fileConfig.getUploadpath();
 	                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 	                Path uploadPath = Paths.get(imgPath + fileName);
 	                Files.createDirectories(uploadPath.getParent());
 	                Files.write(uploadPath, file.getBytes());
 	                
-	                String imageUrl = imgPath + fileName;
-	                empDTO.setProfileImage(imageUrl);
+	                // 이미지 경로이름 
+	                String imageUrl = fileConfig.getImgpath();
+	                empDTO.setProfileImage(imageUrl + fileName);
 	            } catch (Exception e) {
 	                log.error("❌ 파일 업로드 실패:", e);
 	                return ResponseEntity.status(500).body(Map.of("error", "파일 업로드 실패"));

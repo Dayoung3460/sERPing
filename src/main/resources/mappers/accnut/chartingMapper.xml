@@ -3,27 +3,29 @@
 <mapper namespace="com.beauty1nside.accnut.mapper.ChartingMapper">
 	
 	<select id="chartinfo" resultType="com.beauty1nside.accnut.dto.SellingDTO" parameterType="com.beauty1nside.accnut.dto.SellingSearchDTO">
-		SELECT b.result_date, b.office_id, b.option_code, b.option_name, b.sell_qy, b.minus_qy, fn_get_option_price(b.option_code) AS price, b.total_price
+		SELECT b.result_date, 
+		       b.office_id, 
+		       b.option_code, 
+		       b.option_name, 
+		       b.goods_name,
+		       b.sell_qy, 
+		       b.minus_qy, 
+		       fn_get_option_price(b.option_code) AS price, 
+		       b.total_price
 		FROM (  SELECT rownum rn, a.*
 		        FROM (  SELECT 
-        				<choose>
-        			   		<when test="startDate !=null and ! startDate.equals('') and endDate != null and ! endDate.equals('')">
-		        			   TO_CHAR(#{startDate}, 'YYYY-MM-DD') || '-' || TO_CHAR(#{endDate}, 'YYYY-MM-DD') AS result_date,		        			   		
-        			   		</when>
-		        			   		
-        			   		<otherwise>
-		                       TO_CHAR(c.result_date, 'YYYY-MM-DD') result_date,        			   		
-        			   		</otherwise>
-						</choose>
+        					   TO_CHAR(c.result_date, 'YYYY-MM-DD') result_date,
 		                       c.office_id,
 		                       c.option_code,
 		                       c.option_name,
+		                       c.goods_name,
 		                       SUM(c.sell_qy) AS sell_qy,
 		                       SUM(c.qy) AS minus_qy,
 		                       SUM(c.total_price) AS total_price
 		                       
 		                FROM (SELECT br.branch_office_id AS office_id,
 		                             brd.option_code,
+		                             brd.goods_name,
 		                             brd.goods_name || '-' || brd.option_name AS option_name,
 		                             br.request_date AS result_date, 
 		                             0 - NVL(brd.quantity, 0) AS qy,
@@ -40,6 +42,7 @@
 		                
 		                      SELECT branch_office_id AS office_id, 
 		                             option_code, 
+		                             goods_name,
 		                             goods_name || '-' || option_name AS option_name, 
 		                             mediation_date AS result_date, 
 		                             NVL(quantity, 0) - NVL(mediation_quantity, 0) AS qy,
@@ -53,6 +56,7 @@
 		                
 		                        SELECT bc.branch_office_id AS office_id,
 		                               bcd.option_code,
+		                               bcd.goods_name,
 		                               bcd.goods_name || '-' ||bcd.option_name AS option_name,
 		                               bc.closing_date AS result_date,
 		                               0 AS qy,
@@ -70,18 +74,11 @@
 		                <include refid="searchInfo"></include>
 		                
 		                GROUP BY 
-	                	<choose>
-	                		<when test="startDate !=null and ! startDate.equals('') and endDate != null and ! endDate.equals('')">
-	                		</when>
-	                		
-	                		<otherwise>		                		
-	                		 	 TO_CHAR(result_date, 'YYYY-MM-DD'),
-	                		</otherwise>
-	                	</choose>
-		                		
+		                		 TO_CHAR(result_date, 'YYYY-MM-DD'),
 		                         office_id, 
 		                         option_code, 
-		                         option_name
+		                         option_name,
+		                         goods_name
 		                         
 		                HAVING SUM(c.sell_qy) > 0
 		                
@@ -116,7 +113,23 @@
 		<if test="optionCode != null and ! optionCode.equals('')">
 		AND c.option_code = #{optionCode}
 		</if>
+		
+		<if test="goodsName != null and ! goodsName.equals('')">
+		AND c.goods_name = #{goodsName}
+		</if>
 	</sql>
 	
-	
+	<select id="comSeachDept" resultType="com.beauty1nside.hr.dto.DeptDTO">
+		select DEPARTMENT_NAME
+		from HR_DEPARTMENT
+		where COMPANY_NUM = #{companyNum}
+		and PARENT_DEPARTMENT_NUM in ( select DEPARTMENT_NUM from HR_DEPARTMENT where DEPARTMENT_NAME = '지점' )
+		
+		<!-- select pr.DEPARTMENT_NAME
+		from HR_DEPARTMENT hr
+		left join HR_DEPARTMENT pr
+		on hr.DEPARTMENT_NUM = pr.PARENT_DEPARTMENT_NUM
+		where hr.COMPANY_NUM = #{companyNum}
+		and hr.DEPARTMENT_NAME = '지점' -->
+	</select>
 </mapper>
