@@ -86,11 +86,11 @@ if(employeeNum) {
     });
 } else {
     setTimeout(() => {
-        showAlert("세션이 만료되었습니다. 로그인 페이지로 이동합니다.", 'danger');
+        // showAlert("세션이 만료되었습니다. 로그인 페이지로 이동합니다.", 'danger');
     }, 100)
     setTimeout(() => {
         window.location.href = "/login";
-    }, 2000);
+    }, 1000);
 }
 
 let inApprovalStatus = ''
