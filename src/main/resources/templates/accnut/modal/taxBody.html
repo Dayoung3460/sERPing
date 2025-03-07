@@ -29,6 +29,7 @@
 	
 	document.querySelector('#taxLookModal').addEventListener('shown.bs.modal', (e) => {
 		const page = document.querySelector("#page").value;
+		console.log(page);
 		//document.querySelector("#taxInfo").src = url;
 		//window.location.href = url;
 		renderPDF(url, page)
@@ -48,11 +49,15 @@
 		    	opt.remove();
 		    })
 		    for(let i = 1; i <= pdf.numPages; i++){
-				
+				let html = `<option value="${i}">${i}</option>`;
+				if(i == page){
+					html = `<option value="${i}" seleted>${i}</option>`;
+				}
+				pageSel.insertAdjacentHTML("beforeend", html);
 		    }
 		    
 		    pdf.getPage(page).then(page => {
-		      const scale = 1.5; // 확대/축소 비율
+		      const scale = 1.0; // 확대/축소 비율
 		      const viewport = page.getViewport({ scale });
 		      // 캔버스 크기 설정
 		      canvas.width = "900";
