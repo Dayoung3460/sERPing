@@ -309,30 +309,33 @@ const setEmpList = (empList) => {
 
         // 이미지 태그 생성
         const img = document.createElement("img");
-        img.src = emp.profileImage || '/file/image/mypage/profile/noProfileImg.jpg';
+        if(emp) {
+            img.src = emp.profileImage || '/file/image/mypage/profile/noProfileImg.jpg';
+            // when emp.profileImage has a value but no image existed
+            img.onerror = function () {
+                this.onerror = null; // 무한 루프 방지
+                this.src = "/file/image/mypage/profile/noProfileImg.jpg";
+            };
 
-        // when emp.profileImage has a value but no image existed
-        img.onerror = function () {
-            this.onerror = null; // 무한 루프 방지
-            this.src = "/file/image/mypage/profile/noProfileImg.jpg";
-        };
+            img.alt = emp.employeeName;
 
-        img.alt = emp.employeeName;
+            // 이름 태그 생성
+            const span = document.createElement("span");
+            span.textContent = emp.employeeName;
 
-        // 이름 태그 생성
-        const span = document.createElement("span");
-        span.textContent = emp.employeeName;
+            // div 내부에 이미지와 이름 추가
+            div.appendChild(img);
+            div.appendChild(span);
 
-        // div 내부에 이미지와 이름 추가
-        div.appendChild(img);
-        div.appendChild(span);
+            // `empBox`에 추가
+            empBox.appendChild(div);
 
-        // `empBox`에 추가
-        empBox.appendChild(div);
+            div.addEventListener('click', () => {
+                startChat(emp.employeeNum)
+            })
+        }
 
-        div.addEventListener('click', () => {
-            startChat(emp.employeeNum)
-        })
+
     });
 }
 
