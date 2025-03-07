@@ -19,11 +19,27 @@
       font-family: "Inter", sans-serif;
       background: #f8f9fa;
     }
+
     .container {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
+    
+    
+	h2, hr {
+	    margin-top: 0 !important; /* 위쪽 여백 제거 */
+	    margin-bottom: 10px !important; /* 아래 여백 최소화 */
+	}
+	
+	br {
+	    display: none; /* br 태그로 인해 발생하는 불필요한 여백 제거 */
+	}
+    
+	.container h2 + hr {
+	    margin-top: -5px !important; /* h2와 hr 사이 간격 줄이기 */
+	}
+	
     .header-section {
       display: flex;
       flex-direction: column;
