@@ -5,6 +5,7 @@ import java.sql.Date;
 import org.springframework.beans.factory.annotation.Value;
 
 import groovy.transform.builder.Builder;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class ProductDTO {
 	private int goodsCost;
 	private String goodsCode;
 	private int goodsPrice;
+	
 	private int goodsSupplyPrice;
 	private String goodsStandard;
 	private String goodsDescription;

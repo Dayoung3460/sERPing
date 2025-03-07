@@ -8,6 +8,7 @@ import com.beauty1nside.accnut.dto.SellingDTO;
 import com.beauty1nside.accnut.dto.SellingSearchDTO;
 import com.beauty1nside.accnut.mapper.ChartingMapper;
 import com.beauty1nside.accnut.service.ChartingService;
+import com.beauty1nside.hr.dto.DeptDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,6 +24,11 @@ public class ChartingServiceImpl implements ChartingService {
 	@Override
 	public List<SellingDTO> chartinfo(SellingSearchDTO dto) {
 		return mapper.chartinfo(dto);
+	}
+
+	@Override
+	public List<DeptDTO> comSeachDept(int companyNum) {
+		return mapper.comSeachDept(companyNum);
 	}
 
 }

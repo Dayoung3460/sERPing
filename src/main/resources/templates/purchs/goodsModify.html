@@ -341,19 +341,20 @@
             scrollY : false,
             rowHeaders: ['checkbox'], 
             columns: [ 
-                {header : "옵션코드" , name:"optionCode",className: "tui-grid-cell-readonly"},
-                {header : "옵션명" , name:"optionName" , editor: "text" ,editor: "text"},
-                {header : "현재재고" , name:"totalRemainingQuantity",className: "tui-grid-cell-readonly"},
+                {header : "옵션코드" , name:"optionCode",align: "left",className: "tui-grid-cell-readonly"},
+                {header : "옵션명" , name:"optionName" , editor: "text" ,align: "left"},
+                {header : "현재재고" , name:"totalRemainingQuantity",align: "right",className: "tui-grid-cell-readonly"},
                 {
 	                header : "안전재고" , 
 	                name:"optionSafetyInvoice",
 	                editor: "text",
+	                align: "right",
 	                renderer: {
 	                    type: SafetyStockRenderer  // 안전재고 버튼을 추가하는 렌더러
 	                }
                 },
-                {header : "상품위치" , name:"warehouseName",editor: "text"},
-                {header : "창고id" , name:"warehouseId" , hidden: true},
+                {header : "상품위치" , name:"warehouseName",editor: "text",align: "left",},
+                {header : "창고id" , name:"warehouseId" , hidden: true,align: "left",},
                 {
                     header: "옵션 사용유무",
                     name: "optionUseFlag",

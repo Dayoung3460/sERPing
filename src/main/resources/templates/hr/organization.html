@@ -17,11 +17,30 @@
 	      font-family: "Inter", sans-serif;
 	      background: #f8f9fa;
 	    }
+		h2 {
+		    margin-top: 0 !important; /* 위쪽 여백 제거 */
+		    margin-bottom: 10px !important; /* 아래 여백 최소화 */
+		}
+
 	    .container {
 	      display: flex;
 	      flex-direction: column;
 	      gap: 15px;
 	    }
+	    
+		h2, hr {
+		    margin-top: 0 !important; /* 위쪽 여백 제거 */
+		    margin-bottom: 10px !important; /* 아래 여백 최소화 */
+		}
+		
+		br {
+		    display: none; /* br 태그로 인해 발생하는 불필요한 여백 제거 */
+		}
+	    
+		.container h2 + hr {
+		    margin-top: -5px !important; /* h2와 hr 사이 간격 줄이기 */
+		}
+	    
 	    .header-section {
 	      display: flex;
 	      flex-direction: column;
@@ -86,6 +105,17 @@
 		
 		}
 		
+		.selected-department {
+		    background-color: #d1e7ff !important; /* ✅ 선택된 부서 스타일 적용 */
+		    font-weight: bold;
+		    border-radius: 5px;
+		}
+		
+		/* ✅ 선택한 부서가 하이라이트 유지되도록 수정 */
+		.selected-department > .select-wrapper {
+		    background-color: #b3d7ff !important;
+		}
+				
 	  </style>
 	</head>
 	
@@ -93,6 +123,7 @@
 	
 	  <div class="container mt-3">
 	    <h2>부서 관리</h2>
+	    <hr>
 	    <div class="header-section">
 	      <div class="d-flex gap-2">
 			<button id="addDeptBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deptModal">
@@ -149,6 +180,10 @@
 			    <div class="table-header pt-3">
 			        <h5 class="fw-bold">사원 목록</h5>
 			        <div class="d-flex align-items-center gap-2">
+			        
+						<!--  검색창 추가 
+						<input type="text" id="searchEmployee" class="form-control w-auto" placeholder="사원명 검색">-->
+						
 			            <label for="perPageSelect" class="mb-0">표시 수량:</label>
 			            <select id="perPageSelect" class="form-select w-auto">
 			                <option value="10">10</option>
@@ -323,6 +358,12 @@
 	  function openEmployeeModal(mode, data) {
 		  console.log("📌 모달 데이터:", data); // 🔥 데이터 확인
 		  
+		  //저장된 이미지 에러시 기본이미지 표출
+		  $("#modalProfileImage").on("error", function () {
+			    $(this).attr("src", "/file/image/mypage/profile/noProfileImg.jpg");
+			    console.log("📌 기본 프로필 이미지로 변경됨:", this.src);
+			});
+		  
 	    $("#employeeModalLabel").text(mode === "transfer" ? "인사 발령" : "사원 정보");
 	
 	    $("#modalEmployeeId").val(data.employeeId);
@@ -334,7 +375,7 @@
 	    // 연락처 자동 포맷 적용
 	    $("#modalPhone").val(formatPhoneNumber(data.phone));
 	    $("#modalEmail").val(data.email);
-	    $("#modalProfileImage").attr("src", data.profileImage || "https://via.placeholder.com/150");
+	    $("#modalProfileImage").attr("src", data.profileImage);
 	
 	    if (mode === "transfer") {
 	      $("#transferFields").show();
@@ -349,7 +390,38 @@
 	    $("#employeeModal").modal('show');
 	  }
 	
+	  let originalData = [];
+	  
+	// ✅ 최초 데이터 불러올 때 originalData 저장
+	  function fetchData(departmentNum = 0) {
+	      $.ajax({
+	          url: '/hr/rest/emp/organization',
+	          type: 'GET',
+	          data: { companyNum: companyNum, departmentNum: departmentNum },
+	          success: function (response) {
+	              originalData = response.data; // ✅ 원본 데이터 저장
+	              grid.resetData(originalData); // ✅ Toast Grid에 데이터 설정
+	          },
+	          error: function (xhr, status, error) {
+	              console.error("데이터 로드 실패", error);
+	          }
+	      });
+	  }
+	  
+	////////////////
 	      $(document).ready(function () {
+	    	  
+	    	  
+	    	  $("#searchEmployee").on("input", function () {
+	    		    let searchValue = $(this).val().trim().toLowerCase();
+
+	    		    // ✅ 현재 선택된 부서 가져오기
+	    		    let selectedDeptNum = $(".selected-department").data("dept-id") || 0;
+	    		    console.log("📌 검색 중 선택된 부서:", selectedDeptNum);
+
+	    		    // ✅ 검색어와 부서 필터 적용
+	    		    grid.readData(1, { departmentNum: selectedDeptNum, searchKeyword: searchValue });
+	    		});
 	    	  
 	    	    // ✅ 부서 추가 버튼 클릭 시 모달 열기
 	    	    $("#addDeptBtn").click(function () {
@@ -504,9 +576,7 @@
 			        }
 			    });
 			}
-	
-	    	  
-	
+
 	    	  
 	    	  
 	          $(".company-sub-list, .sub-list").show();
@@ -554,40 +624,21 @@
 	          
 	          
 	       // 부서 선택 시 데이터 로드
-	          $(document).on('click', '.department-tree [data-company-id], .department-tree [data-dept-id]', function(event) {
-	        	    event.stopPropagation(); // 부모 요소로 이벤트 전파 방지
-	
-	        	   
-	        	    let departmentNum = $(this).data('dept-id'); // `data-dept-id` 값 가져오기
-	        	    
-	        	    console.log("📌 선택한 부서 번호:", departmentNum);
-	
-	        	    if (departmentNum == undefined) {	        	        
-	        	    	departmentNum=0;
-	        	    } 
-	        	    grid.readData(1,{departmentNum});
-	
-	        	    /*fetch(`/hr/rest/emp/organization?perPage=5&companyNum=${companyNum}&departmentNum=${departmentNumSJ}&page=1`, {
-	                        method: 'GET',
-	                        headers: {
-	                            'Content-Type': 'application/json',
-	                            "X-CSRF-Token": token
-	                        }
-	                    })
-	                    .then(response => response.json())
-	                    .then(data => {
-	                        grid.resetData(data.data.contents);  // 옵션 테이블 데이터 업데이트
-	                        grid.setPaginationTotalCount(data.data.pagination.totalCount)
-	                        console.log(data);
-	                    })
-	                    .catch(error => console.error("데이터 요청 실패:", error));*/
-	        	       
-	        	        
-	        	        
+	          $(document).on('click', '.select-wrapper', function(event) {
+	        	    event.stopPropagation();
+
+	        	    // ✅ 기존 선택 해제 후 새로운 선택 적용
+	        	    $('.select-wrapper').removeClass('selected-department'); // 모든 선택 해제
+	        	    $(this).addClass('selected-department'); // 현재 선택된 부서 스타일 적용
+
+	        	    // ✅ 선택한 부서의 ID 가져오기
+	        	    let departmentNum = $(this).closest(".select-item").data("dept-id") || 0;
+	        	    console.log("📌 선택한 부서 ID:", departmentNum);
+
+	        	    // ✅ 해당 부서 사원 데이터 불러오기
+	        	    grid.readData(1, { departmentNum: departmentNum });
 	        	}); 
 	      });
-	      
-
 
 	
 	      

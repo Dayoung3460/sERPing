@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8">
+</head>
+<body>    
+    <button type="button" class="btn btn-dark" onclick="downPdf()">내려받기</button>
+    <button type="button" class="btn btn-secondary cancelBtn" data-bs-dismiss="modal">닫기</button>
+    
+<script>
+	function downPdf() {
+		//console.log(taxnum);
+		const url = `/accnut/report/tax/down?taxNum=${taxnum}`
+		window.location.href = url;
+	}
+
+</script>
+</body>
+</html>

@@ -40,8 +40,13 @@ public class WebSecurityConfig {
     http
       .authorizeHttpRequests((requests) -> requests
         .requestMatchers("/error", "/favicon.ico", "/", "/common/**", "/css/**", "/docs/**", "/file/**", "/fonts/**", "/images/**", "/image/**", "/js/**", "/scss/**", "/templates/**", "/vendors/**", "/gulpfile.js", "/erp/**", "/login/**", "/chat/**", "/ws/**", "/ws", "/topic/**", "/app/**").permitAll()
+        .requestMatchers("/erp/rest/**").permitAll()	//표하연이 또 추가함
         .requestMatchers("/api/**").authenticated() // API 요청은 인증된 사용자만 가능
         .anyRequest().authenticated()
+      )
+      .headers(headers -> headers
+        .defaultsDisabled()
+        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // iframe에서 같은 도메인 허용
       )
 //    인증되지 않은 사용자가 API 호출 시 401 Unauthorized 반환.
       .exceptionHandling(ex -> ex

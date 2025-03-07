@@ -15,13 +15,15 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	
-	<!-- Custom CSS -->
-	<link rel="stylesheet" th:href="@{/css/hr/style.css}">
-	
 	<!-- SweetAlert2 -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	
 	<style>
+	
+	.container {
+	    max-width: 1400px;
+	}
+		
 	#profilePreview {
     width: 150px; /* 가로 크기 고정 */
     height: auto; /* 세로 크기는 비율 유지 */
@@ -53,6 +55,67 @@
 	    max-height: 80vh;       /* 내용이 많으면 스크롤 */
 	    overflow-y: auto;       /* 세로 스크롤 자동 */
 	}
+	
+
+    .search-box .form-select, 
+    .search-box .form-control {
+        width: 100%;
+    }
+
+    .btn-group label {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+	/* 검색 필터 영역 */
+	.search-box {
+	    background-color: #E8F0FE;
+	    padding: 20px;
+	    border-radius: 10px;
+	}
+	
+	/* 검색 필터 내부 요소 */
+	.search-box .row {
+	    margin-bottom: 8px; /* ✅ 각 행 간격 최소한 조정 */
+	}
+	
+	/* 검색 라벨 스타일 */
+	.search-box label {
+	    white-space: nowrap;
+	    text-align: right;
+	}
+	
+	/* 버튼 스타일 */
+	.btn-search {
+	    background-color: #3b82f6;
+	    color: white;
+	    border-radius: 5px;
+	    padding: 8px 16px;
+	}
+	
+	.btn-reset {
+	    border-radius: 5px;
+	    padding: 8px 16px;
+	}
+	
+	/* Toast UI Grid */
+	.tui-grid-container {
+	    margin-top: 10px;
+	    background-color: white !important;
+	}
+	
+	.tui-grid-header-area,
+	.tui-grid-body-area,
+	.tui-grid-cell {
+	    background-color: white !important;
+	}
+	
+	/* 페이지네이션 */
+	.pagination-box {
+	    display: flex;
+	    justify-content: center;
+	    margin-top: 20px;
+	}
 
 	</style>
 	
@@ -74,76 +137,87 @@
     <div class="row">
         <div class="col">
             <h2>사원 관리</h2>
+            <hr>
         </div>
     </div>
 
     <!-- 사원 검색 영역 -->
 	<!-- 검색 필터 영역 -->
+	<!-- 검색 필터 영역 (레이아웃 정리) -->
 	<div class="search-box bg-light p-3 rounded shadow-sm">
-	    <!-- 검색 기준 & 검색어 -->
-	    <div class="row align-items-center">
-	        <div class="col-md-2 text-end"><label class="fw-bold">검색 기준</label></div>
-	        <div class="col-md-3">
-	            <select class="form-select" id="searchCategory">
-	                <option value="전체">전체</option>
-	                <option value="employeeName">사원명</option>
-	                <option value="employeeId">사원ID</option>
-	                <option value="phone">연락처</option>
-	            </select>
-	        </div>
-	        <div class="col-md-5">
-	            <input type="text" class="form-control w-50" placeholder="검색어 입력 후 [Enter]" id="searchKeyword">
-	        </div>
-	    </div>
-	
-		<!-- 부서 & 하위 부서 -->
-		<div class="row align-items-center">
-		    <div class="col-md-2 text-end"><label class="fw-bold">부서</label></div>
-		    <div class="col-md-6 d-flex">
-		        <select class="form-select w-50 pe-1" id="searchDepartment">
-		            <option value="">선택</option>
-		        </select>
-		        <div class="col-md-1">
+		<div class="search-box-inner">
+		    <div class="row g-3">
+		        <!-- 검색 기준 -->
+		        <div class="col-md-2"></div>
+		        <div class="col-md-3">
+		            <label class="form-label">검색 기준</label>
+		            <select class="form-select" id="searchCategory">
+		                <option value="전체">전체</option>
+		                <option value="employeeName">사원명</option>
+		                <option value="employeeId">사원ID</option>
+		                <option value="phone">연락처</option>
+		            </select>
 		        </div>
-		        <select class="form-select w-50" id="searchSubDepartment">
-		            <option value="">선택</option>
-		        </select>
+		        
+		        <!-- 검색어 입력 -->
+		        <div class="col-md-6">
+		            <label class="form-label">검색어</label>
+		            <input type="text" class="form-control" placeholder="검색어 입력 후 [Enter]" id="searchKeyword">
+		        </div>
+		        <div class="col-md-2">
+		        </div>
+		    </div>
+		
+		    <div class="row g-3 mt-2">
+		    	<div class="col-md-2"></div>
+		        <!-- 부서 선택 -->
+		        <div class="col-md-3">
+		            <label class="form-label">부서</label>
+		            <select class="form-select" id="searchDepartment">
+		                <option value="">선택</option>
+		            </select>
+		        </div>
+		        <!-- 하위 부서 선택 -->
+		        <div class="col-md-3">
+		            <label class="form-label">하위 부서</label>
+		            <select class="form-select" id="searchSubDepartment">
+		                <option value="">선택</option>
+		            </select>
+		        </div>
+		        <!-- 직급 선택 -->
+		        <div class="col-md-3">
+		            <label class="form-label">직급</label>
+		            <select class="form-select" id="searchPosition">
+		                <option value="">선택</option>
+		            </select>
+		        </div>
+		        <div class="col-md-2"></div>
+		    </div>
+		
+		    <div class="row g-3 mt-2">
+		   		<div class="col-md-2"></div>
+		        <!-- 재직 상태 -->
+		        <div class="col-md-4">
+		            <label class="form-label">재직 상태</label>
+		            <div class="btn-group w-100" role="group" id="statusGroup"></div>
+		        </div>
+		        
+		        <!-- 근무 유형 -->
+		        <div class="col-md-4">
+		            <label class="form-label">근무 유형</label>
+		            <div class="btn-group w-100" role="group" id="employmentTypeGroup"></div>
+		        </div>
+		        <div class="col-md-2"></div>
 		    </div>
 		</div>
-	
-	    <!-- 직급 -->
-	    <div class="row align-items-center">
-	        <div class="col-md-2 text-end"><label class="fw-bold">직급</label></div>
-	        <div class="col-md-6">
-	            <select class="form-select w-50" id="searchPosition">
-	                <option value="">선택</option>
-	            </select>
-	        </div>
-	    </div>
-	
-	    <!-- 재직 상태 -->
-	    <div class="row align-items-center">
-	        <div class="col-md-2 text-end"><label class="fw-bold">재직 상태</label></div>
-	        <div class="col-md-8">
-	            <div class="btn-group w-50" role="group" id="statusGroup"></div>
-	        </div>
-	    </div>
-	
-	    <!-- 근무 유형 -->
-	    <div class="row align-items-center">
-	        <div class="col-md-2 text-end"><label class="fw-bold">근무 유형</label></div>
-	        <div class="col-md-8">
-	            <div class="btn-group w-50" role="group" id="employmentTypeGroup"></div>
-	        </div>
-	    </div>
-	
-	    <!-- 조회 & 초기화 버튼 -->
-	    <div class="row">
+	    
+	    <div class="row mt-3">
 	        <div class="col text-center">
-	            <button class="btn btn-primary me-2" onclick="searchEmployees()" id="searchBtn">조회</button>
-	            <button class="btn btn-outline-success" onclick="resetFilters()">초기화</button>
+	            <button class="btn btn-primary px-4 me-2" onclick="searchEmployees()" id="searchBtn">조회</button>
+	            <button class="btn btn-secondary px-4" onclick="resetFilters()">초기화</button>
 	        </div>
 	    </div>
+	    
 	</div>
 
 

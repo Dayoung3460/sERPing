@@ -38,5 +38,14 @@ function subscriptday(value){
 	return kstDate;
 }
 
+//나윤 날짜 yyyy-MM-dd
+function formatDateToYYYYMMDD(value) {
+    if (!value) return ""; // 값이 없으면 빈 문자열 반환
+    const date = new Date(value);
+    return date.getFullYear() + '-' + 
+           String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(date.getDate()).padStart(2, '0');
+}
+
 
 

@@ -19,7 +19,7 @@
  	<style>
     /* ✅ 컨테이너 스타일 */
     #custom-container {
-        background-color: #f8f9fa; /* 연한 회색 배경 */
+        background-color: white; /* 연한 회색 배경 */
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
@@ -76,6 +76,11 @@
 	  height: auto;           /* 비율 유지 */
 	  max-height: 100%;       /* 컨테이너 높이 내에서 제한 */
 	}
+	
+	h3 {
+    font-weight: 900; /* 매우 굵게 */
+	}
+	
     
     
    
@@ -86,7 +91,8 @@
 
 
 <div class="container mt-4">
-  <h2 class="mb-4">구매 조회</h2>
+  <h3>구매 조회</h3>
+  <hr>
   <!-- 검색 바 한 줄 정렬 -->
   <div id="custom-container" class="mb-3">
     <div class="row g-2 align-items-center">
@@ -95,7 +101,7 @@
         <input type="text" id="searchGoodsName" class="form-control">
       </div>
       <div class="col-auto">
-        <label for="searchVendorName" class="form-label">거래처</label>
+        <label for="searchVendorName" class="form-label">공급처</label>
         <input type="text" id="searchVendorName" class="form-control">
         <input type="hidden" id="sessionCompanyNum" th:value="${session.companyNum}">
         
@@ -146,8 +152,8 @@
     
     <!-- 구매등록 버튼 -->
     <div class="text-end">
-        <button class="btn btn-primary">구매 등록</button>
-    </div>
+    	<a th:href="@{/purchs/warehousingRegister(menu='inventory')}" class="btn btn-success btn-custom">구매등록</a>
+	</div>
   
 </div>
 
@@ -210,7 +216,7 @@
       constructor(props = {}) {
           this.props = props; // 전달받은 props 저장
           const el = document.createElement('a');
-          el.innerText = "인쇄";
+          el.innerText = "조회";
           el.style.color = "#007bff";
           el.style.cursor = "pointer";
           el.style.textDecoration = "underline";
@@ -327,16 +333,18 @@
               perPage: 10
           },
           bodyHeight: 'auto',
+          scrollX :true,
+          scrollY : false,
           columns: [
-              { header: "구매전표번호", name: "warehousingChit", rowSpan: true, renderer: { type: CustomTextRenderer } },
-              { header: "구매일자", name: "warehousingDate" },
-              { header: "상품LOT번호", name: "goodsLotNum" },
-              { header: "구매처명", name: "vendorName" },
-              { header: "상품명", name: "goodsName" },
-              { header: "옵션명", name: "optionName" },
-              { header: "총금액", name: "warehousingUnitTotalAmount" },
-              { header: "창고명", name: "warehouseName" },
-              { header: "인쇄", name: "print", renderer: { type: PrintRenderer } }
+              { header: "구매전표번호", name: "warehousingChit",align: "right", rowSpan: true, renderer: { type: CustomTextRenderer } },
+              { header: "구매일자", name: "warehousingDate" ,align: "center",formatter:(row)=>formatDateToYYYYMMDD(row.value)},
+              { header: "상품LOT번호", name: "goodsLotNum",align: "right",minWidth: 200 },
+              { header: "구매처명", name: "vendorName" ,align: "left"},
+              { header: "상품명", name: "goodsName" ,align: "left",minWidth: 200},
+              { header: "옵션명", name: "optionName",align: "left" },
+              { header: "총금액", name: "warehousingUnitTotalAmount" ,align: "right",formatter:(row)=>numberFormat(row.value)},
+              { header: "창고명", name: "warehouseName",align: "left" },
+              { header: "구매전표", name: "print", align: "center",renderer: { type: PrintRenderer } }
               
           ]
       });

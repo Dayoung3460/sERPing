@@ -76,15 +76,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                        </div>
 	
 	                        <div class="form-group m-3">
-	                            <label for="selectBhf">발주지점</label>
-	                            <select class="form-control" id="selectBhf">
-	                            	<option>all</option>
-	                                <option>발주지점1</option>
-	                                <option>발주지점2</option>
-	                                <option>발주지점3</option>
-	                                <option>yedam</option>
-	                            </select>
-	                        </div>
+							    <label for="inputBhf">발주지점</label>
+							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+						    </div>
 	                        
 							<div class="col-12 text-center">
 	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
@@ -324,8 +318,8 @@ function search(){
 	let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
     let startDate = document.getElementById("startDate").value; // 시작 날짜
     let endDate = document.getElementById("endDate").value; // 끝 날짜
-    let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
-    
+    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+    let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
     //console.log(selectedOption, startDate, endDate, selectedBhf);
     
     let params = {
@@ -387,32 +381,11 @@ function loadDeliveryDetail(deliveryId) {
         return;
     }
 	
+	const currentPage = deliveryDetailGrid.getPagination()?._currentPage || 1;
+	console.log(currentPage);
+	deliveryDetailGrid.readData(currentPage, {deliveryId});
 	
-	deliveryDetailGrid.readData(1, {deliveryId});
 	
-	/*
-    fetch(`/bsn/rest/deli/detail?deliveryId=${deliveryId}`)
-    	
-        .then(response => {
-	            if (!response.ok) throw new Error(`HTTP 오류! 상태: ${response.status}`);
-	            return response.json();
-	     })
-	     
-        .then(data => {
-            if (data && data.data && data.data.contents) {
-            	const detailData = data.data.contents; // 상세 데이터 저장
-            	
-            	
-
-                deliveryDetailGrid.resetData(detailData);
-                deliveryDetailGrid.setPaginationTotalCount(data.data.pagination.totalCount);
-            } else {
-                console.warn("상세 데이터가 없습니다.");
-                //orderDetailGrid.resetData([]); // 빈 배열로 초기화
-            }
-        })
-        .catch(error => console.error('Error fetching order detail:', error));
-	*/
 }
 
 //상세 그리드 형식 
@@ -453,6 +426,7 @@ let selectedDetailRowKey = null;
 
 deliveryDetailGrid.on('click', (ev) => {
 	
+	
 	const rowKey = ev.rowKey; // 클릭한 행의 키
     if (rowKey === null || rowKey === undefined) {
         return;
@@ -488,7 +462,10 @@ function loadDeliveryLotDetail(deliveryDetailId) {
         console.warn("유효하지 않은 주문 Id입니다.");
         return;
     }
-	deliveryLotDetailGrid.readData(1, {deliveryDetailId});
+	
+	const currentPage = deliveryLotDetailGrid.getPagination()?._currentPage || 1;
+	
+	deliveryLotDetailGrid.readData(currentPage, {deliveryDetailId});
 	
 
 	/*
@@ -608,15 +585,13 @@ function registerLotData() {
 		        
 		        
 		    }
-		 	//console.log(selectedRow.deliveryDemandQnt);
-			//console.log(requestData);
-			//console.log(totalSum);
+		 	
 			let dlvyDTO = {
 				deliveryDetailId: selectedRow.deliveryDetailId,
 				optionCode: selectedRow.optionCode,
 				lotDetails: requestData
 		    };
-			//console.log(dlvyDTO);
+			
 			registerLot(dlvyDTO);
 			registerModal.hide();
 }

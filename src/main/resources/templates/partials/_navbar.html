@@ -47,7 +47,7 @@
               로그아웃
             </a>
           </form>
-          <a th:classappend="${#authorization.expression('isAuthenticated()')} ? 'hide'" href="/login">
+          <a th:classappend="${#authorization.expression('isAuthenticated()')} ? 'loginHide'" href="/login">
             <i class="ti-power-off text-primary"></i>
             로그인
           </a>

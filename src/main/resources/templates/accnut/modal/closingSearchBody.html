@@ -19,7 +19,7 @@
 	        const token = document.querySelector('meta[name="_csrf"]').content;
 	        
 	        if(document.querySelector("#bhf").value != "" && document.querySelector("#regiserDate").value != ""){
-	        	fetch(`http://localhost:81/accnut/rest/day/list?bhfId=${result.to.name}&companyNum=${session.companyNum}&month=${month}`, {
+	        	fetch(`/accnut/rest/day/list?bhfId=${result.to.name}&companyNum=${session.companyNum}&month=${month}`, {
 	    			method: "GET",
 	    			headers: {
 	    					 	'header': header,
@@ -45,7 +45,7 @@
 			const header = document.querySelector('meta[name="_csrf_header"]').content;
 	        const token = document.querySelector('meta[name="_csrf"]').content;
 			let code = document.querySelector("#selectDay").value;
-			fetch(`http://localhost:81/accnut/rest/closing/list?code=${code}`, {
+			fetch(`/accnut/rest/closing/list?code=${code}`, {
     			method: "GET",
     			headers: {
     					 	'header': header,

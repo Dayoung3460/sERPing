@@ -52,7 +52,7 @@ public class ChatRestController {
   public ResponseEntity<Map<String, Object>> sendMsg(@RequestBody MessageDTO messageDTO,
                                                      @AuthenticationPrincipal CustomerUser user) {
     messageDTO.setEmployeeNum(user.getUserDTO().getEmployeeNum());
-    
+   
     MessageDTO dto = chatService.sendMsg(messageDTO);
     Map<String, Object> response = new HashMap<>();
     response.put("data", dto);
@@ -63,8 +63,7 @@ public class ChatRestController {
   public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("image") MultipartFile file,
                                                         MessageDTO messageDTO,
                                                      @AuthenticationPrincipal CustomerUser user) {
-
-    log.info("imgimgimg");
+    
     Map<String, Object> response = new HashMap<>();
     try {
       // 저장할 경로 설정

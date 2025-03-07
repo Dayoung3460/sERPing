@@ -41,11 +41,12 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				</div>
 				
 				
+				
 				<div class="col-md-12 mt-2 mb-2">
 					<div class="row">
 						<div class="col-sm-5"></div>
-						<button class="col-sm-1" onclick="search()">검색</button>
-						<button class="col-sm-1" onclick="reset()">초기화</button>
+						<button class="col-sm-1 btn btn-primary" onclick="search()">검색</button>
+						<button class="col-sm-1 btn btn-secondary" onclick="reset()">초기화</button>
 						<div class="col-sm-5"></div>
 					</div>
 				</div>
@@ -86,8 +87,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						<div id="returningDtlProcessing"></div>
 						<div id="pagination" class="tui-pagination"></div>
 						<div class="text-center">
-							<button type="button" class="btn btn-primary" id="confirmButton">완료</button>
-							<button type="button" class="btn btn-danger" id="cancelButton">거절</button>
+							<button type="button" class="btn btn-primary" id="confirmButton">승인</button>
+							<button type="button" class="btn btn-danger" id="cancelButton">반려</button>
 						</div>
 					</div>
 				</div>
@@ -192,7 +193,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				returningCode = rowData.returningCode; // 교환및반품 코드
 				branchOfficeId = rowData.branchOfficeId;
 				
-				// 교환및반품 상세 조회 쿼리호출(orderCode)
+				// 교환및반품 상세 조회 쿼리호출
+				grid2.readData(1, {returningCode});
+				grid3.readData(1, {returningCode});
+				
+				/*
 			    fetch('/bsn/rest/cs/request/detail?returningCode=' + returningCode, {
 			        method: 'GET',
 			        headers: {
@@ -217,8 +222,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		            
 			    })
 			    .catch(error => console.error("데이터 요청 실패:", error));
+				*/
 			}
 		});
+		
+		const detailDataSource = {
+				api: {
+					readData: { url: '/bsn/rest/cs/request/detail', method: 'GET', initParams: { page: 1, returningCode:"0" }},
+				},
+				contentType: 'application/json'
+				
+		};
 		
 		
 		// 교환및반품 상세 테이블
@@ -245,8 +259,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				//{ header : '폐기수량', name: 'DisuseQnt', editor: 'text',  }
 
 			],
-			data: ""
+			data: detailDataSource
 		});
+		
 		
 		const grid3 = new Grid({
 			el: document.getElementById('returningDtlProcessing'), 
@@ -270,7 +285,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				{ header : '폐기수량', name: 'disuseQnt', editor: 'text', align: "right",  }
 
 			],
-			data: ""
+			data: detailDataSource
 		});
 		
 		//반품및 교환 처리 완료버튼(처리 전 오류 체크)
@@ -315,6 +330,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    
 		    const exchangeList = returningDetailData.filter(row => row.exchangeReturningChoice === '교환' );
 		    console.log("교환품목 : ", exchangeList);
+		    
+		 
 
 		    
 		 	// 교환 품목이 있는 경우 주문 및 출고 등록 모달 띄우기
@@ -377,31 +394,30 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			grid2.resetData([]);
             grid3.resetData([]);
 
-			
+            search();
 			
 			
 		}
 		
 		// 교환및반품 테이블 데이터 없을때 나오는 문구
 		function REnodata(){
-			console.log("nodata실행")
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
-				nodata.innerHTML = '해당하는 데이터가 없습니다.';
+				nodata.innerHTML = '요청이 존재하지 않습니다.';
 			}, 100)
 		}
 		// 교환및반품 상세 테이블 데이터 없을때 나오는 문구
 		function REDnodata(){
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[1];
-				nodata.innerHTML = '교환 및 반품 내역을 선택 해주세요';
+				nodata.innerHTML = '교환 및 반품 내역을 선택해야합니다.';
 			}, 100)
 		}
 		// 교환및반품 상세 테이블 처리 데이터 없을때 나오는 문구
 		function REDPnodata(){
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[2];
-				nodata.innerHTML = '신청을 승인하시면 반품및 교환 절차를 진행할 수 있습니다.';
+				nodata.innerHTML = '교환 및 반품 내역을 선택해야합니다.';
 			}, 100)
 		}
 		
@@ -468,8 +484,6 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		
 		// 교환및반품 처리함수
 		function confirmReturning(returningData) {
-			//console.log(returningData);
-			
 			
 			const header = document.querySelector('meta[name="_csrf_header"]').content;
 		    const token = document.querySelector('meta[name="_csrf"]').content;
@@ -553,7 +567,6 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    				exchangeList : exchangeList
 		    				
 		    		}
-				    //console.log(returningData);
 		    		
 		    		
 		    		
@@ -565,6 +578,28 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    		const warehousingList = returningDetailData.filter(row => Number( row.warehousingQnt || 0 ) != 0 );
 		    		const exchangeList = returningDetailData.filter(row => row.exchangeReturningChoice === '교환' );
 		    		
+		    		// 동일한 goodsCode와 optionCode를 가진 항목들의 수량을 합친 새로운 배열 생성
+				    const mergedExchangeList = [];
+
+				    // exchangeList를 순회하면서 처리
+				    exchangeList.forEach(row => {
+				        // 같은 상품 코드와 옵션 코드가 이미 mergedExchangeList에 있는지 확인
+				        const existingItem = mergedExchangeList.find(item => 
+				            item.goodsCode === row.goodsCode && item.optionCode === row.optionCode);
+				        
+				        if (existingItem) {
+				            // 이미 존재하면 quantity 합산
+				            existingItem.quantity += row.quantity;
+				        } else {
+				            // 존재하지 않으면 새로운 항목으로 추가
+				            mergedExchangeList.push({
+				                ...row,  // 기존 항목의 모든 속성
+				                quantity: row.quantity  // 수량은 그대로
+				            });
+				        }
+				    });
+
+				    //console.log("합쳐진 교환 품목 : ", mergedExchangeList);
 		    		
 		    		
 		    		returningData = {
@@ -574,12 +609,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    				returningCode : returningCode,
 		    				returningDetailData: returningDetailData,
 		    				warehousingList : warehousingList,
-		    				exchangeList : exchangeList
+		    				exchangeList : mergedExchangeList
 		    				
 		    		}
-				    //console.log(returningData);
-	
-		    		
+				   		
 		    	}
 		    	
 	    		///////////////////

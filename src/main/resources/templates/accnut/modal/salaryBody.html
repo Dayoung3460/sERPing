@@ -42,7 +42,12 @@
 	      { header : "부대비용", name : "incidentailCost",  },
 	      { header : "공제항목", name : "deductionItem",  },
 				 */
-	      { header : "지급금액", name : "paymentAmount",  align: "center"},
+	      { header : "지급금액", name : "paymentAmount",  align: "center", summary : true,  footer: {
+	    	  template(valueMap) {
+	    	  		return `합계 : ${valueMap.sum}`;
+	    	  	}
+	      }},
+	      
 			],
 			data : checkArray
 		});
@@ -50,7 +55,7 @@
 		if(checkArray.length > 0) {
 			document.querySelector('#payString').insertAdjacentText("beforeend", `${checkArray[0].employeeName} 외 ${checkArray.length - 1}명, ${total}원`);		
 		}
-		salgrid.appendRow({"employeeName": "총합", "paymentAmount": total},{"at": 0});
+		//salgrid.appendRow({"employeeName": "총합", "paymentAmount": total},{"at": 0});
 		salgrid.on("click",(ev)=>{
 			console.log(salgrid.getRow(ev.rowKey));
 		})

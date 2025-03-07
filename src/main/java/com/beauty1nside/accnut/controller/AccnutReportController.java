@@ -50,9 +50,34 @@ public class AccnutReportController {
 		Connection conn = datasource.getConnection();
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params, conn);
 		conn.close();
+		
+		// 🔹 X-Frame-Options 헤더 제거 (iframe에서 PDF 허용)
+	    response.setHeader("X-Frame-Options", "SAMEORIGIN");
+	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+	    response.setHeader("Pragma", "no-cache");
+	    response.setHeader("Expires", "0");
 	
 		//pdf 출력
 		response.setContentType(MediaType.APPLICATION_PDF_VALUE);
 		JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	}	
+	
+	
+	@GetMapping(value = "tax/down")
+	public void taxDown(
+								@RequestParam("taxNum") int taxNum,
+							    HttpServletResponse response
+									    ) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("p_rgno", taxNum);
+		InputStream jasperStream = getClass().getResourceAsStream("/reports/accnut/tax.jasper");
+		
+		Connection conn = datasource.getConnection();
+	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params, conn);
+	    conn.close();
+		
+	    response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+	    response.setHeader("Content-Disposition", "attachment; filename=\"accnut_tax_" + taxNum + ".pdf\"");
+	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+	}
 }

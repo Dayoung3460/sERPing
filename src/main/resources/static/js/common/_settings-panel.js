@@ -9,6 +9,7 @@ let sessionEmployeeName = document.getElementById("sessionEmployeeName").value;
 let msgImg = document.getElementById("msgImg")
 let roomId = 0
 let goback = document.getElementById("goback")
+let file = null
 
 const backToEmpList = () => {
     $(document).ready(function() {
@@ -23,7 +24,10 @@ settingsClose.addEventListener('click', backToEmpList)
 goback.addEventListener('click', backToEmpList)
 
 const addMsg = (sentMsg) => {
-    const messageDiv = document.createElement("div");
+    if(!sentMsg.msgContent && !sentMsg.imgPath) {
+        return
+    }
+    let messageDiv = document.createElement("div");
     let isSender = sentMsg.employeeNum === Number(sessionEmployeeNum)
 
     messageDiv.classList.add(
@@ -31,19 +35,26 @@ const addMsg = (sentMsg) => {
         `${isSender ? 'sent' : 'received'}`
     );
 
-    messageDiv.innerHTML = `
-                <span class="sender-name">${sentMsg.employeeName}</span>
-                <div class="message-box ${isSender ? 'dark' : 'yellow'}">
-                    ${sentMsg.msgContent}
-                </div>
-                <span class="message-time">${formatDateTime(new Date())}</span>
-            `;
+    messageDiv.innerHTML = `<span class="sender-name">${sentMsg.employeeName}</span>`
+    if(sentMsg.msgContent) {
+        messageDiv.innerHTML += `<div class="message-box ${isSender ? 'dark' : 'yellow'}">
+                                        ${sentMsg.msgContent}
+                                    </div>`
+    } else if(sentMsg.imgPath) {
+        messageDiv.innerHTML += `<div class="message-box ${isSender ? 'dark' : 'yellow'}">
+                                        <img src="${sentMsg.imgPath}" alt="image"/>
+                                    </div>`
+    }
+    messageDiv.innerHTML += `<span class="message-time">${formatDateTime(new Date())}</span>`
 
     chatContainer.appendChild(messageDiv);
     chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
 }
 
 const storeMsg = (msgContent, message) => {
+    if(!msgContent) {
+        return
+    }
     const url = '/api/chat/msg'
     const msg = {
         roomId,
@@ -70,7 +81,19 @@ const storeMsg = (msgContent, message) => {
 }
 
 
-function uploadFile(file) {
+function uploadFile() {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        msgImg.src = e.target.result
+    }
+    reader.readAsDataURL(file)
+
+    msgImg.classList.toggle('hide')
+    textarea.classList.toggle('hide')
+    textarea.value = ''
+}
+
+const sendImg = () => {
     if (!stompClient || !stompClient.connected) {
         console.error("WebSocket is not connected yet.");
         return;
@@ -91,18 +114,19 @@ function uploadFile(file) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log("파일 업로드 성공:", data);
-                msgImg.src = data.data.imgPath
+                let message = {
+                    sender: sessionEmployeeName,
+                    content: '',
+                    imgPath: data.data.imgPath,
+                    senderEmpNum: sessionEmployeeNum,
+                };
+                stompClient.send(`/app/chat.sendMessage/${roomId}`, {}, JSON.stringify(message));
 
-                // let message = {
-                //     sender: sessionEmployeeName,
-                //     content: data.data.imgPath,
-                //     senderEmpNum: sessionEmployeeNum,
-                // };
-                //
-                // stompClient.send(`/app/chat.sendMessage/${roomId}`, {}, JSON.stringify(message));
+                msgImg.classList.toggle('hide')
+                textarea.classList.toggle('hide')
+                chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
             } else {
-                alert("파일 업로드 실패");
+                showAlert("파일 업로드 실패", 'danger');
             }
         })
         .catch(error => console.error("업로드 오류:", error));
@@ -114,10 +138,14 @@ const sendMsg = () => {
         return;
     }
     const msgContent = textarea.value
+    if(!msgContent) {
+        return
+    }
     // type: 'CHAT',
     let message = {
         sender: sessionEmployeeName,
         content: msgContent,
+        imgPath: '',
         senderEmpNum: sessionEmployeeNum,
     };
 
@@ -128,6 +156,8 @@ const sendMsg = () => {
 sendBtn.addEventListener('click', () => {
     if(textarea.value) {
         sendMsg()
+    } else if(msgImg.src) {
+        sendImg()
     }
 })
 
@@ -140,9 +170,13 @@ textarea.addEventListener('keydown', (event) => {
 
 const showChats = (chats) => {
     let messages = chats.map((chat) => {
+        if(!chat.msgContent && !chat.imgPath) {
+            return
+        }
         return {
             sender: chat.employeeName,
             msgContent: chat.msgContent,
+            imgPath: chat.imgPath,
             sendDate: chat.sendDate,
             type: chat.employeeNum === Number(sessionEmployeeNum) ? 'sent' : 'received'
         }
@@ -150,26 +184,40 @@ const showChats = (chats) => {
 
     chatContainer.innerHTML = ""
 
+
     messages.forEach(message => {
+        if(!message) {
+            return
+        }
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("chat-message", message.type);
 
-        messageDiv.innerHTML = `
-                <span class="sender-name">${message.sender}</span>
-                <div class="message-box ${message.type === "received" ? "yellow" : "dark"}">
-                    ${message.msgContent}
-                </div>
-                <span class="message-time">${formatDateTime(message.sendDate)}</span>
-            `;
+        messageDiv.innerHTML = `<span class="sender-name">${message.sender}</span>`
+        if(message.msgContent) {
+            messageDiv.innerHTML += `<div class="message-box ${message.type === "received" ? "yellow" : "dark"}">
+                                        ${message.msgContent}
+                                    </div>`
+        } else if(message.imgPath) {
+            messageDiv.innerHTML += `<div class="message-box ${message.type === "received" ? "yellow" : "dark"}">
+                                        <img src="${message.imgPath}" alt="image"/>
+                                    </div>`
+        }
+        messageDiv.innerHTML += `<span class="message-time">${formatDateTime(message.sendDate)}</span>`
 
         chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: "smooth" });
     });
+
+
 }
 
 if (Notification.permission !== "granted") {
     Notification.requestPermission();
 }
 function showNotification(message) {
+    if(!JSON.parse(message.body).content) {
+        return
+    }
     if (Notification.permission === "granted") {
         new Notification(JSON.parse(message.body).sender, {
             body: JSON.parse(message.body).content,
@@ -191,17 +239,26 @@ const openChatRoom = (employeeNum) => {
         roomId = Object.keys(data)[0]
 
         stompClient.subscribe(`/topic/public/${roomId}`, function (message) {
+
+            let msgBody = JSON.parse(message.body)
+            if(!msgBody.content && !msgBody.imgPath) {
+                return
+            }
             showNotification(message);
-            const parsedMsg = JSON.parse(message.body)
+
             addMsg({
-                    employeeName: parsedMsg.sender,
-                    msgContent: parsedMsg.content,
-                    employeeNum: parsedMsg.senderEmpNum
+                    employeeName: msgBody.sender,
+                    msgContent: msgBody.content,
+                    imgPath: msgBody.imgPath,
+                    employeeNum: msgBody.senderEmpNum
                 })
         });
 
         let chats = Object.values(data)[0]
-        showChats(chats)
+        if(chats.length > 0) {
+            showChats(chats)
+        }
+
 
         // Bootstrap의 탭 기능을 활용
         $(document).ready(function() {
@@ -307,9 +364,9 @@ function selectFile() {
 }
 
 document.getElementById("fileInput").addEventListener("change", function (event) {
-    let file = event.target.files[0];
+    file = event.target.files[0];
     if (file) {
-        uploadFile(file);
+        uploadFile();
     }
 });
 
