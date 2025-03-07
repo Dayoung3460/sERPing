@@ -9,12 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
   
-  @Value("${img.upload}") String imgUrl;
+  @Value("${img.uploadpath}") String imgUrl;
   
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/image/**")
-      .addResourceLocations("file:///"+imgUrl) // 업로드 경로 설정
+      .addResourceLocations("file://"+imgUrl) // 업로드 경로 설정
       .setCacheControl(CacheControl.noCache()); // 캐시 없이 즉시 반영
 
   }
