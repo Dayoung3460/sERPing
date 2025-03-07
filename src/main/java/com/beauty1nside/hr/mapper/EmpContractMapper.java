@@ -24,4 +24,7 @@ public interface EmpContractMapper {
     
     // ✅ 검색 및 페이징 포함 근로계약 조회 (DTO 활용)
     List<EmpContractDTO> searchContracts(EmpContractSearchDTO searchDTO);
+    
+    // ✅ 추가: 계약 개수 카운트
+    int countContracts(EmpContractSearchDTO searchDTO);
 }
