@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"></head>
+<head><meta charset="UTF-8">
+<style>
+.tui-grid-cell.tui-grid-cell-has-footer {
+    display: table-cell !important;
+    background-color: #f8f9fa; /* 푸터 배경색 */
+    font-weight: bold;
+}
+
+</style>
+</head>
 <body>    
     <div class="container">
     	<!-- 그리드 들어올 부분 -->
@@ -23,6 +32,7 @@
 		let newArray = [...checkArray];
 		newArray.unshift({"employeeName" : "총합", "paymentAmount" : total });
 		*/
+		console.log(checkArray);
 		const salgrid = new Grid({
 			el : document.querySelector('#salgrid'),
 			pageOptions: {
@@ -42,13 +52,22 @@
 	      { header : "부대비용", name : "incidentailCost",  },
 	      { header : "공제항목", name : "deductionItem",  },
 				 */
-	      { header : "지급금액", name : "paymentAmount",  align: "center", summary : true,  footer: {
-	    	  template(valueMap) {
-	    	  		return `합계 : ${valueMap.sum}`;
-	    	  	}
-	      }},
+	      { header : "지급금액", name : "paymentAmount",  align: "center"
+	      },
 	      
 			],
+			summary : {
+				height: 40,
+		        position: 'bottom', // or 'top
+		        align: "center",
+		        columnContent: {
+		        	paymentAmount : {
+		        		template: function(valueMap) {
+		        			return `총합: ${valueMap.sum}`
+		        		}
+		        	}
+		        }
+			},
 			data : checkArray
 		});
 		//console.log(checkArray);
