@@ -3,7 +3,7 @@
 <body>
  
    <style>
-	    #custom-container{
+	    #custom-modal-container{
 			background-color: #f8f9fa; /* 연한 회색 배경 */
 			padding: 20px;
 			border-radius: 10px;
@@ -18,7 +18,7 @@
 
 <div class="container mt-4">
 	   <!-- 검색창 -->
-	<div class="search-grid" id="custom-container">
+	<div class="search-grid" id="custom-modal-container">
 	    <div class="d-flex flex-wrap align-items-center gap-3">
 	        <div class="col-auto">
 		        <label class="form-label">납기일자</label>
@@ -115,15 +115,15 @@ function initOrderListGrid() {
         },
         bodyHeight: 'auto', 
         columns: [
-            { header: "주문번호", name: "orderId", rowSpan: true },
-            { header: "주문명", name: "orderName", rowSpan: true },
-            { header: "상품코드", name: "goodsCode" },
-            { header: "상품명", name: "goodsName" },
-            { header: "옵션명", name: "optionName" },
-            { header: "규격", name: "goodsStandard"},
-            { header: "주문수", name: "quantity"},
-            { header: "주문일", name: "orderDate"},
-            { header: "납기일", name: "dueDate"},
+            { header: "주문번호", name: "orderId", rowSpan: true ,align: "left"},
+            { header: "주문명", name: "orderName", rowSpan: true ,align: "left",},
+            { header: "상품코드", name: "goodsCode",align: "left" },
+            { header: "상품명", name: "goodsName" ,align: "left"},
+            { header: "옵션명", name: "optionName",align: "left" },
+            { header: "규격", name: "goodsStandard",align: "center"},
+            { header: "주문수", name: "quantity",align: "right"},
+            { header: "주문일", name: "orderDate",align: "center",},
+            { header: "납기일", name: "dueDate",align: "center"},
             
         ]
     });

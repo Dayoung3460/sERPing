@@ -127,22 +127,23 @@ function initPurchaseGrid() {
         bodyHeight: 500, // ✅ 자동 높이 조정
         minBodyHeight: 600, // ✅ 최소 높이 지정 (필요에 따라 조정)
         columns: [
-            { header: '상품코드', name: 'goodsCode' },
-            { header: '상품명', name: 'goodsName' },
+            { header: '상품코드', name: 'goodsCode' ,align: "left"},
+            { header: '상품명', name: 'goodsName',align: "left" },
             { header: '옵션코드', name: 'optionCode' ,hidden: true},
-            { header: '옵션명', name: 'optionName' },
+            { header: '옵션명', name: 'optionName' ,align: "left"},
 			{ header: '옵션번호', name: 'optionNum' , hidden: true},
-            { header: '거래처명', name: 'vendorName' },
-			{ header: '거래처번호', name: 'vendorId' , hidden: true},
-            { header: '규격', name: 'goodsStandard' },
-            { header: '수량', name: 'purchaseQuantity',editor: { type: "text", useFormatter: false } },
-            { header: '단가', name: 'purchaseUnitPrice',editor: { type: "text", useFormatter: false }},
-            { header: '공급가격', name: 'purchaseSupplyPrice' },
-            { header: '부가세', name: 'purchaseVat' },
+            { header: '공급처명', name: 'vendorName' ,align: "left"},
+			{ header: '공급처번호', name: 'vendorId' , hidden: true},
+            { header: '규격', name: 'goodsStandard' ,align: "center"},
+            { header: '수량', name: 'purchaseQuantity',editor: { type: "text", useFormatter: false } ,align: "right"},
+            { header: '단가', name: 'purchaseUnitPrice',editor: { type: "text", useFormatter: false },align: "right"},
+            { header: '공급가격', name: 'purchaseSupplyPrice' ,align: "right"},
+            { header: '부가세', name: 'purchaseVat' ,align: "right"},
             { header: '발주계획바디번호', name: 'orderPlanBodyNum' , hidden: true},
             {
                     header : "삭제"
                     ,name: "delete"
+                    ,align: "center"
                     ,renderer: {
                     type: DeleteRenderer // 삭제버튼 정의 렌더러
                     }  
@@ -340,7 +341,7 @@ function calculateSupplyPrice(rowKey) {
     let supplyPrice = quantity * unitPrice;
 
     // ✅ 계산된 공급가격을 Grid에 업데이트 (실제 값은 숫자, 화면에 표시할 때만 `,` 추가)
-    purchaseGrid.setValue(rowKey, "purchaseSupplyPrice", formatNumberWithCommas(supplyPrice.toFixed(2)));
+    purchaseGrid.setValue(rowKey, "purchaseSupplyPrice", formatNumberWithCommas(supplyPrice));
 
     updateVat(); // ✅ 부가세 즉시 업데이트
 }
@@ -360,7 +361,7 @@ function updateVat() {
         let vat = applyVat ? supplyPrice * 0.1 : 0; // ✅ 부가세 계산
 
         // ✅ 부가세 업데이트 (화면에 표시할 때 `,` 추가)
-        purchaseGrid.setValue(rowIndex, "purchaseVat", formatNumberWithCommas(vat.toFixed(2)));
+        purchaseGrid.setValue(rowIndex, "purchaseVat", formatNumberWithCommas(vat));
     });
 
     console.log("✅ 부가세 적용 여부:", applyVat ? "적용됨" : "미적용");
@@ -422,7 +423,7 @@ function purchaseRegister() {
     // ✅ VAT 체크박스 상태에 따라 플래그 설정
     const vatFlag = document.getElementById("vatChecked").checked ? 1 : 0;
 
-    // ✅ 거래처 ID 기준으로 그룹화
+    // ✅ 공급처 ID 기준으로 그룹화
     const groupedData = {};
     gridData.forEach((item) => {
         const vendorId = parseInt(item.vendorId) || 0;
@@ -477,15 +478,15 @@ function purchaseRegister() {
 		    .then(response => response.json())
 		    .then(data => {
 		        if (data.status === "success") {
-		            showAlert("발주 등록 성공", "success");
+		            showAlert("발주 등록 성공 하였습니다.", "success");
 		            setTimeout(() => location.reload(), 1000);
 		        } else {
-		            showAlert("발주 등록 실패", "danger");
+		            showAlert("발주 등록 실패 하였습니다.", "danger");
 		        }
 		    })
 		    .catch(error => {
 		        console.error("발주 등록 오류:", error);
-		        showAlert("서버 오류: " + error, "danger");
+		        
 		    });
 	
 	

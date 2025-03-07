@@ -175,15 +175,15 @@ function initPurchaseGrid(optionsData) {
         scrollY: true,
         bodyHeight: 500,
         columns: [
-            { header: '상품코드', name: 'goodsCode', className: "tui-grid-cell-readonly" },
-            { header: '상품명', name: 'goodsName', className: "tui-grid-cell-readonly" },
-            { header: '옵션코드', name: 'optionCode', className: "tui-grid-cell-readonly" },
-            { header: '옵션명', name: 'optionName', className: "tui-grid-cell-readonly" },
-            { header: '거래처명', name: 'vendorName', className: "tui-grid-cell-readonly" },
-            { header: '수량', name: 'purchaseQuantity', editor: "text" },
-            { header: '단가', name: 'purchaseUnitPrice', editor: "text" },
-            { header: '공급가격', name: 'purchaseSupplyPrice', className: "tui-grid-cell-readonly" },
-            { header: '부가세', name: 'purchaseVat', className: "tui-grid-cell-readonly" }
+            { header: '상품코드', name: 'goodsCode', align: "left",className: "tui-grid-cell-readonly" },
+            { header: '상품명', name: 'goodsName', align: "left",className: "tui-grid-cell-readonly" },
+            { header: '옵션코드', name: 'optionCode', align: "left",className: "tui-grid-cell-readonly" },
+            { header: '옵션명', name: 'optionName', align: "left",className: "tui-grid-cell-readonly" },
+            { header: '공급처명', name: 'vendorName', align: "left",className: "tui-grid-cell-readonly" },
+            { header: '수량', name: 'purchaseQuantity', align: "right",editor: "text" },
+            { header: '단가', name: 'purchaseUnitPrice', align: "right",editor: "text" },
+            { header: '공급가격', name: 'purchaseSupplyPrice', align: "right",className: "tui-grid-cell-readonly" },
+            { header: '부가세', name: 'purchaseVat', align: "right",className: "tui-grid-cell-readonly" }
         ],
         rowHeaders: ['checkbox'],
         data: optionsData  // ✅ 서버에서 받은 옵션 리스트를 그리드에 적용

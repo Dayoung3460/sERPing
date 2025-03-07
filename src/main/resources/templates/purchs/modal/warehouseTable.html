@@ -79,8 +79,8 @@ const warehouseGrid = new tui.Grid({
 		perPage: 5,
 	},
 	columns: [
-		{ header : "창고번호", name : "warehouseId",  sortable : true},
-		{ header : "창고명", name : "warehouseName" , sortable : true}
+		{ header : "창고번호", name : "warehouseId",  sortable : true ,align: "right"},
+		{ header : "창고명", name : "warehouseName" , sortable : true ,align: "left"}
 	],
 	data : warehouseDataSource,
 });
