@@ -114,6 +114,23 @@
     cursor: pointer;
 }
 
+
+.input-group {
+    display: flex;
+    align-items: center; /* 버튼과 입력 필드를 수직 중앙 정렬 */
+}
+
+input[type="file"] {
+    height: 35px !important;  /* Bootstrap 기본 form-control 높이와 맞춤 */
+    padding: 6px 12px; /* 내부 여백 조정 */
+    font-size: 14px;  /* 글자 크기 조정 */
+}
+
+.input-group > .form-control {
+    flex: 1; /* input이 너비를 꽉 채우도록 설정 */
+    height: 35px !important;  /* 버튼과 높이 일치 */
+}
+
 </style>
 
 <title>사원 등록 모달</title>
@@ -156,7 +173,11 @@
 										<img
 											src="https://via.placeholder.com/150" class="profile-image"
 											id="profilePreview" alt="프로필 이미지">
-										</label> <input type="file" id="profileImage">
+										</label> 
+										<!-- <input type="file" id="profileImage">  -->
+										<div>
+										    <input type="file" class="form-control" id="profileImage">
+										</div>
 									</div>
 
 									<!-- 사원 정보 입력 -->

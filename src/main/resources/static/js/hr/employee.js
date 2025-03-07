@@ -377,7 +377,7 @@ function initializeGrid() {
             width: 50,
         }],
         columns: [
-            { header: "사원ID", name: "employeeId", align: "center", width: 100 },
+            { header: "사원ID", name: "employeeId", align: "center",sortable: true, width: 100 },
             { header: "사원명", name: "employeeName", align: "center", sortable: true, width: 150 },
             { header: "부서", name: "departmentName", align: "center", sortable: true, width: 100 },
             { header: "직급", name: "position", align: "center", sortable: true, width: 100, formatter: formatCommonCode('position') },
