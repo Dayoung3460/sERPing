@@ -116,7 +116,48 @@
 	    justify-content: center;
 	    margin-top: 20px;
 	}
+	
+	.search-boxBSJ{
+	padding-left: 60px;
+	padding-right: 60px;
+	}
+	
+	/* ✅ 노란색 부분: 입력 필드 간격 줄이기 */
+	.search-box .row .col-md-3, 
+	.search-box .row .col-md-6 {
+	    padding-left: 10px;  /* 기본 15px → 5px */
+	    padding-right: 10px; /* 기본 15px → 5px */
+	}
 
+	/* ✅ 빨간색 부분: 검색어 입력 필드 너비 조정 */
+	#searchKeyword {
+	    width: 100%;
+	}
+	
+	/* ✅ 버튼 정렬 */
+	.text-center {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px; /* 버튼 간격 */
+	}
+	
+	.search-box-inner {
+	    display: block;  /* 기존의 flex 제거 */
+	    width: 100%;
+	}
+	
+	/* 검색 박스 전체 중앙 정렬 */
+	.search-box {
+	    display: flex;
+	    justify-content: center;
+	}
+	
+	/* 검색 박스 내부 내용 정렬 및 최대 너비 설정 */
+	.search-box-inner {
+	    max-width: 900px; /* 적절한 최대 너비 설정 */
+	    width: 100%;
+	    margin: 0 auto;
+	}
 	</style>
 	
 	<!-- pdf 캔버스 설정 -->
@@ -144,80 +185,75 @@
     <!-- 사원 검색 영역 -->
 	<!-- 검색 필터 영역 -->
 	<!-- 검색 필터 영역 (레이아웃 정리) -->
-	<div class="search-box bg-light p-3 rounded shadow-sm">
-		<div class="search-box-inner">
-		    <div class="row g-3">
-		        <!-- 검색 기준 -->
-		        <div class="col-md-2"></div>
-		        <div class="col-md-3">
-		            <label class="form-label">검색 기준</label>
-		            <select class="form-select" id="searchCategory">
-		                <option value="전체">전체</option>
-		                <option value="employeeName">사원명</option>
-		                <option value="employeeId">사원ID</option>
-		                <option value="phone">연락처</option>
-		            </select>
-		        </div>
-		        
-		        <!-- 검색어 입력 -->
-		        <div class="col-md-6">
-		            <label class="form-label">검색어</label>
-		            <input type="text" class="form-control" placeholder="검색어 입력 후 [Enter]" id="searchKeyword">
-		        </div>
-		        <div class="col-md-2">
-		        </div>
-		    </div>
-		
-		    <div class="row g-3 mt-2">
-		    	<div class="col-md-2"></div>
-		        <!-- 부서 선택 -->
-		        <div class="col-md-3">
-		            <label class="form-label">부서</label>
-		            <select class="form-select" id="searchDepartment">
-		                <option value="">선택</option>
-		            </select>
-		        </div>
-		        <!-- 하위 부서 선택 -->
-		        <div class="col-md-3">
-		            <label class="form-label">하위 부서</label>
-		            <select class="form-select" id="searchSubDepartment">
-		                <option value="">선택</option>
-		            </select>
-		        </div>
-		        <!-- 직급 선택 -->
-		        <div class="col-md-3">
-		            <label class="form-label">직급</label>
-		            <select class="form-select" id="searchPosition">
-		                <option value="">선택</option>
-		            </select>
-		        </div>
-		        <div class="col-md-2"></div>
-		    </div>
-		
-		    <div class="row g-3 mt-2">
-		   		<div class="col-md-2"></div>
-		        <!-- 재직 상태 -->
-		        <div class="col-md-4">
-		            <label class="form-label">재직 상태</label>
-		            <div class="btn-group w-100" role="group" id="statusGroup"></div>
-		        </div>
-		        
-		        <!-- 근무 유형 -->
-		        <div class="col-md-4">
-		            <label class="form-label">근무 유형</label>
-		            <div class="btn-group w-100" role="group" id="employmentTypeGroup"></div>
-		        </div>
-		        <div class="col-md-2"></div>
-		    </div>
-		</div>
-	    
-	    <div class="row mt-3">
-	        <div class="col text-center">
-	            <button class="btn btn-primary px-4 me-2" onclick="searchEmployees()" id="searchBtn">조회</button>
-	            <button class="btn btn-secondary px-4" onclick="resetFilters()">초기화</button>
+	<!-- 검색 필터 영역 -->
+	<div class="search-box bg-light p-3 rounded shadow-sm d-flex justify-content-center">
+	    <div class="search-box-inner">
+	        <div class="row g-3">
+	            <!-- 검색 기준 -->
+	            <div class="col-md-3">
+	                <label class="form-label">검색 기준</label>
+	                <select class="form-select" id="searchCategory">
+	                    <option value="전체">전체</option>
+	                    <option value="employeeName">사원명</option>
+	                    <option value="employeeId">사원ID</option>
+	                    <option value="phone">연락처</option>
+	                </select>
+	            </div>
+	
+	            <!-- 검색어 입력 -->
+	            <div class="col-md-6">
+	                <label class="form-label">검색어</label>
+	                <input type="text" class="form-control" placeholder="검색어 입력 후 [Enter]" id="searchKeyword">
+	            </div>
+	        </div>
+	
+	        <div class="row g-3 mt-2">
+	            <!-- 부서 선택 -->
+	            <div class="col-md-3">
+	                <label class="form-label">부서</label>
+	                <select class="form-select" id="searchDepartment">
+	                    <option value="">선택</option>
+	                </select>
+	            </div>
+	
+	            <!-- 하위 부서 선택 -->
+	            <div class="col-md-3">
+	                <label class="form-label">하위 부서</label>
+	                <select class="form-select" id="searchSubDepartment">
+	                    <option value="">선택</option>
+	                </select>
+	            </div>
+	
+	            <!-- 직급 선택 -->
+	            <div class="col-md-3">
+	                <label class="form-label">직급</label>
+	                <select class="form-select" id="searchPosition">
+	                    <option value="">선택</option>
+	                </select>
+	            </div>
+	        </div>
+	
+	        <div class="row g-3 mt-2">
+	            <!-- 재직 상태 -->
+	            <div class="col-md-4">
+	                <label class="form-label">재직 상태</label>
+	                <div class="btn-group w-100" role="group" id="statusGroup"></div>
+	            </div>
+	
+	            <!-- 근무 유형 -->
+	            <div class="col-md-4">
+	                <label class="form-label">근무 유형</label>
+	                <div class="btn-group w-100" role="group" id="employmentTypeGroup"></div>
+	            </div>
+	        </div>
+	
+	        <div class="row mt-3 text-center">
+	            <div class="col">
+	                <button class="btn btn-primary px-4 me-2" onclick="searchEmployees()" id="searchBtn">조회</button>
+	                <button class="btn btn-secondary px-4" onclick="resetFilters()">초기화</button>
+	            </div>
 	        </div>
 	    </div>
-	    
 	</div>
 
 

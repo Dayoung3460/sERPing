@@ -115,7 +115,29 @@
 		.selected-department > .select-wrapper {
 		    background-color: #b3d7ff !important;
 		}
-				
+			
+		/* ✅ 라벨과 입력 필드 사이 간격 줄이기 */
+		.modal-body .row .col-md-4 {
+		    padding-right: 20px; /* 기본 15px → 5px로 줄여서 간격 좁힘 */
+		    text-align: right; /* 텍스트 우측 정렬 유지 */
+		}
+		
+		.modal-body .row .col-md-8 {
+		    padding-left: 20px; /* 기본 15px → 5px로 줄여서 인풋과 가깝게 */
+		}
+		
+		.mBody {
+		margin-right: 20px;
+		margin-left: 20px;
+		}
+		
+		/* ✅ 프로필 이미지 크기 키우기 */
+		#modalProfileImage {
+		    width: 200px;  /* 기존 100px → 120px로 확대 */
+		    height: 200px;
+		    object-fit: cover; /* 비율 유지하면서 꽉 채우기 */
+
+		}	
 	  </style>
 	</head>
 	
@@ -212,7 +234,7 @@
 	      </div>
 	
 	      <!-- 모달 바디 -->
-	      <div class="modal-body">
+	      <div class="modal-body mBody">
 	        <div class="row">
 	          <!-- 프로필 이미지 -->
 	          <div class="col-md-3 text-center">
@@ -358,11 +380,6 @@
 	  function openEmployeeModal(mode, data) {
 		  console.log("📌 모달 데이터:", data); // 🔥 데이터 확인
 		  
-		  //저장된 이미지 에러시 기본이미지 표출
-		  $("#modalProfileImage").on("error", function () {
-			    $(this).attr("src", "/file/image/mypage/profile/noProfileImg.jpg");
-			    console.log("📌 기본 프로필 이미지로 변경됨:", this.src);
-			});
 		  
 	    $("#employeeModalLabel").text(mode === "transfer" ? "인사 발령" : "사원 정보");
 	
@@ -375,8 +392,20 @@
 	    // 연락처 자동 포맷 적용
 	    $("#modalPhone").val(formatPhoneNumber(data.phone));
 	    $("#modalEmail").val(data.email);
-	    $("#modalProfileImage").attr("src", data.profileImage);
-	
+
+	    // ✅ 프로필 이미지 설정 (null, undefined, 빈 문자열("") 모두 기본 이미지 적용)
+	    let profileImgSrc = data.profileImage && data.profileImage.trim() !== "" 
+	        ? data.profileImage 
+	        : "/file/image/mypage/profile/noProfileImg.jpg";
+
+	    $("#modalProfileImage").attr("src", profileImgSrc);
+
+	    // ✅ 404 에러 발생 시 기본 이미지로 변경
+	    $("#modalProfileImage").on("error", function () {
+	        $(this).attr("src", "/file/image/mypage/profile/noProfileImg.jpg");
+	        console.log("📌 기본 프로필 이미지로 변경됨:", this.src);
+	    });
+		  
 	    if (mode === "transfer") {
 	      $("#transferFields").show();
 	      $("#transferBtn").show();
