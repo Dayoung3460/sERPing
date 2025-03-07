@@ -358,6 +358,12 @@
 	  function openEmployeeModal(mode, data) {
 		  console.log("📌 모달 데이터:", data); // 🔥 데이터 확인
 		  
+		  //저장된 이미지 에러시 기본이미지 표출
+		  $("#modalProfileImage").on("error", function () {
+			    $(this).attr("src", "/file/image/mypage/profile/noProfileImg.jpg");
+			    console.log("📌 기본 프로필 이미지로 변경됨:", this.src);
+			});
+		  
 	    $("#employeeModalLabel").text(mode === "transfer" ? "인사 발령" : "사원 정보");
 	
 	    $("#modalEmployeeId").val(data.employeeId);
@@ -369,7 +375,7 @@
 	    // 연락처 자동 포맷 적용
 	    $("#modalPhone").val(formatPhoneNumber(data.phone));
 	    $("#modalEmail").val(data.email);
-	    $("#modalProfileImage").attr("src", data.profileImage || "https://via.placeholder.com/150");
+	    $("#modalProfileImage").attr("src", data.profileImage);
 	
 	    if (mode === "transfer") {
 	      $("#transferFields").show();
