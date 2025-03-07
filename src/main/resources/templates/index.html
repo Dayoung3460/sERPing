@@ -8,22 +8,24 @@
 >
 <head>
   <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <style>
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body layout:fragment="content">
 <input type="hidden" id="sessionEmployeeNum" th:value="${session.employeeNum}"/>
 <input type="hidden" id="sessionAuthority" th:value="${session.authority}"/>
-  <div class="row">
-    <div class="col-md-12 grid-margin">
-      <div class="row">
-        <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-          <div sec:authorize="isAuthenticated()">
-            환영합니다. <span sec:authentication="name" class="h4"></span>님!
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="text-center mt-4">
+  <h3 class="fw-bold text-primary fade-in">환영합니다<i class="mdi mdi-beach"></i> <span class="text-dark" th:text="${session.employeeName}"> </span>님!</h3>
+</div>
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation" id="calendar-tab">
       <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" >일정</button>
@@ -101,29 +103,38 @@
               <div class="card-body" >
                 <div id="custom-container">
                   <div class="row mb-4" >
-                    <label class="col-sm-1" style="text-align:center">제목</label>
-                    <input type="text"class="col-sm-2" id="boardTitle">
-                    <label class="col-sm-1" style="text-align:center">작성자</label>
-                    <input type="text"class="col-sm-2" id="boardEmployeeName">
-                    <label class="col-sm-1" style="text-align:center">분류</label>
-                    <select name="progressStatus" id="boardCategory" class="col-sm-2">
-                      <option value="" selected>분류 선택</option>
-                      <option value="공지">공지</option>
-                      <option value="행사">행사</option>
-                    </select>
-                    <label class="col-sm-1" style="text-align:center">작성일</label>
-                    <input type="date"class="col-sm-2" id="boardDate">
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label " style="text-align:center">제목</label>
+                      <input type="text" class="form-control " id="boardTitle">
+                    </div>
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label " style="text-align:center">작성자</label>
+                      <input type="text" class="form-control" id="boardEmployeeName">
+                    </div>
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label" style="text-align:center">분류</label>
+                      <select name="progressStatus" id="boardCategory" class="form-control">
+                        <option value="" selected>분류 선택</option>
+                        <option value="공지">공지</option>
+                        <option value="행사">행사</option>
+                      </select>
+                    </div>
+                    <div class="w-25">
+                      <label class="label-search me-2 form-label" style="text-align:center">작성일</label>
+                      <input type="date" class="form-control" id="boardDate">
+                    </div>
+
                   </div>
                   <div style="text-align : center" class="mb-4">
                     <button class="btn btn-primary" onclick="search()">검색</button>
-                    <button class="btn btn-primary" onclick="reset()">초기화</button>
+                    <button class="btn btn-secondary" onclick="reset()">초기화</button>
                   </div>
                 </div>
 
                 <div id="board"></div>
                 <div id="pagination" class="tui-pagination"></div>
                 <div style="text-align : right">
-                  <button type="button" class="boardInsert btn btn-primary">글 쓰기</button>
+                  <button type="button" class="boardInsert btn btn-success">글 쓰기</button>
                 </div>
               </div>
             </div>
