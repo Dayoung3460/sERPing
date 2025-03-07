@@ -43,6 +43,10 @@ public class WebSecurityConfig {
         .requestMatchers("/api/**").authenticated() // API 요청은 인증된 사용자만 가능
         .anyRequest().authenticated()
       )
+      .headers(headers -> headers
+        .defaultsDisabled()
+        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // iframe에서 같은 도메인 허용
+      )
 //    인증되지 않은 사용자가 API 호출 시 401 Unauthorized 반환.
       .exceptionHandling(ex -> ex
         .authenticationEntryPoint((request, response, authException) -> {

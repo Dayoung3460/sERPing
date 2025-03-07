@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+	<script>
+	  // PDF.js 워커 경로 설정
+	  pdfjsLib.GlobalWorkerOptions.workerSrc =
+	    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
+	</script>
+
+</head>
+<body>
+	<div class="row">
+	<div class="col-8"></div>
+		<span class="col-2">페이지</span>
+		<select id="page" class="col-2">
+			<option value="1" selected>1</option>
+		</select>
+	</div>
+	
+	<div style="display:flex;">
+	<!-- 
+	 	<iframe id="taxInfo" width="100%" height="550px"></iframe>
+	 -->
+		<canvas id="taxInfo" style="margin:0 auto;"></canvas>
+	</div>
+<script>
+	const url = `/accnut/report/tax/load?taxNum=${taxnum}`;
+	
+	document.querySelector('#taxLookModal').addEventListener('shown.bs.modal', (e) => {
+		const page = document.querySelector("#page").value;
+		//document.querySelector("#taxInfo").src = url;
+		//window.location.href = url;
+		renderPDF(url, page)
+	});
+	
+	function renderPDF(reportUrl, page){
+		const canvas = document.getElementById("taxInfo");
+		  const context = canvas.getContext('2d');
+		  const pdfContainer = document.querySelector('.pdf-container');
+		  
+		// PDF 로드
+		  pdfjsLib.getDocument(reportUrl).promise.then(pdf => {
+		    console.log('PDF loaded, total pages:', pdf.numPages);
+		    // 첫 페이지만 렌더링 (필요시 여러 페이지 지원 가능)
+		    pdf.getPage(1).then(page => {
+		      const scale = 1.5; // 확대/축소 비율
+		      const viewport = page.getViewport({ scale });
+		      // 캔버스 크기 설정
+		      canvas.width = "900";
+		      canvas.height = viewport.height;
+		      // 페이지 렌더링
+		      const renderContext = {
+		        canvasContext: context,
+		        viewport: viewport
+		      };
+		      page.render(renderContext).promise.then(() => {
+		        console.log('Page rendered');
+		      });
+		    });
+		  }).catch(error => {
+		    console.error('PDF 로드 오류:', error);
+		  });
+		  
+	}
+</script>
+</body>
+</html>

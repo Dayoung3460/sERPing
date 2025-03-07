@@ -50,6 +50,12 @@ public class AccnutReportController {
 		Connection conn = datasource.getConnection();
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params, conn);
 		conn.close();
+		
+		// 🔹 X-Frame-Options 헤더 제거 (iframe에서 PDF 허용)
+	    response.setHeader("X-Frame-Options", "SAMEORIGIN");
+	    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+	    response.setHeader("Pragma", "no-cache");
+	    response.setHeader("Expires", "0");
 	
 		//pdf 출력
 		response.setContentType(MediaType.APPLICATION_PDF_VALUE);

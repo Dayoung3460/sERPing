@@ -50,7 +50,14 @@
 				</div>
 			</div>	
 		 </div>		 
-		 
+		 <!-- 세금계산서 모달 -->
+		 <div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+						    	'taxLookModal', 
+						    	'modal-xl', 
+						    	'세금계산서', 
+						    	'accnut/modal/taxBody', 
+						    	'accnut/modal/taxFooter'
+						    )"></div>
 	</div>
 	
 <script>
@@ -90,7 +97,8 @@
 	      { header : "금액", name : "total",  },
 	      { header : "공급가액", name : "supply",  },
 	      { header : "세액", name : "tax",  },
-			
+	      { header : "세액", name : "tax",  },
+	      { header : "보기", name : "info", formatter : () => '<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#taxLookModal">계산서</button>', align: 'center'},
 		],
 		data : dataSource,
 	});
@@ -141,10 +149,13 @@
 			}
 		});
 	}
-	
+	var taxnum;
 	grid.on("click", (ev)=>{
 		console.log(grid.getRow(ev.rowKey).taxNum);
-		
+		//window.location.href = `/accnut/report/tax/load?taxNum=${grid.getRow(ev.rowKey).taxNum}`;
+		if(ev.columnName == 'info'){
+        	taxnum = grid.getRow(ev.rowKey).taxNum;
+        }
 	})
 	
 </script>
