@@ -27,23 +27,32 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
 	<div class="container">
 		<div class="row">
-			<h3 class="mt-2 mb-2">CS관리-교환 및 반품 내역 조회</h3>
+			<h3 class="mt-2 mb-2">CS관리-교환 및 반품 처리</h3>
 			<hr>
-			<div class="col-md-6 mt-2 mb-2">
-				<div class="row">
-					<label class="col-sm-4">신청 일자</label> 
-					<input type="date"class="col-sm-7" id="requestDate"> 
+			<div class="card">
+				<div class="card-body">
+		                    <h4 class="card-title">검색 조건</h4>
+				
+				<div class="col-md-2 mt-2 mb-2">
+					<div class="row">
+						<label class="col-sm-6">신청 일자</label> 
+						<input type="date"class="form-control" id="requestDate"> 
+					</div>
+				</div>
+				
+				
+				
+				<div class="col-md-12 mt-2 mb-2">
+					<div class="row">
+						<div class="col-sm-5"></div>
+						<button class="col-sm-1 btn btn-primary" onclick="search()">검색</button>
+						<button class="col-sm-1 btn btn-secondary" onclick="reset()">초기화</button>
+						<div class="col-sm-5"></div>
+					</div>
+				</div>
 				</div>
 			</div>
 			
-			<div class="col-md-12 mt-2 mb-2">
-				<div class="row">
-					<div class="col-sm-5"></div>
-					<button class="col-sm-1" onclick="search()">검색</button>
-					<button class="col-sm-1" onclick="reset()">초기화</button>
-					<div class="col-sm-5"></div>
-				</div>
-			</div>
 			<div class="col-md-5 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
@@ -310,7 +319,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			console.log("nodata실행")
 			setTimeout( () => {
 				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
-				nodata.innerHTML = '반품 및 교환 처리 건이 존재하지 않습니다.';
+				nodata.innerHTML = '반품 및 교환 처리 건이 조회되지 않습니다.';
 			}, 100)
 		}
 		
