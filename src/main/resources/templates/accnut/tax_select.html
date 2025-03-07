@@ -151,7 +151,7 @@
 	}
 	var taxnum;
 	grid.on("click", (ev)=>{
-		console.log(grid.getRow(ev.rowKey).taxNum);
+		//console.log(grid.getRow(ev.rowKey).taxNum);
 		//window.location.href = `/accnut/report/tax/load?taxNum=${grid.getRow(ev.rowKey).taxNum}`;
 		if(ev.columnName == 'info'){
         	taxnum = grid.getRow(ev.rowKey).taxNum;
