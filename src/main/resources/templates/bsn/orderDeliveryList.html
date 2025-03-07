@@ -39,40 +39,34 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	                <div class="card-body">
 	                    <h5 class="card-title">검색 조건</h5>
 	                    <p class="card-description"></p>
-	                        <div class="d-flex align-items-center gap-3">
+	                        <div class="row align-items-center gap-3">
 	                            <!-- 라디오 버튼 -->
-	                            <div class="d-flex gap-3">
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="notSelect" checked onclick="toggleDateInputs(false)">
-	                                        사용안함
-	                                    </label>
-	                                </div>
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="orderDate" onclick="toggleDateInputs(true)">
-	                                        주문일자
-	                                    </label>
-	                                </div>
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="dueDate" onclick="toggleDateInputs(true)">
-	                                        납기일자
-	                                    </label>
-	                                </div>
+	                            <div class="col-2  gap-3">
+	                            	<label for="selectedOption">날짜</label>
+	                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" style="height: 38px;">
+	                                	<option value="">선택</option>
+	                                	<option value="orderDate">주문일자</option>
+	                                	<option value="dueDate">납기일자</option>
+	                                </select>    
+	                                
 	                            </div>
-	
 	                            <!-- 날짜 입력 -->
-	                            <div class="d-flex gap-3">
+	                            <div class="col-auto gap-3">
 	                                <div>
-	                                    <label for="startDate">시작 날짜</label>
+	                                	<label for="startDate">From</label>
 	                                    <input type="date" class="form-control" id="startDate" name="startDate" disabled>
 	                                </div>
+	                            </div>
+	                            <div class="col-auto gap-3">
 	                                <div>
-	                                    <label for="endDate">끝 날짜</label>
+	                                	<label for="endDate">To</label>
 	                                    <input type="date" class="form-control" id="endDate" name="endDate" disabled>
 	                                </div>
 	                            </div>
+	                            <div class="col-3 form-group m-3">
+								    <label for="inputBhf">발주지점</label>
+								    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+								</div>
 	                            
 	                            <div class="d-flex flex-column gap-2">
 							        <label>출고 상태</label>
@@ -97,10 +91,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 							    </div>
 	                        </div>
 	
-	                        <div class="form-group m-3">
-							    <label for="inputBhf">발주지점</label>
-							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
-						    </div>
+	                        
 	                        
 							<div class="col-12 text-center">
 	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
@@ -301,32 +292,34 @@ function toggleDateInputs(enable) {
   }
 //검색 조건 초기화
 function reset(){
-	// 라디오 버튼 선택 값 초기화
-    // "사용안함" 라디오 버튼을 체크하도록 설정
-    let notSelectRadio = document.querySelector('input[name="optionsRadios"][value="notSelect"]');
-    if (notSelectRadio) {
-        notSelectRadio.checked = true;  // "사용안함" 라디오 버튼을 선택 상태로
-        toggleDateInputs(false);  // 날짜 입력 비활성화
-    }
+			// 라디오 버튼 선택 값 초기화
+		    // "사용안함" 라디오 버튼을 체크하도록 설정
+		    let notSelectRadio = document.getElementById('selectedOption'); 
+			//.value
+		    if (notSelectRadio) {
+		    	notSelectRadio.value = "";   // "사용안함" 라디오 버튼을 선택 상태로
+		        toggleDateInputs();  // 날짜 입력 비활성화
+		    }
 
-	// 시작 날짜와 끝 날짜 초기화
-	document.getElementById("startDate").value = "";
-	document.getElementById("endDate").value = "";
-	// 발주지점 선택 값 초기화
-    document.getElementById("selectBhf").value = "all";
+			// 시작 날짜와 끝 날짜 초기화
+	    	document.getElementById("startDate").value = "";
+	    	document.getElementById("endDate").value = "";
+	    	// 발주지점 선택 값 초기화
+	        document.getElementById("inputBhf").value = "";
+	    	
+	        search();
 
-    search();
-
-}
+		}
 
 function search(){
-	let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
+	let selectedOption = document.getElementById('selectedOption').value; 
     let startDate = document.getElementById("startDate").value; // 시작 날짜
     let endDate = document.getElementById("endDate").value; // 끝 날짜
     //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
-    
     let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
-    //console.log(selectedOption, startDate, endDate, selectedBhf);
+    
+    console.log(selectedOption, startDate, endDate, selectedBhf);
+
     
     let params = {
     		"deteOption": selectedOption,

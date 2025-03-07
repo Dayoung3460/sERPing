@@ -39,43 +39,28 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                 <div class="card-body">
                     <h5 class="card-title">검색 조건</h5>
                     <p class="card-description"></p>
-                    <!--  <form name='searchForm' action="/bsn/order" class="forms-sample"> -->
+                    
                         <div class="row align-items-center ">
                             <!-- 라디오 버튼 -->
-                            <div class="col-2 d-flex gap-3">
-                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption">
+                            <div class="col-2  gap-3">
+                            	<label for="selectedOption">날짜</label>
+                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" style="height: 38px;">
                                 	<option value="">선택</option>
                                 	<option value="orderDate">주문일자</option>
                                 	<option value="dueDate">납기일자</option>
                                 </select>    
-                                <!-- <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" value="notSelect" checked onclick="toggleDateInputs(false)">
-                                        사용안함
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" value="orderDate" onclick="toggleDateInputs(true)">
-                                        주문일자
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" value="dueDate" onclick="toggleDateInputs(true)">
-                                        납기일자
-                                    </label>
-                                </div> -->
+                                
                             </div>
-
                             <!-- 날짜 입력 -->
-                            <div class="col-auto d-flex gap-3">
+                            <div class="col-auto gap-3">
                                 <div>
-                                    <label for="startDate">시작 날짜</label>
+                                	<label for="startDate">From</label>
                                     <input type="date" class="form-control" id="startDate" name="startDate" disabled>
                                 </div>
+                            </div>
+                            <div class="col-auto gap-3">
                                 <div>
-                                    <label for="endDate">끝 날짜</label>
+                                	<label for="endDate">To</label>
                                     <input type="date" class="form-control" id="endDate" name="endDate" disabled>
                                 </div>
                             </div>
@@ -389,17 +374,18 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		function reset(){
 			// 라디오 버튼 선택 값 초기화
 		    // "사용안함" 라디오 버튼을 체크하도록 설정
-		    let notSelectRadio = document.querySelector('input[name="optionsRadios"][value="notSelect"]');
+		    let notSelectRadio = document.getElementById('selectedOption'); 
+			//.value
 		    if (notSelectRadio) {
-		        notSelectRadio.checked = true;  // "사용안함" 라디오 버튼을 선택 상태로
-		        toggleDateInputs(false);  // 날짜 입력 비활성화
+		    	notSelectRadio.value = "";   // "사용안함" 라디오 버튼을 선택 상태로
+		        toggleDateInputs();  // 날짜 입력 비활성화
 		    }
 
 			// 시작 날짜와 끝 날짜 초기화
 	    	document.getElementById("startDate").value = "";
 	    	document.getElementById("endDate").value = "";
 	    	// 발주지점 선택 값 초기화
-	        document.getElementById("selectBhf").value = "";
+	        document.getElementById("inputBhf").value = "";
 	    	
 	        search();
 

@@ -44,10 +44,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				
 				<div class="col-md-12 mt-2 mb-2">
 					<div class="row">
-						<div class="col-sm-5"></div>
-						<button class="col-sm-1 btn btn-primary" onclick="search()">검색</button>
-						<button class="col-sm-1 btn btn-secondary" onclick="reset()">초기화</button>
-						<div class="col-sm-5"></div>
+						<div class="col-12 text-center">
+                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
+                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
+                        </div>
 					</div>
 				</div>
 				</div>
@@ -59,9 +59,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						<h5 class="mb-4">교환 및 반품</h5>
 						<div id="returning"></div>
 						<div id="pagination" class="tui-pagination"></div>
-						<div class="text-center">
-							<h5 id="returningCodeArea" class="mt-3" style="border-top: 2px solid #ddd; padding-top: 10px;"></h5>
-			    		</div>
+						
 					</div>
 				</div>
 			</div>

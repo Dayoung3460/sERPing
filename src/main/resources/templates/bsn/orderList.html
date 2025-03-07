@@ -24,6 +24,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	.tui-grid-row-highlight {
 		    background-color: #f0f8ff !important; /* 연한 하늘색 */
 	}
+	.tui-grid-container {
+            font-size: 14px; /* 원하는 크기로 조정 */
+            
+    }
   </style>
 
 </head>
@@ -40,11 +44,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                 <div class="card-body">
                     <h5 class="card-title">검색 조건</h5>
                     <!-- <p class="card-description"></p> -->
-                    <!--  <form name='searchForm' action="/bsn/order" class="forms-sample"> -->
                         <div class="row align-items-center ">
                             <!-- 라디오 버튼 -->
-                            <div class="col-2 mt-4 gap-3">
-                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption">
+                            <div class="col-2 gap-3">
+                            	<label for="selectedOption">날짜</label>
+                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" name="selectedOption" style="height: 38px;">
                                 	<option value="">선택</option>
                                 	<option value="orderDate">주문일자</option>
                                 	<option value="dueDate">납기일자</option>
@@ -54,13 +58,13 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                             <!-- 날짜 입력 -->
                             <div class="col-auto gap-3">
                                 <div>
-                                    <label for="startDate">시작 날짜</label>
+                                	<label for="startDate">From</label>
                                     <input type="date" class="form-control" id="startDate" name="startDate" disabled>
                                 </div>
                             </div>
                             <div class="col-auto gap-3">
                                 <div>
-                                    <label for="endDate">끝 날짜</label>
+                                	<label for="endDate">To</label>
                                     <input type="date" class="form-control" id="endDate" name="endDate" disabled>
                                 </div>
                             </div>
@@ -165,7 +169,7 @@ function toggleDateInputs() {
   document.getElementById("startDate").disabled = !enable;
   document.getElementById("endDate").disabled = !enable;
   //console.log(companyNum);
-  //console.log(employeeNum);;
+  //console.log(employeeNum);
   
  
 }
@@ -174,17 +178,18 @@ function toggleDateInputs() {
 	function reset(){
 		// 라디오 버튼 선택 값 초기화
 	    // "사용안함" 라디오 버튼을 체크하도록 설정
-	    let notSelectRadio = document.querySelector('input[name="optionsRadios"][value="notSelect"]');
-	    if (notSelectRadio) {
-	        notSelectRadio.checked = true;  // "사용안함" 라디오 버튼을 선택 상태로
-	        toggleDateInputs(false);  // 날짜 입력 비활성화
-	    }
+		    let notSelectRadio = document.getElementById('selectedOption'); 
+			//.value
+		    if (notSelectRadio) {
+		    	notSelectRadio.value = "";   // "사용안함" 라디오 버튼을 선택 상태로
+		        toggleDateInputs();  // 날짜 입력 비활성화
+		    }
 
 		// 시작 날짜와 끝 날짜 초기화
     	document.getElementById("startDate").value = "";
     	document.getElementById("endDate").value = "";
     	// 발주지점 선택 값 초기화
-        document.getElementById("selectBhf").value = "";
+        document.getElementById("inputBhf").value = "";
     	
     	search();
         //console.log(OrderListDataSource);
@@ -214,6 +219,7 @@ function toggleDateInputs() {
 			el: document.getElementById('orderList'), // 컨테이너 엘리먼트
 			scrollX:false,
 		    scrollY:false,
+		    //rowHeight: 16,
 			pageOptions: {
 			useClient: false,
 			perPage: 10,
