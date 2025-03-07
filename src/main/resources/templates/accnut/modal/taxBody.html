@@ -13,7 +13,7 @@
 	<div class="row">
 	<div class="col-8"></div>
 		<span class="col-2">페이지</span>
-		<select id="page" class="col-2">
+		<select id="page" class="col-2" onchange="changePdf()">
 			<option value="1" selected>1</option>
 		</select>
 	</div>
@@ -25,38 +25,48 @@
 		<canvas id="taxInfo" style="margin:0 auto;"></canvas>
 	</div>
 <script>
-	const url = `/accnut/report/tax/load?taxNum=${taxnum}`;
 	
 	document.querySelector('#taxLookModal').addEventListener('shown.bs.modal', (e) => {
+		const url = `/accnut/report/tax/load?taxNum=${taxnum}`;
 		const page = document.querySelector("#page").value;
-		console.log(page);
+
 		//document.querySelector("#taxInfo").src = url;
 		//window.location.href = url;
-		renderPDF(url, page)
+		renderPDF(url, Number(page));
+		getPage(url);
 	});
 	
-	function renderPDF(reportUrl, page){
+	function getPage(reportUrl){
 		const canvas = document.getElementById("taxInfo");
-		  const context = canvas.getContext('2d');
-		  const pdfContainer = document.querySelector('.pdf-container');
-		  
-		// PDF 로드
-		  pdfjsLib.getDocument(reportUrl).promise.then(pdf => {
-		    console.log('PDF loaded, total pages:', pdf.numPages);
-		    // 첫 페이지만 렌더링 (필요시 여러 페이지 지원 가능)
+		const context = canvas.getContext('2d');
+		const pdfContainer = document.querySelector('.pdf-container');
+		pdfjsLib.getDocument(reportUrl).promise.then(pdf => {
+		    //console.log('PDF loaded, total pages:', pdf.numPages);
+		    
 		    let pageSel = document.querySelector("#page");
 		    pageSel.querySelectorAll("option").forEach(opt => {
 		    	opt.remove();
 		    })
 		    for(let i = 1; i <= pdf.numPages; i++){
 				let html = `<option value="${i}">${i}</option>`;
-				if(i == page){
-					html = `<option value="${i}" seleted>${i}</option>`;
-				}
 				pageSel.insertAdjacentHTML("beforeend", html);
 		    }
 		    
-		    pdf.getPage(page).then(page => {
+		}).catch(error => {
+		    console.error('PDF 로드 오류:', error);
+		  });
+		
+		
+	}
+	
+	function renderPDF(reportUrl, now){
+		const canvas = document.getElementById("taxInfo");
+		  const context = canvas.getContext('2d');
+		  const pdfContainer = document.querySelector('.pdf-container');
+		// PDF 로드
+		  pdfjsLib.getDocument(reportUrl).promise.then(pdf => {
+			  
+		    pdf.getPage(now).then(page => {
 		      const scale = 1.0; // 확대/축소 비율
 		      const viewport = page.getViewport({ scale });
 		      // 캔버스 크기 설정
@@ -68,13 +78,20 @@
 		        viewport: viewport
 		      };
 		      page.render(renderContext).promise.then(() => {
-		        console.log('Page rendered');
+		        //console.log('Page rendered');
 		      });
 		    });
 		  }).catch(error => {
 		    console.error('PDF 로드 오류:', error);
 		  });
 		  
+	}
+	
+	function changePdf() {
+		const url = `/accnut/report/tax/load?taxNum=${taxnum}`;
+		const page = document.querySelector("#page").value;
+		
+		renderPDF(url, Number(page));
 	}
 </script>
 </body>
