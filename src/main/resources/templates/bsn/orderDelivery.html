@@ -387,32 +387,11 @@ function loadDeliveryDetail(deliveryId) {
         return;
     }
 	
+	const currentPage = deliveryDetailGrid.getPagination()?._currentPage || 1;
+	console.log(currentPage);
+	deliveryDetailGrid.readData(currentPage, {deliveryId});
 	
-	deliveryDetailGrid.readData(1, {deliveryId});
 	
-	/*
-    fetch(`/bsn/rest/deli/detail?deliveryId=${deliveryId}`)
-    	
-        .then(response => {
-	            if (!response.ok) throw new Error(`HTTP 오류! 상태: ${response.status}`);
-	            return response.json();
-	     })
-	     
-        .then(data => {
-            if (data && data.data && data.data.contents) {
-            	const detailData = data.data.contents; // 상세 데이터 저장
-            	
-            	
-
-                deliveryDetailGrid.resetData(detailData);
-                deliveryDetailGrid.setPaginationTotalCount(data.data.pagination.totalCount);
-            } else {
-                console.warn("상세 데이터가 없습니다.");
-                //orderDetailGrid.resetData([]); // 빈 배열로 초기화
-            }
-        })
-        .catch(error => console.error('Error fetching order detail:', error));
-	*/
 }
 
 //상세 그리드 형식 
@@ -453,6 +432,7 @@ let selectedDetailRowKey = null;
 
 deliveryDetailGrid.on('click', (ev) => {
 	
+	
 	const rowKey = ev.rowKey; // 클릭한 행의 키
     if (rowKey === null || rowKey === undefined) {
         return;
@@ -488,7 +468,10 @@ function loadDeliveryLotDetail(deliveryDetailId) {
         console.warn("유효하지 않은 주문 Id입니다.");
         return;
     }
-	deliveryLotDetailGrid.readData(1, {deliveryDetailId});
+	
+	const currentPage = deliveryLotDetailGrid.getPagination()?._currentPage || 1;
+	
+	deliveryLotDetailGrid.readData(currentPage, {deliveryDetailId});
 	
 
 	/*
@@ -608,15 +591,13 @@ function registerLotData() {
 		        
 		        
 		    }
-		 	//console.log(selectedRow.deliveryDemandQnt);
-			//console.log(requestData);
-			//console.log(totalSum);
+		 	
 			let dlvyDTO = {
 				deliveryDetailId: selectedRow.deliveryDetailId,
 				optionCode: selectedRow.optionCode,
 				lotDetails: requestData
 		    };
-			//console.log(dlvyDTO);
+			
 			registerLot(dlvyDTO);
 			registerModal.hide();
 }

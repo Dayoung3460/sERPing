@@ -77,15 +77,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
                         </div>
 
                         <div class="form-group m-3">
-                            <label for="selectBhf">발주지점</label>
-                            <select class="form-control" id="selectBhf">
-                            	<option>all</option>
-                                <option>발주지점1</option>
-                                <option>발주지점2</option>
-                                <option>발주지점3</option>
-                                <option>yedam</option>
-                            </select>
-                        </div>
+						    <label for="inputBhf">발주지점</label>
+						    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+						</div>
+                        
 						<div class="col-12 text-center">
                         	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
                         	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
@@ -102,8 +97,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-md-9 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">📋 검색 결과 (발주 요청 리스트)</h4>
-                    <p class="card-description">그리드 - 검색한 지점측 발주 신청 리스트 출력</p>
+                    <h4 class="card-title">📋 검색 결과</h4>
+                    <p class="card-description">지점측 발주 요청 목록</p>
                     <div id="orderList"></div>
                     <div id="pagination" class="tui-pagination"></div>
                 </div>
@@ -127,8 +122,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">📦 선택한 발주 상세 (상품 리스트)</h4>
-                    <p class="card-description">그리드 - 선택한 발주 신청의 상세(상품) 목록 출력</p>
+                    <h4 class="card-title">📦 선택한 발주 상세 </h4>
+                    <p class="card-description">상품 목록</p>
                     <div id="orderDetailList"></div>
                     <div id="pagination" class="tui-pagination"></div>
                 </div>
@@ -357,7 +352,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
 		    let startDate = document.getElementById("startDate").value; // 시작 날짜
 		    let endDate = document.getElementById("endDate").value; // 끝 날짜
-		    let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+		    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
+		    let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
 		    
 		    console.log(selectedOption, startDate, endDate, selectedBhf);
 		    
@@ -389,7 +385,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	    	document.getElementById("startDate").value = "";
 	    	document.getElementById("endDate").value = "";
 	    	// 발주지점 선택 값 초기화
-	        document.getElementById("selectBhf").value = "all";
+	        document.getElementById("selectBhf").value = "";
 	    	
 	        search();
 
