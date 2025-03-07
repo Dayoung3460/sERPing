@@ -96,7 +96,7 @@
           <!-- 그리드 -->
           <div id="table-container">
             <div id="approvalGrid"></div>
-            <div id="pagination" class="tui-pagination"></div>
+<!--            <div id="pagination" class="tui-pagination"></div>-->
           </div>
         </div>
       </div>
@@ -185,6 +185,9 @@
     boardContent.classList.remove('show', 'active');
 
     if(tabNo === 1) {
+      setTimeout(() => {
+        calendar.render()
+      }, 300)
       calendarBtn.classList.add('active')
       calendarContent.classList.add('show', 'active')
       approvalBtn.classList.remove('active')

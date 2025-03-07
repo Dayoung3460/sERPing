@@ -96,6 +96,13 @@
   </div>
   <!-- page-body-wrapper ends -->
 </div>
+<script>
+    let authFormBtn = document.getElementsByClassName('auth-form-btn')[0]
+    authFormBtn.addEventListener('click', () => {
+        sessionStorage.setItem("tabNo", 1)
+    })
+
+</script>
 <!-- container-scroller -->
 <!-- plugins:js -->
 <script src="/vendors/js/vendor.bundle.base.js"></script>
