@@ -61,4 +61,23 @@ public class AccnutReportController {
 		response.setContentType(MediaType.APPLICATION_PDF_VALUE);
 		JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 	}	
+	
+	
+	@GetMapping(value = "tax/down")
+	public void taxDown(
+								@RequestParam("taxNum") int taxNum,
+							    HttpServletResponse response
+									    ) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("p_rgno", taxNum);
+		InputStream jasperStream = getClass().getResourceAsStream("/reports/accnut/tax.jasper");
+		
+		Connection conn = datasource.getConnection();
+	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperStream, params, conn);
+	    conn.close();
+		
+	    response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+	    response.setHeader("Content-Disposition", "attachment; filename=\"accnut_tax_" + taxNum + ".pdf\"");
+	    JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+	}
 }
