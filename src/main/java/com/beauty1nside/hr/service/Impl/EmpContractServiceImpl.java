@@ -76,11 +76,16 @@ public class EmpContractServiceImpl implements EmpContractService {
         return empContractMapper.getAllContracts();
     }
 
-    // ✅ 검색 및 페이징 포함 근로계약 조회
     @Override
-    @Transactional(readOnly = true)
     public List<EmpContractDTO> searchContracts(EmpContractSearchDTO searchDTO) {
         return empContractMapper.searchContracts(searchDTO);
+    }
+    
+    
+    // ✅ 추가: 계약 개수 카운트
+    @Override
+    public int countContracts(EmpContractSearchDTO searchDTO) {
+        return empContractMapper.countContracts(searchDTO);
     }
 
 }

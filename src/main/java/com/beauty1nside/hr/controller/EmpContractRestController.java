@@ -115,6 +115,8 @@ public class EmpContractRestController {
     @PostMapping("/contract/search")
     public ResponseEntity<Map<String, Object>> searchContracts(
             @RequestBody EmpContractSearchDTO searchDTO,
+            @RequestParam(name = "perPage", defaultValue = "10") int perPage,
+            @RequestParam(name = "page", defaultValue = "1") int page,
             HttpServletRequest request) {
 
         log.info("📌 근로계약 검색 요청: {}", searchDTO);
@@ -134,12 +136,20 @@ public class EmpContractRestController {
                 searchDTO.setCompanyNum(sessionCompanyNum);
             }
 
-            log.info("🔍 최종 검색 조건: {}", searchDTO);
+            // ✅ 페이징 값 직접 설정 (DTO 활용)
+            searchDTO.setStart((page - 1) * perPage + 1);
+            searchDTO.setEnd(page * perPage);
 
+            // ✅ 전체 데이터 개수 조회
+            int totalRecords = empContractService.countContracts(searchDTO);
+
+            // ✅ 근로계약 목록 조회
             List<EmpContractDTO> contracts = empContractService.searchContracts(searchDTO);
-            
+
             log.info("📊 검색 결과: {}건", contracts.size());
-            response.put("success", true);
+
+            // ✅ 결과 맵핑
+            response.put("totalRecords", totalRecords);
             response.put("contracts", contracts);
             return ResponseEntity.ok(response);
 
