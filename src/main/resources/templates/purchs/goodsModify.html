@@ -343,12 +343,13 @@
             columns: [ 
                 {header : "옵션코드" , name:"optionCode",align: "left",className: "tui-grid-cell-readonly"},
                 {header : "옵션명" , name:"optionName" , editor: "text" ,align: "left"},
-                {header : "현재재고" , name:"totalRemainingQuantity",align: "right",className: "tui-grid-cell-readonly"},
+                {header : "현재재고" , name:"totalRemainingQuantity",align: "right",className: "tui-grid-cell-readonly",formatter:(row)=>numberFormat(row.value)},
                 {
 	                header : "안전재고" , 
 	                name:"optionSafetyInvoice",
 	                editor: "text",
 	                align: "right",
+	                formatter:(row)=>numberFormat(row.value),
 	                renderer: {
 	                    type: SafetyStockRenderer  // 안전재고 버튼을 추가하는 렌더러
 	                }
