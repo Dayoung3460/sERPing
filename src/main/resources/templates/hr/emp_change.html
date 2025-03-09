@@ -21,6 +21,19 @@
 		.container {
 		    max-width: 1400px;
 		}
+		
+    /* ✅ 검색 필터 박스 통일 (흰색 배경 + 그림자 추가) */
+    #custom-container {
+        background-color: white !important; /* 흰색 배경 */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+        margin-bottom: 20px;
+    }
+
+	.tui-grid-cell {
+	    font-size: 16px !important;
+	}
     </style>
 
     <title>인사 발령 관리</title>
@@ -28,11 +41,11 @@
 
 <body layout:fragment="content">
 <div class="container mt-3">
-    <h2>인사 발령 관리</h2>
+    <h2 class="fw-bold">인사 발령 관리</h2>
 	<hr>
 	
     <!-- 🔍 사원 검색 -->
-    <div class="search-box bg-light p-3 rounded shadow-sm">
+    <div class="search-box bg-light p-3 rounded shadow-sm" id="custom-container">
         <div class="row align-items-center">
             <div class="col-md-2 text-end"><label class="fw-bold">사원 검색</label></div>
             <div class="col-md-3">
@@ -50,6 +63,7 @@
         <div class="row mt-2">
             <div class="col text-center">
                 <button class="btn btn-primary" id="searchEmployeeBtn">조회</button>
+                <button class="btn btn-secondary" id="resetBtn">초기화</button>
             </div>
         </div>
     </div>
@@ -65,7 +79,7 @@
     <!-- 인사 발령 추가 버튼 -->
     <div class="row mt-3">
         <div class="col text-end">
-            <button class="btn btn-warning" id="openHistoryModalBtn">+ 인사 발령 등록</button>
+            <button class="btn btn-success" id="openHistoryModalBtn">인사 발령 등록</button>
         </div>
     </div>
 
@@ -229,10 +243,10 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("📌 현재 권한 목록 로드 완료:", authList);
     	
         return [
-            { header: "사원번호", name: "employeeId", width: 100, align: 'center' },
+            { header: "사원번호", name: "employeeId", width: 150, align: 'center' },
             { header: "사원명", name: "employeeName", width: 150, align: 'center' },
-            { header: "직급", name: "position", width: 100, align: 'center' },
-            { header: "새 직급", name: "newPosition", width: 100, align: 'center' },
+            { header: "직급", name: "position", width: 110, align: 'center' },
+            { header: "새 직급", name: "newPosition", width: 110, align: 'center' },
             {
                 header: "새 직급",
                 name: "newPosition",

@@ -118,6 +118,10 @@ public class EmpContractRestController {
             @RequestParam(name = "perPage", defaultValue = "10") int perPage,
             @RequestParam(name = "page", defaultValue = "1") int page,
             HttpServletRequest request) {
+    	
+        System.out.println("✅ 전달된 검색 키워드: " + searchDTO.getSearchKeyword());
+        System.out.println("✅ 전달된 검색 타입: " + searchDTO.getSearchType());
+      
 
         log.info("📌 근로계약 검색 요청: {}", searchDTO);
 

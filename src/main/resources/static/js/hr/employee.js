@@ -405,7 +405,7 @@ function initializeGrid() {
             { header: "근로계약서", name: "employeeContract", align: "center", sortable: true, width: 120,
 					formatter: function({ row }) {
 					    if (row.contractStatus === "보기") {
-					        return `<button class="btn btn-info btn-sm contractBtn" data-id="${row.employeeNum}">보기</button>`;
+					        return `<button class="btn btn-outline-info btn-sm contractBtn" data-id="${row.employeeNum}">보기</button>`;
 					    } else {
 					        return `<span class="text-danger">미계약</span>`;
 					    }

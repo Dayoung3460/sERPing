@@ -23,6 +23,7 @@ public class EmpContractDTO {
     private Long employeeNum;  // 사원번호 (FK)
     private Long companyNum;   // 회사번호 (FK)
     private Long departmentNum; // 부서번호 (FK)
+    private String departmentName; // 부서번호 (FK)
     private String position;   // 직급
     private String contractType; // 계약 유형 (공통코드: CT)
     

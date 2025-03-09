@@ -64,31 +64,99 @@
         SELECT 
             ROWNUM AS rn, data.*
         FROM (
-		    SELECT 
-		        C.CONTRACT_NUM, 
-		        E.EMPLOYEE_NUM, 
-		        E.EMPLOYEE_NAME, 
-		        D.DEPARTMENT_NAME AS departmentName, 
-		        PARENT_D.DEPARTMENT_NAME AS parentDepartmentName,
-		        C.CONTRACT_TYPE, 
-		        
-		        TO_CHAR(C.CONTRACT_START_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CONTRACT_START_DATE, 
-		        TO_CHAR(C.CONTRACT_END_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CONTRACT_END_DATE,
-		        C.MONTHLY_SALARY, 
-		        C.CONTRACT_STATUS
-		    FROM HR_EMPLOYEE_CONTRACT C
-		    JOIN HR_EMPLOYEE E ON C.EMPLOYEE_NUM = E.EMPLOYEE_NUM
-		    JOIN HR_DEPARTMENT D ON C.DEPARTMENT_NUM = D.DEPARTMENT_NUM
-		    LEFT JOIN HR_DEPARTMENT PARENT_D ON D.PARENT_DEPARTMENT_NUM = PARENT_D.DEPARTMENT_NUM
-		    WHERE C.COMPANY_NUM = #{companyNum}
-		    ORDER BY C.CONTRACT_START_DATE DESC
+            SELECT 
+                C.CONTRACT_NUM, 
+                E.EMPLOYEE_NUM, 
+                E.EMPLOYEE_NAME, 
+			    COALESCE(D.DEPARTMENT_NAME, '부서 없음') AS departmentName, 
+			    COALESCE(PARENT_D.DEPARTMENT_NAME, '상위 부서 없음') AS parentDepartmentName,
+                C.POSITION,
+                C.CONTRACT_TYPE,
+
+                TO_CHAR(C.CONTRACT_START_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CONTRACT_START_DATE, 
+                TO_CHAR(C.CONTRACT_END_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CONTRACT_END_DATE,
+
+                C.WORK_LOCATION,
+                C.JOB_DESCRIPTION,
+                C.WORK_START_TIME,
+                C.WORK_END_TIME,
+                C.WORK_HOURS,
+                C.WORK_DAYS,
+                C.BREAK_START_TIME,
+                C.BREAK_END_TIME,
+                C.PROBATION_PERIOD,
+
+                C.MONTHLY_SALARY,
+                C.ANNUAL_SALARY,
+                C.BONUS,
+                C.ADDITIONAL_PAY,
+                C.SALARY_PAYMENT_DATE,
+                C.PAYMENT_METHOD,
+
+                C.ANNUAL_LEAVE_POLICY,
+                C.SOCIAL_INSURANCE,
+
+                C.CONTRACT_STATUS,
+                C.TERMINATION_REASON
+
+				FROM HR_EMPLOYEE_CONTRACT C
+				LEFT JOIN HR_EMPLOYEE E ON C.EMPLOYEE_NUM = E.EMPLOYEE_NUM
+				LEFT JOIN HR_DEPARTMENT D ON C.DEPARTMENT_NUM = D.DEPARTMENT_NUM
+				LEFT JOIN HR_DEPARTMENT PARENT_D ON D.PARENT_DEPARTMENT_NUM = PARENT_D.DEPARTMENT_NUM
+				WHERE C.COMPANY_NUM = #{companyNum}
+
+            <!-- ✅ 검색 조건 추가 -->
+            <include refid="searchContractConditions"/>
+
+            ORDER BY C.CONTRACT_START_DATE DESC
         ) data
         <![CDATA[
-        WHERE ROWNUM <= #{end} ]]> <!-- 페이징 수정 -->
+        WHERE ROWNUM <= #{end} 
+        ]]>
     ) 
     <![CDATA[
-    WHERE rn >= #{start}  ]]> <!-- 페이징 수정 -->
+    WHERE rn >= #{start}  
+    ]]>
 </select>
+
+<sql id="searchContractConditions">
+    <if test="searchKeyword != null and searchKeyword != ''">
+        <choose>
+            <when test="searchType == 'employeeName'">
+                AND E.EMPLOYEE_NAME LIKE '%' || #{searchKeyword} || '%'
+            </when>
+            <when test="searchType == 'contractType'">
+                AND C.CONTRACT_TYPE = #{searchKeyword}
+            </when>
+            <when test="searchType == 'departmentName'">
+                AND D.DEPARTMENT_NAME LIKE '%' || #{searchKeyword} || '%'
+            </when>
+        </choose>
+    </if>
+
+    <if test="contractStatus != null and contractStatus != ''">
+        AND C.CONTRACT_STATUS = #{contractStatus}
+    </if>
+
+    <if test="startDate != null and startDate != ''">
+        AND C.CONTRACT_START_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    </if>
+
+    <if test="endDate != null and endDate != ''">
+        AND C.CONTRACT_END_DATE <![CDATA[ <= ]]> TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    </if>
+
+    <if test="departmentNum != null and departmentNum != ''">
+        AND C.DEPARTMENT_NUM IN (
+            SELECT department_num 
+            FROM hr_department
+            WHERE company_num = #{companyNum}
+            START WITH department_num = #{departmentNum} 
+            CONNECT BY PRIOR department_num = parent_department_num
+        )
+    </if>
+</sql>
+
 
 
 <!-- ✅ 계약 개수 조회 -->
