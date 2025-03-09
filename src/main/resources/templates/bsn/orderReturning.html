@@ -26,34 +26,38 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 </head>
 <body layout:fragment="content">
 	<div class="container">
-		<div class="row">
-			<h2 class="mt-2 mb-2">CS관리-교환 및 반품 처리</h2>
-			<hr>
-			<div class="card">
-				<div class="card-body">
-		                    <h5 class="card-title">검색 조건</h5>
-				
-				<div class="col-md-2 mt-2 mb-2">
-					<div class="row">
-						<label class="col-sm-6">신청 일자</label> 
-						<input type="date"class="form-control" id="requestDate"> 
+		<h2 class="mt-2 mb-2"><b>CS관리-교환 및 반품 처리</b></h2>
+		<hr>
+		<div class="row mb-3">
+	        <div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="row align-items-center gap-3">
+							<div class="col-md-2 mt-2 mb-2">
+								<div class="row">
+									<label class="col-sm-6">신청 일자</label> 
+									<input type="date"class="form-control" id="requestDate"> 
+								</div>
+							</div>
+							<div class="col-3 form-group m-3">
+									<label for="inputBhf">지점</label>
+									<input type="text" class="form-control" id="inputBhf" placeholder="지점명을 입력하세요">
+									<ul id="suggestionList" class="list-group" style="position: absolute; width: 95%; z-index: 1000; display: none;"></ul>		    
+							</div>
+							<div class="col-5 text-end mt-4">
+								<div class="row">
+									<div class="col-12 text-end">
+				                        <button class="btn btn-primary mr-2" onclick="search()">검색</button>
+				                        <button class="btn btn-secondary"        onclick="reset()">초기화</button>
+			                        </div>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
-				
-				
-				
-				<div class="col-md-12 mt-2 mb-2">
-					<div class="row">
-						<div class="col-sm-5"></div>
-						<button class="col-sm-1 btn btn-primary" onclick="search()">검색</button>
-						<button class="col-sm-1 btn btn-secondary" onclick="reset()">초기화</button>
-						<div class="col-sm-5"></div>
-					</div>
-				</div>
 				</div>
 			</div>
-			
-			
+		</div>	
+		<div class="row">
 			<div class="col-md-5 stretch-card mt-2 mb-2">
 				<div class="card">
 					<div class="card-body">
@@ -70,8 +74,6 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						<h5 class="mb-4">교환 및 반품 상세</h5>
 						<div id="returningDtl"></div>
 						<div id="pagination" class="tui-pagination"></div>
-						<h5 class="mb-4">선택한 상품의 반품 사유</h5>
-						
 					</div>
 				</div>
 			</div>
@@ -97,7 +99,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						    	'modal-md', 
 						    	'반품처리', 
 						    	'bsn/modal/bsnCsCheckReturning', 
-						    	'bsn/modal/bsnModalFooter')">
+						    	'bsn/modal/bsnCheckModalFooter')">
      	</div>
 		
 		<div th:include="bsn/modal/bsnModalTemplate :: ModalTemplate(
@@ -105,7 +107,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						    	'modal-md', 
 						    	'반품및교환처리', 
 						    	'bsn/modal/bsnCsOrdRegister', 
-						    	'bsn/modal/bsnModalFooter')">
+						    	'bsn/modal/bsnCheckModalFooter')">
      	</div>
 		
 		
@@ -128,6 +130,48 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	</script>
 	
 	<script>
+	//TODO: DB 연동 후 branchList를 동적으로 가져오도록 개선 필요
+	
+		const branches = ["부산점", "대구점", "홍대점"];
+		const inputBhf = document.getElementById("inputBhf");
+		const suggestionList = document.getElementById("suggestionList");
+	
+		inputBhf.addEventListener("input", function() {
+		    let inputValue = this.value.toLowerCase();
+		    suggestionList.innerHTML = ""; // 기존 목록 삭제
+	
+		    if (inputValue.trim() === "") {
+		        suggestionList.style.display = "none";
+		        return;
+		    }
+	
+		    let matchedBranches = branches.filter(branch => branch.toLowerCase().includes(inputValue));
+		    
+		    if (matchedBranches.length > 0) {
+		        matchedBranches.forEach(branch => {
+		            let listItem = document.createElement("li");
+		            listItem.classList.add("list-group-item");
+		            listItem.textContent = branch;
+		            listItem.addEventListener("click", function() {
+		                inputBhf.value = branch;
+		                suggestionList.style.display = "none";
+		            });
+		            suggestionList.appendChild(listItem);
+		        });
+	
+		        suggestionList.style.display = "block";
+		    } else {
+		        suggestionList.style.display = "none";
+		    }
+		});
+	
+		// 클릭하면 자동완성 목록 닫기
+		document.addEventListener("click", function(event) {
+		    if (!inputBhf.contains(event.target) && !suggestionList.contains(event.target)) {
+		        suggestionList.style.display = "none";
+		    }
+		});
+		/////////////////////////
 		var Grid = tui.Grid;
 		let returningCode;
 		let branchOfficeId;
@@ -272,11 +316,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				{ header : "상품코드", name : "goodsCode"},
 				{ header : "옵션명", name : "optionName"},
 				{ header : "옵션코드", name : "optionCode"},
-				{ header : "수량", name : "quantity", align: "right",},
+				{ header : "수량", name : "quantity", align: "right", width: 90},
 				{ header : "교환 및 반품", name : "exchangeReturningChoice", align: "center",},
 				//{ header : "사유", name : "returningReason"},
 				//{ header : "바코드", name : "optionBarcode"},
-				{ header : "LOT번호", name : "goodsLotNum"},
+				{ header : "LOT번호", name : "goodsLotNum",width: 200, whiteSpace: "normal"},
 				{ header : '재입고수량', name: 'warehousingQnt', editor: 'text', align: "right",  },
 				{ header : '폐기수량', name: 'disuseQnt', editor: 'text', align: "right",  }
 
@@ -356,6 +400,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			// 객체 담기
 			parameter.companyNum = sessionCompanyNum;
 			parameter.progressStatus = '신청';
+			parameter.branchOfficeId = document.getElementById("inputBhf").value;
 			// sql로 선언한 Date는 null값이 들어가면 오류가 나서 null이 아닐때 넣는거로 선언
 			if(requestDate != ''){
 				parameter.requestDate = requestDate;
@@ -370,7 +415,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			
 			
 			//데이터가 없으면 뜨는 문구
-			REnodata();
+            REnodata();
+        	REDnodata();
+        	REDPnodata();
 		}
 
 
@@ -383,9 +430,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			
 			// 입력칸 빈칸으로 변경
 			let requestDate = document.querySelector('#requestDate').value = '';
+			document.getElementById("inputBhf").value = '';
 			let progressStatus =  '신청';
 			// 빈 값을 보냄
-			grid.setRequestParams({companyNum: sessionCompanyNum, branchOfficeId: branchOfficeId, progressStatus: progressStatus});
+			grid.setRequestParams({companyNum: sessionCompanyNum, branchOfficeId: document.getElementById("inputBhf").value, progressStatus: progressStatus});
 			grid.readData();
 			grid2.resetData([]);
             grid3.resetData([]);
@@ -657,7 +705,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		                    if (!cancelRequest) return; // 취소 사유가 없으면 중단
 		                    //반품 신청 취소 처리
 		                    cancelReturning(cancelRequest);
-		                    console.log(cancelRequest);
+		                    //console.log(cancelRequest);
 		                    cancelModal.hide();
 		                }
 		            }

@@ -25,7 +25,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    background-color: #f0f8ff !important; /* 연한 하늘색 */
 	}
 	.tui-grid-container {
-            font-size: 14px; /* 원하는 크기로 조정 */
+            /*font-size: 14px;  원하는 크기로 조정 */
             
     }
   </style>
@@ -36,59 +36,57 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 시작 -->
 
       <div class="container">
-		<h2>주문 목록</h2>
+		<h2 class="mt-2 mb-2"><b>주문 목록</b></h2>
 		<hr>
         <div class="row mb-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">검색 조건</h5>
-                    <!-- <p class="card-description"></p> -->
-                        <div class="row align-items-center ">
-                            <!-- 라디오 버튼 -->
-                            <div class="col-2 gap-3">
-                            	<label for="selectedOption">날짜</label>
-                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" name="selectedOption" style="height: 38px;">
-                                	<option value="">선택</option>
-                                	<option value="orderDate">주문일자</option>
-                                	<option value="dueDate">납기일자</option>
-                                </select>    
-                            </div>
-
-                            <!-- 날짜 입력 -->
-                            <div class="col-auto gap-3">
-                                <div>
-                                	<label for="startDate">From</label>
-                                    <input type="date" class="form-control" id="startDate" name="startDate" disabled>
-                                </div>
-                            </div>
-                            <div class="col-auto gap-3">
-                                <div>
-                                	<label for="endDate">To</label>
-                                    <input type="date" class="form-control" id="endDate" name="endDate" disabled>
-                                </div>
-                            </div>
-                            <div class="col-3 form-group m-3">
-							    <label for="inputBhf">발주지점</label>
-							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
-							</div>
-                            
-                            
-                        </div>
-
-			
-                        
-                          <div class="row align-items-center ">
-						<div class="col-12 text-center">
-                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
-                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
-                        </div>
-                    <!-- </form> -->
-                </div>
-            </div>
-        </div>
-        </div>
-    </div>
+	        <div class="col-12">
+	            <div class="card">
+	                <div class="card-body">
+	                    
+	                        <div class="row align-items-center ">
+	                            <!-- 라디오 버튼 -->
+	                            <div class="col-2  gap-3">
+	                            	<label for="selectedOption">날짜</label>
+	                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" style="height: 38px;">
+	                                	<option value="">선택</option>
+	                                	<option value="orderDate">주문일자</option>
+	                                	<option value="dueDate">납기일자</option>
+	                                </select>    
+	                                
+	                            </div>
+	                            <!-- 날짜 입력 -->
+	                            <div class="col-auto gap-3">
+	                                <div>
+	                                	<label for="startDate">From</label>
+	                                    <input type="date" class="form-control" id="startDate" name="startDate" disabled>
+	                                </div>
+	                            </div>
+	                            <div class="col-auto gap-3">
+	                                <div>
+	                                	<label for="endDate">To</label>
+	                                    <input type="date" class="form-control" id="endDate" name="endDate" disabled>
+	                                </div>
+	                            </div>
+	                            <!-- TODO: 현재는 DB에서 지점명들을 가져오기 곤란해서 지점을 DB에서 가져오는 동적 방식이 아니라 작성된 지점 목록에서 조회하는 방식으로 했습니다-->
+								<!-- 이 코드를 저말고 보는 분이 있다면, 프로젝트를 같이해줘서 고맙다는 말을 전해드리고 싶어요!-->
+	                            <div class="col-3 form-group m-3">
+								    <label for="inputBhf">발주지점</label>
+								    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+								    <ul id="suggestionList" class="list-group" style="position: absolute; width: 95%; z-index: 1000; display: none;"></ul>
+								    
+								</div>
+	                            
+	                            <div class="col-auto  text-center mt-4 mx-5">
+		                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
+		                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
+	                        	</div>
+	                            
+	                        </div>
+	
+	            	</div>
+	        	</div>
+	        </div>
+	    </div>
         
         
         <div class="row">
@@ -96,12 +94,13 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
             	<div class="card">
               		<div class="card-body">
                 		<h5 class="card-title">주문 목록</h5>
-                		
                 		<p class="card-description"></p>
                 		<div id="orderList"></div>
-               		 	<div id="pagination" class="tui-pagination"></div>
                		 	<div class="text-center">
                		 		<button class="btn btn-danger" id="cancelButton">선택한 주문취소</button>
+               		 	</div>
+               		 	<div class="text-end"> 
+               		 		<button type="button" class="text-end btn btn-dark btnExcel">Excel</button> 
                		 	</div>
               		</div>
             	</div>
@@ -155,7 +154,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 끝 -->
   <!-- 세션정보 -->
   	  <script th:inline="javascript">
-  	    let departmentNum = [[${session.departmentNum}]];
+  		let departmentNum = [[${session.departmentNum}]];
 	  	let companyNum = [[${session.companyNum}]];
 	  	//let employeeNum = [[${session.employeeNum}]];
 	  </script>
@@ -168,11 +167,124 @@ function toggleDateInputs() {
 		}
   document.getElementById("startDate").disabled = !enable;
   document.getElementById("endDate").disabled = !enable;
-  //console.log(companyNum);
-  //console.log(employeeNum);
+
   
  
 }
+	//TODO: DB 연동 후 branchList를 동적으로 가져오도록 개선 필요
+	
+	const branches = ["부산점", "대구점", "홍대점"];
+	const inputBhf = document.getElementById("inputBhf");
+	const suggestionList = document.getElementById("suggestionList");
+	
+	inputBhf.addEventListener("input", function() {
+	    let inputValue = this.value.toLowerCase();
+	    suggestionList.innerHTML = ""; // 기존 목록 삭제
+	
+	    if (inputValue.trim() === "") {
+	        suggestionList.style.display = "none";
+	        return;
+	    }
+	
+	    let matchedBranches = branches.filter(branch => branch.toLowerCase().includes(inputValue));
+	    
+	    if (matchedBranches.length > 0) {
+	        matchedBranches.forEach(branch => {
+	            let listItem = document.createElement("li");
+	            listItem.classList.add("list-group-item");
+	            listItem.textContent = branch;
+	            listItem.addEventListener("click", function() {
+	                inputBhf.value = branch;
+	                suggestionList.style.display = "none";
+	            });
+	            suggestionList.appendChild(listItem);
+	        });
+	
+	        suggestionList.style.display = "block";
+	    } else {
+	        suggestionList.style.display = "none";
+	    }
+	});
+	
+	// 클릭하면 자동완성 목록 닫기
+	document.addEventListener("click", function(event) {
+	    if (!inputBhf.contains(event.target) && !suggestionList.contains(event.target)) {
+	        suggestionList.style.display = "none";
+	    }
+	});
+	/////////////////////////
+	//////////////////////////////
+		//액셀 다운
+		function downExcel(){
+			let btnExcel = document.querySelector('.btnExcel');
+			btnExcel.addEventListener("click", function () {
+			      /*  const options = {
+			         				includeHiddenColumns: true,
+			         				//onlySelected: true,
+			         				fileName: 'CS-Record',
+			       					};
+			       grid3.export('xlsx', options); */
+			       if (selectedRowKey == null) {
+			            showAlert("선택된 주문이 없습니다.", 'danger');
+			            return;
+			        }
+			       
+			       	const wb = XLSX.utils.book_new();
+			        
+			     	// 첫 번째 그리드 데이터 -> Sheet로 변환 후 추가
+			     	const columns1 = orderList.getColumns();
+			        const gridData1 = [orderList.getRow(selectedRowKey)];
+			        const formattedData1 = gridData1.map(row => {
+			            let newRow = {};
+			            columns1.forEach(col => {
+			                newRow[col.header] = row[col.name]; // 컬럼 name -> header로 변경
+			            });
+			            return newRow;
+			        });
+			     
+			        const ws1 = XLSX.utils.json_to_sheet(formattedData1);
+			        ws1["!cols"] = columns1.map(col => ({
+			            wch: col.header.length + 10 // 컬럼명 길이에 5 더해서 조정
+			        }));
+			        XLSX.utils.book_append_sheet(wb, ws1, "주문정보");
+
+			        // 두 번째 그리드 데이터 -> Sheet로 변환 후 추가
+			        const columns2 = orderDetailGrid.getColumns();
+			        const gridData2 = orderDetailGrid.getData();
+			        const formattedData2 = gridData2.map(row => {
+			            let newRow = {};
+			            columns2.forEach(col => {
+			                newRow[col.header] = row[col.name];
+			            });
+			            return newRow;
+			        });
+			        const ws2 = XLSX.utils.json_to_sheet(formattedData2)
+					ws2["!cols"] = columns2.map(col => ({
+			            wch: col.header.length + 20
+			        }));
+			        
+			        XLSX.utils.book_append_sheet(wb, ws2, "주문 상품 목록");
+			        XLSX.writeFile(wb, "주문 조회.xlsx");
+		     })
+		}
+		//////////////////////////////////
+	function refreshOrderGrid() {
+			REnodata();
+			REDnodata();
+			REDPnodata();
+			
+		    // 상세 테이블 초기화
+		    orderDetailGrid.resetData([]);
+		    orderHistoryGrid.resetData([]);
+		    
+		    // 그리드 데이터 갱신
+		    orderList.reloadData();
+
+
+		    
+		    selectedRow = null; // 선택된 주문 정보 초기화
+			detailData = [];    // 상세 데이터 정보 초기화
+		}
     
   //검색 조건 초기화
 	function reset(){
@@ -282,6 +394,10 @@ function toggleDateInputs() {
 	//페이지로드 시 자동으로 전체 검색
 	document.addEventListener('DOMContentLoaded', function() {
 	    search();  // DOMContentLoaded 이벤트 후 자동으로 검색 실행
+		REnodata();
+		REDnodata();
+		REDPnodata();
+		downExcel();
 	});
 	//검색
 	function search(){
@@ -301,16 +417,18 @@ function toggleDateInputs() {
 	            "branch": selectedBhf
 	    };
 	    
-	    console.log("검색 조건:", params);
-	    
+	    //console.log("검색 조건:", params);
 	    orderList.readData(1, params, true);
+	    refreshOrderGrid();
+	    
+	    selectedRowKey = null;
+	    
 	}
 	
 	//주문 클릭 시 상세 불러오기
 	let selectedRowKey = null;
 	
 	orderList.on('click', (ev) => {
-		
 		
 	    const rowKey = ev.rowKey; // 클릭한 행의 키
 	    if (rowKey === null || rowKey === undefined) {
@@ -335,7 +453,7 @@ function toggleDateInputs() {
 	        loadOrderHistory(rowData.orderId);
 	     	// 상태가 'VS001'이면 버튼을 보이고, 아니면 숨김
 	     	const cancelButton = document.getElementById('cancelButton');
-	        if (rowData.orderStatus === 'VS001' && departmentNum !== 0) {	//부서번호 조건 걸기(나중에)////////////////////////
+	        if (rowData.orderStatus === 'VS001' && (departmentNum == 15 || departmentNum ==null)) {	//부서번호 조건 오류 시 빼기////////////////////////
 	        	cancelButton.style.visibility = 'visible';
 	        } else {
 	        	cancelButton.style.visibility = 'hidden';
@@ -563,6 +681,31 @@ function toggleDateInputs() {
 		        }
 		    });
 		});
+		
+		// 교환및반품 테이블 데이터 없을때 나오는 문구
+		function REnodata(){
+			//console.log("nodata실행")
+			setTimeout( () => {
+				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
+				nodata.innerHTML = '반품 및 교환 처리 건이 조회되지 않습니다.';
+			}, 100)
+		}
+		
+		// 교환및반품 상세 테이블 데이터 없을때 나오는 문구
+		function REDnodata(){
+			setTimeout( () => {
+				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[1];
+				nodata.innerHTML = '교환 및 반품 내역을 선택해야합니다.';
+			}, 100)
+		}
+		
+		// 교환및반품 상세 테이블 처리 데이터 없을때 나오는 문구
+		function REDPnodata(){
+			setTimeout( () => {
+				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[2];
+				nodata.innerHTML = '교환 및 반품 내역을 선택해야합니다.';
+			}, 100)
+		}
 	
 
 </script>
