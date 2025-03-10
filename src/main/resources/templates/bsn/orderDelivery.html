@@ -31,71 +31,64 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 <body layout:fragment="content">
   <!-- 페이지 내용 시작 -->
 	<div class="container">
-		<h2>이동 출고 관리</h2>
+		<h2 class="mt-2 mb-2"><b>이동 출고 관리</b></h2>
 		<hr>
 		<div class="row mb-3">
 	        <div class="col-12">
 	            <div class="card">
 	                <div class="card-body">
-	                    <h5 class="card-title">검색 조건</h5>
-	                    <p class="card-description"></p>
-	                        <div class="d-flex align-items-center gap-3">
+	                    
+	                        <div class="row align-items-center ">
 	                            <!-- 라디오 버튼 -->
-	                            <div class="d-flex gap-3">
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="notSelect" checked onclick="toggleDateInputs(false)">
-	                                        사용안함
-	                                    </label>
-	                                </div>
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="orderDate" onclick="toggleDateInputs(true)">
-	                                        주문일자
-	                                    </label>
-	                                </div>
-	                                <div class="form-check">
-	                                    <label class="form-check-label">
-	                                        <input type="radio" class="form-check-input" name="optionsRadios" value="dueDate" onclick="toggleDateInputs(true)">
-	                                        납기일자
-	                                    </label>
-	                                </div>
+	                            <div class="col-2  gap-3">
+	                            	<label for="selectedOption">날짜</label>
+	                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" style="height: 38px;">
+	                                	<option value="">선택</option>
+	                                	<option value="orderDate">주문일자</option>
+	                                	<option value="dueDate">납기일자</option>
+	                                </select>    
+	                                
 	                            </div>
-	
 	                            <!-- 날짜 입력 -->
-	                            <div class="d-flex gap-3">
+	                            <div class="col-auto gap-3">
 	                                <div>
-	                                    <label for="startDate">시작 날짜</label>
+	                                	<label for="startDate">From</label>
 	                                    <input type="date" class="form-control" id="startDate" name="startDate" disabled>
 	                                </div>
+	                            </div>
+	                            <div class="col-auto gap-3">
 	                                <div>
-	                                    <label for="endDate">끝 날짜</label>
+	                                	<label for="endDate">To</label>
 	                                    <input type="date" class="form-control" id="endDate" name="endDate" disabled>
 	                                </div>
 	                            </div>
+	                            <!-- TODO: 현재는 DB에서 지점명들을 가져오기 곤란해서 지점을 DB에서 가져오는 동적 방식이 아니라 작성된 지점 목록에서 조회하는 방식으로 했습니다-->
+								<!-- 이 코드를 저말고 보는 분이 있다면, 프로젝트를 같이해줘서 고맙다는 말을 전해드리고 싶어요!-->
+	                            <div class="col-3 form-group m-3">
+								    <label for="inputBhf">발주지점</label>
+								    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+								    <ul id="suggestionList" class="list-group" style="position: absolute; width: 95%; z-index: 1000; display: none;"></ul>
+								    
+								</div>
+	                            
+	                            <div class="col-auto  text-center mt-4 mx-5">
+		                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
+		                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
+	                        	</div>
+	                            
 	                        </div>
 	
-	                        <div class="form-group m-3">
-							    <label for="inputBhf">발주지점</label>
-							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
-						    </div>
-	                        
-							<div class="col-12 text-center">
-	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
-	                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
-	                        </div>
-	                </div>
-	            </div>
+	            	</div>
+	        	</div>
 	        </div>
 	    </div>
 		<div class="row">
         	<div class="col-md-12  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h5 class="card-title">출고 목록</h5>
-                		<p class="card-description">이동 출고 처리할 주문을 선택</p>
+                		<h5 class="card-title">주문 목록</h5>
+						<p class="card-description">조회할 주문을 선택하세요.</p>
                 		<div id="orderList"></div>
-               		 	<div id="pagination" class="tui-pagination"></div>
               		</div>
             	</div>
             	
@@ -107,8 +100,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           	<div class="col-md-6  grid-margin stretch-card">
             	<div class="card">
               		<div class="card-body">
-                		<h5 class="card-title">출고 상세 목록</h5>
+                		<h5 class="card-title">주문 상품 목록</h5>
                 		<p class="card-description">출고 예약된 LOT를 조회하고 싶으면 상품을 선택하세요.</p>
+                		 <div style="height: 56px;"></div> 
                 		<div id="deliDetail"></div>
                		 	<div id="pagination" class="tui-pagination"></div>
                		 	
@@ -121,7 +115,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			        <div class="card-body">
 			        	<h5 class="card-title">LOT 예약 목록</h5>
 			            <p class="card-description">해당 상품에 대한 LOT 예약 목록입니다.</p>
-			         	<div class="d-flex justify-content-end gap-3 mt-3">
+			        	<div class="text-end gap-3 mt-3 mb-3">
 			                <button type="button" class="btn btn-primary px-4" id="registerButton">LOT등록</button>
 			                <button type="button" class="btn btn-success px-4" id="modifyButton">수정</button>
 			                <button type="button" class="btn btn-danger px-4" id="deleteButton">삭제</button>
@@ -160,7 +154,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						    	'modal-md', 
 						    	'LOT 연결 삭제', 
 						    	'bsn/modal/bsnLotDelete', 
-						    	'bsn/modal/bsnModalFooter')">
+						    	'bsn/modal/bsnCheckModalFooter')">
      </div>
      
      <div th:include="bsn/modal/bsnModalTemplate :: ModalTemplate(
@@ -168,7 +162,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						    	'modal-md', 
 						    	'LOT 연결 수량 수정', 
 						    	'bsn/modal/bsnLotModify', 
-						    	'bsn/modal/bsnModalFooter')">
+						    	'bsn/modal/bsnCheckModalFooter')">
      </div>
      
      <div th:include="bsn/modal/bsnModalTemplate :: ModalTemplate(
@@ -176,7 +170,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						    	'modal-md', 
 						    	'출고 확정', 
 						    	'bsn/modal/bsnDlivConfirm', 
-						    	'bsn/modal/bsnModalFooter')">
+						    	'bsn/modal/bsnCheckModalFooter')">
      </div>
   <!-- 세션정보 -->
   	  <script th:inline="javascript">
@@ -185,10 +179,54 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  </script>    
 	   
 <script>
+//TODO: DB 연동 후 branchList를 동적으로 가져오도록 개선 필요
+
+const branches = ["부산점", "대구점", "홍대점"];
+const inputBhf = document.getElementById("inputBhf");
+const suggestionList = document.getElementById("suggestionList");
+
+inputBhf.addEventListener("input", function() {
+    let inputValue = this.value.toLowerCase();
+    suggestionList.innerHTML = ""; // 기존 목록 삭제
+
+    if (inputValue.trim() === "") {
+        suggestionList.style.display = "none";
+        return;
+    }
+
+    let matchedBranches = branches.filter(branch => branch.toLowerCase().includes(inputValue));
+    
+    if (matchedBranches.length > 0) {
+        matchedBranches.forEach(branch => {
+            let listItem = document.createElement("li");
+            listItem.classList.add("list-group-item");
+            listItem.textContent = branch;
+            listItem.addEventListener("click", function() {
+                inputBhf.value = branch;
+                suggestionList.style.display = "none";
+            });
+            suggestionList.appendChild(listItem);
+        });
+
+        suggestionList.style.display = "block";
+    } else {
+        suggestionList.style.display = "none";
+    }
+});
+
+// 클릭하면 자동완성 목록 닫기
+document.addEventListener("click", function(event) {
+    if (!inputBhf.contains(event.target) && !suggestionList.contains(event.target)) {
+        suggestionList.style.display = "none";
+    }
+});
+/////////////////////////
+
+
 var Grid = tui.Grid;
 Grid.setLanguage('en', { 
     display: {
-    	noData: '데이터가 없습니다.',
+    	noData: '조회되는 주문이 없습니다.',
         loadingData: 'Loading data.',
     },
     
@@ -211,7 +249,8 @@ var selectedRow = null; // 선택된 상품 상세
 document.addEventListener('DOMContentLoaded', function() {
     search();  // DOMContentLoaded 이벤트 후 자동으로 검색 실행
     REnodata();
-	//REDPnodata();
+    REDnodata();
+    REDPnodata();
 });
 
 
@@ -288,52 +327,65 @@ function formatStatus(status) {
     	
 }
 
-function toggleDateInputs(enable) {
-    document.getElementById("startDate").disabled = !enable;
-    document.getElementById("endDate").disabled = !enable;
-    
-   
-  }
+function toggleDateInputs() {
+		let enable = true;
+		if(event.target.value == ''){
+			enable= false;
+		}
+  document.getElementById("startDate").disabled = !enable;
+  document.getElementById("endDate").disabled = !enable;
+
+  
+ 
+}
 //검색 조건 초기화
 function reset(){
-	// 라디오 버튼 선택 값 초기화
-    // "사용안함" 라디오 버튼을 체크하도록 설정
-    let notSelectRadio = document.querySelector('input[name="optionsRadios"][value="notSelect"]');
-    if (notSelectRadio) {
-        notSelectRadio.checked = true;  // "사용안함" 라디오 버튼을 선택 상태로
-        toggleDateInputs(false);  // 날짜 입력 비활성화
-    }
+			// 라디오 버튼 선택 값 초기화
+		    // "사용안함" 라디오 버튼을 체크하도록 설정
+		    let notSelectRadio = document.getElementById('selectedOption'); 
+			//.value
+		    if (notSelectRadio) {
+		    	notSelectRadio.value = "";   // "사용안함" 라디오 버튼을 선택 상태로
+		        toggleDateInputs();  // 날짜 입력 비활성화
+		    }
 
-	// 시작 날짜와 끝 날짜 초기화
-	document.getElementById("startDate").value = "";
-	document.getElementById("endDate").value = "";
-	// 발주지점 선택 값 초기화
-    document.getElementById("selectBhf").value = "all";
-	
-    search();
+			// 시작 날짜와 끝 날짜 초기화
+	    	document.getElementById("startDate").value = "";
+	    	document.getElementById("endDate").value = "";
+	    	// 발주지점 선택 값 초기화
+	        document.getElementById("inputBhf").value = "";
+	    	
+	        search();
 
-}
+		}
 
 function search(){
-	let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
+	let selectedOption = document.getElementById('selectedOption').value; 
     let startDate = document.getElementById("startDate").value; // 시작 날짜
     let endDate = document.getElementById("endDate").value; // 끝 날짜
     //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
     let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
+    
     //console.log(selectedOption, startDate, endDate, selectedBhf);
     
     let params = {
+    		"companyNum": companyNum,
     		"deteOption": selectedOption,
             "startDate": startDate,
             "endDate": endDate,
-            "branch": selectedBhf,
-            "companyNum": companyNum,
-            "statusList": ['DS01']
-            
+            "branch": selectedBhf
     };
-    console.log("검색 조건:", params);
     
-    orderList.readData(1, params, true);
+    //console.log("검색 조건:", params);
+    
+ 	orderList.readData(1, params, true);
+ 	deliveryDetailGrid.resetData([]);
+    deliveryLotDetailGrid.resetData([]);
+    
+    REnodata();
+	REDnodata();
+	REDPnodata();
+   
 }
 
 
@@ -361,7 +413,7 @@ orderList.on('click', (ev) => {
     const rowData = orderList.getRow(rowKey); // 클릭한 행 데이터 가져오기
     selectDlivyId = rowData.deliveryId;
     
-    console.log("선택한 출고(주문) : " + rowData.deliveryId);
+    //console.log("선택한 출고(주문) : " + rowData.deliveryId);
     
 	 // 주문 상세, LOT 상세 초기화
     deliveryDetailGrid.resetData([]);
@@ -382,7 +434,7 @@ function loadDeliveryDetail(deliveryId) {
     }
 	
 	const currentPage = deliveryDetailGrid.getPagination()?._currentPage || 1;
-	console.log(currentPage);
+	//console.log(currentPage);
 	deliveryDetailGrid.readData(currentPage, {deliveryId});
 	
 	
@@ -446,7 +498,7 @@ deliveryDetailGrid.on('click', (ev) => {
     
     
     const rowData = deliveryDetailGrid.getRow(rowKey); // 클릭한 행 데이터 가져오기
-    console.log("선택한 출고 상세 ID : " + rowData.deliveryDetailId);
+    //console.log("선택한 출고 상세 ID : " + rowData.deliveryDetailId);
     
  	// LOT 상세 초기화
     deliveryLotDetailGrid.resetData([]);
@@ -509,7 +561,7 @@ rowHeaders: ['rowNum',
 columns: [
 	
     
-    { header: "LOT번호", name: "goodsLotNum", width:160},
+    { header: "LOT번호", name: "goodsLotNum", width:'auto'},
     { header: "유통기한", name: "goodsConsumptionDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
     { header: "예약가능수량(box)", name: "deliveryPossibleQnt", align: "right",  },
     { header: "LOT예약수량(box)", name: "deliveryQnt", align: "right",  editor: 'text',},
@@ -536,7 +588,8 @@ function registerLotData() {
 
          
           
-          const selectedRows = registerGrid.getCheckedRows(); // 선택된 행 가져오기(모달창에서 체크한 것만)
+          //const selectedRows = registerGrid.getCheckedRows(); // 선택된 행 가져오기(모달창에서 체크한 것만)
+          const selectedRows = registerGrid.getData().filter(row => row.deliveryQnt !== null && row.deliveryQnt !== '');
           if(selectedRows.length == 0){
           	showAlert('선택한 LOT가 없습니다.', 'danger');
           	registerModal.hide();
@@ -646,7 +699,7 @@ function deleteLotData() {
 			deliveryDetailId: selectedRow.deliveryDetailId,
 			lotDetails: requestData
 		 };
-		 console.log("삭제 정보 : " + dlvyDTO);
+		 //console.log("삭제 정보 : " + dlvyDTO);
 		 deleteLot(dlvyDTO);
 		 deleteModal.hide();
 }
@@ -698,7 +751,7 @@ function modifyLotData() {
 			deliveryDetailId: selectedRow.deliveryDetailId,
 			lotDetails: requestData
 		 };
-		 console.log("수정 정보 : " + dlvyDTO);
+		 //console.log("수정 정보 : " + dlvyDTO);
 		 modifyLot(dlvyDTO);
 		 //modifyModal.hide();
 }
@@ -813,12 +866,14 @@ function checkGoodsSelection(modal) {
 
 // LOT 등록 버튼 클릭 이벤트
 document.getElementById('registerButton').addEventListener('click', () => {
+	if(selectedRow){
 	// 수량이 1이면 'box', 1보다 크면 'boxes'
 	const demandText = selectedRow.deliveryDemandQnt === 1 ? 'box' : 'boxes'; 
     const totalText = selectedRow.deliveryTotalQnt === 1 ? 'box' : 'boxes';
 	
 	document.getElementById("demendQnt").textContent = `${selectedRow.deliveryDemandQnt} ${demandText}`;
 	document.getElementById("totalQnt").textContent = `${selectedRow.deliveryTotalQnt} ${totalText}`;
+	}
 	checkGoodsSelection(registerModal); // 등록 모달 띄우기
 });
 
@@ -992,6 +1047,23 @@ document.querySelectorAll('.modal-footer .btn-danger').forEach(button => {
     });
 });
 /////////////////////////////////////////////////////////////////////////////////////////
+
+
+//nodata 문구
+function REDnodata(){
+	setTimeout( () => {
+		let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[1];
+		nodata.innerHTML = '주문을 선택해야합니다.';
+	}, 100)
+}
+
+//
+function REDPnodata(){
+	setTimeout( () => {
+		let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[2];
+		nodata.innerHTML = '상품을 선택해야합니다.';
+	}, 100)
+}
 function REnodata() {
         setTimeout(() => {
             let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[3];

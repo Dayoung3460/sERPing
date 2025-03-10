@@ -21,10 +21,16 @@ public class OrderlistDTO {
 	private String goodsName;
 	private String optionCode;
 	private String optionName;
+	private int optionNum;
 	private String goodsStandard;
 	private int quantity;
 	
 	private int companyNum;
+	
+	private int vendorId;
+	private String vendorName;
+	private int goodsSupplyPrice;
+	
 	
 	private String startDate ;
 	private String endDate;
