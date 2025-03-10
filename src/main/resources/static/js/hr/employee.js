@@ -31,11 +31,11 @@ const modalElement = document.getElementById("contractModal");
   const closeButton = modalElement.querySelector('[data-bs-dismiss="modal"]');
   if (closeButton) {
       closeButton.addEventListener("click", function () {
-          console.log("✅ 인쇄 모달 닫기 버튼 클릭됨!");
+          console.log("인쇄 모달 닫기 버튼 클릭됨!");
 
           try {
           	let modalInstance = bootstrap.Modal.getInstance("#contractModal") || new bootstrap.Modal("#contractModal");
-              modalInstance.hide(); // ✅ Bootstrap 방식으로 모달 닫기
+              modalInstance.hide(); // Bootstrap 방식으로 모달 닫기
               
           } catch (error) {
               console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
@@ -124,7 +124,7 @@ const modalElement = document.getElementById("contractModal");
 	    }
 	});
 	
-	// ✅ 사원 ID 입력 후 중복 체크 실행
+	// 사원 ID 입력 후 중복 체크 실행
 	const employeeIdInput = document.getElementById("employeeIdInput");
 	employeeIdInput.addEventListener("blur", async function () {
 	    const employeeId = this.value.trim();
@@ -148,7 +148,7 @@ const modalElement = document.getElementById("contractModal");
 	});
 	
 	
-// ✅ 주민번호 입력값 검증 (앞 6자리 + 뒤 7자리 필수 입력)
+// 주민번호 입력값 검증 (앞 6자리 + 뒤 7자리 필수 입력)
 function validateResidentNumber() {
     const firstSsn = document.getElementById("firstSsn");
     const secondSsn = document.getElementById("secondSsn");
@@ -216,7 +216,7 @@ function validateResidentNumber() {
         fetch(contractUrl, { method: 'HEAD' })
             .then(response => {
                 if (response.ok) {
-                    console.log("✅ 근로 계약서 존재함. PDF 렌더링 시작");
+                    console.log("근로 계약서 존재함. PDF 렌더링 시작");
                     renderPDF(contractUrl);
                 } else {
                     console.warn("❌ 근로 계약서 없음!");
@@ -298,14 +298,14 @@ function validateResidentNumber() {
         return;
     }
 
-    // ✅ 사원 ID 중복 체크 실행
+    // 사원 ID 중복 체크 실행
     const exists = await checkEmployeeIdExists(employeeId);
     if (exists) {
         Swal.fire({ icon: "error", title: "사원 ID 중복", text: "이미 등록된 사원 ID입니다. 다른 ID를 입력하세요.", confirmButtonText: "확인" });
         return; // 중복이면 등록 중단
     }
 
-    // ✅ 검증 성공 시 등록 실행
+    // 검증 성공 시 등록 실행
     if (!validateEmployeeForm()) {
         console.warn("⚠️ 필수 입력값이 누락되었습니다. 등록을 중단합니다.");
         return;
@@ -315,7 +315,7 @@ function validateResidentNumber() {
             registerEmployee();
         });
 
-        console.log("✅ 등록 버튼 이벤트 리스너 연결 완료!");
+        console.log("등록 버튼 이벤트 리스너 연결 완료!");
     } else {
         console.error("❌ registerBtn 요소를 찾을 수 없습니다!");
     }
@@ -327,20 +327,20 @@ function validateResidentNumber() {
 	});
 
     
-        // ✅ 초기화 버튼 이벤트 리스너 연결 (id 일치 확인)
+        // 초기화 버튼 이벤트 리스너 연결 (id 일치 확인)
     let resetBtn = document.getElementById("resetBtn");
     if (resetBtn) {
         resetBtn.addEventListener("click", resetEmployeeForm);
-        console.log("✅ 초기화 버튼 이벤트 연결 완료");
+        console.log("초기화 버튼 이벤트 연결 완료");
     } else {
         console.error("❌ resetBtn을 찾을 수 없습니다.");
     }
 
-    // ✅ 모달이 열릴 때마다 초기화
+    // 모달이 열릴 때마다 초기화
     let empRegisterModal = document.getElementById("empRegisterModal");
     if (empRegisterModal) {
         empRegisterModal.addEventListener("shown.bs.modal", resetEmployeeForm);
-        console.log("✅ 모달 이벤트 리스너 연결 완료");
+        console.log("모달 이벤트 리스너 연결 완료");
     } else {
         console.error("❌ empRegisterModal을 찾을 수 없습니다.");
     }
@@ -508,11 +508,11 @@ if (selectedStatus === "on") selectedStatus = ""; // "전체" 선택 시 공백 
     // 🔹 검색어가 입력되었을 경우 처리
     if (searchKeyword !== "") {
         if (searchType === "전체") {
-            // ✅ 검색어가 있으면 OR 조건으로 검색 (사원명 OR 사원ID OR 연락처)
+            // 검색어가 있으면 OR 조건으로 검색 (사원명 OR 사원ID OR 연락처)
             params.searchType = "전체";
             params.searchKeyword = searchKeyword;
         } else {
-            // ✅ 특정 검색 기준 선택 시 해당 필드만 검색
+            // 특정 검색 기준 선택 시 해당 필드만 검색
             params.searchType = searchType;
             params.searchKeyword = searchKeyword;
         }
@@ -539,7 +539,7 @@ if (selectedStatus === "on") selectedStatus = ""; // "전체" 선택 시 공백 
 // Toast Grid 데이터 새로고침
 function searchEmployees(page = 1) {
     const params = getFilterParams(); // 검색 필터 적용
-    console.log("🔍 검색 요청 파라미터:", params);  // ✅ 파라미터 확인용 로그
+    console.log("🔍 검색 요청 파라미터:", params);  // 파라미터 확인용 로그
     params.page = page; // 현재 페이지 값 추가
 
     // URLSearchParams 사용 (불필요한 중복 제거)
@@ -598,7 +598,7 @@ function resetFilters() {
     document.querySelectorAll("input[name='searchStatus']").forEach(btn => btn.checked = false);
     document.querySelectorAll("input[name='employmentType']").forEach(btn => btn.checked = false);
 
-    searchEmployees(); // ✅ 모든 필터 초기화 후 전체 데이터 조회
+    searchEmployees(); // 모든 필터 초기화 후 전체 데이터 조회
 }
 
 
@@ -618,7 +618,7 @@ document.getElementById("searchPosition").addEventListener("change", function(){
 });
 
 
-// ✅ 상태 필터(재직, 퇴직, 휴직) 변경 시 검색 실행
+// 상태 필터(재직, 퇴직, 휴직) 변경 시 검색 실행
 document.querySelectorAll("input[name='searchStatus']").forEach(btn => {
     btn.addEventListener("change", function () {
         searchEmployees();
@@ -858,7 +858,7 @@ function registerEmployee() {
 	.then(data => {
 	    if (data.error) {
 	        if (data.error.includes("이미 등록된 이메일")) {
-	            // ✅ 이메일 중복 처리
+	            // 이메일 중복 처리
 	            let emailInput = document.getElementById("email");
 	            emailInput.value = "";
 	            emailInput.classList.add("is-invalid");
@@ -873,7 +873,7 @@ function registerEmployee() {
 	
 	            return;
 	        } else if (data.error.includes("이미 등록된 사원 ID")) {
-	            // ✅ 사원 ID 중복 처리
+	            // 사원 ID 중복 처리
 	            let employeeIdInput = document.getElementById("employeeIdInput");
 	            employeeIdInput.value = "";
 	            employeeIdInput.classList.add("is-invalid");
@@ -898,7 +898,7 @@ function registerEmployee() {
 	            customClass: { popup: 'custom-swal-popup' }
 	        });
 	    } else {
-	        // ✅ 등록 성공 처리
+	        // 등록 성공 처리
 	        Swal.fire({
 	            icon: 'success',
 	            title: '등록 완료',
@@ -927,7 +927,7 @@ let globalDepartments = [];
 let globalSubDepartments = [];
     
 
-// ✅ 모달 공통 코드 데이터 로드
+// 모달 공통 코드 데이터 로드
 function populateModalData() {
     console.log("🔹 모달 공통 코드 데이터 불러오는 중..."+sessionData.companyNum);
 	
@@ -941,7 +941,7 @@ function populateModalData() {
 
             console.log("📥 불러온 공통 코드 데이터123123:", data);
 
-            // ✅ 전역 변수에 부서 및 하위 부서 저장
+            // 전역 변수에 부서 및 하위 부서 저장
             globalDepartments = data.departments.filter(dept => dept.PARENT_DEPARTMENT_NUM == 0 );  
             console.log("globalDepartments",globalDepartments);
             
@@ -952,7 +952,7 @@ function populateModalData() {
 			})
             globalSubDepartments = data.departments.filter(dept => dept.PARENT_DEPARTMENT_NUM !== null); // 하위 부서만 저장
 
-            // ✅ 부서 (Department) 선택 리스트 설정
+            // 부서 (Department) 선택 리스트 설정
             const departmentSelect = document.getElementById("modalDepartment");
             console.log("tag",tag);
             departmentSelect.innerHTML = tag;
@@ -962,30 +962,30 @@ function populateModalData() {
                 <option value="8">지점</option>
             `;*/
 
-            // ✅ 하위 부서 초기화 (모든 하위 부서 표시)
+            // 하위 부서 초기화 (모든 하위 부서 표시)
             populateSubDepartments("");
 
-            // ✅ 부서 선택 시 이벤트 리스너 추가
+            // 부서 선택 시 이벤트 리스너 추가
             departmentSelect.removeEventListener("change", handleDepartmentChange);
             departmentSelect.addEventListener("change", handleDepartmentChange);
 
-            console.log("✅ 부서 목록 업데이트 완료!");
+            console.log("부서 목록 업데이트 완료!");
         })
         .catch(error => console.error("❌ 모달 공통 코드 데이터 불러오기 실패:", error));
 }
 
-// ✅ 부서 선택 변경 시 실행할 핸들러 함수
+// 부서 선택 변경 시 실행할 핸들러 함수
 function handleDepartmentChange() {
     const selectedDeptNum = document.getElementById("modalDepartment").value;
     console.log("📌 선택한 부서:", selectedDeptNum);
     populateSubDepartments(selectedDeptNum);
 }
 
-// ✅ 선택된 부서에 따른 하위 부서 필터링 (동적 표시)
+// 선택된 부서에 따른 하위 부서 필터링 (동적 표시)
 function populateSubDepartments(selectedDeptNum) {
     const subDepartmentSelect = document.getElementById("modalSubDepartment");
 
-    // ✅ 기존 옵션 초기화 ("선택" 추가)
+    // 기존 옵션 초기화 ("선택" 추가)
     subDepartmentSelect.innerHTML = `
         <option value="">선택</option>
     `;
@@ -993,13 +993,13 @@ function populateSubDepartments(selectedDeptNum) {
     let filteredSubDepartments = [];
 
     if (!selectedDeptNum) {
-        // ✅ "선택" 상태에서는 모든 하위 부서 표시
+        // "선택" 상태에서는 모든 하위 부서 표시
             subDepartmentSelect.innerHTML += `
         <option value="">선택</option>
     `;
 
     } else {
-        // ✅ "본사" 또는 "지점"을 선택하면 해당 부서의 하위 부서만 표시
+        // "본사" 또는 "지점"을 선택하면 해당 부서의 하위 부서만 표시
         filteredSubDepartments = globalSubDepartments.filter(
             subDept => String(subDept.PARENT_DEPARTMENT_NUM) === String(selectedDeptNum) // 🔥 `String` 변환하여 비교 오류 방지
         );
@@ -1010,7 +1010,7 @@ function populateSubDepartments(selectedDeptNum) {
     
     
 
-    // ✅ 하위 부서 옵션 추가 (실제 데이터 기반)
+    // 하위 부서 옵션 추가 (실제 데이터 기반)
     filteredSubDepartments.forEach(subDept => {
         let option = document.createElement("option");
         option.value = subDept.DEPARTMENT_NUM;
@@ -1018,7 +1018,7 @@ function populateSubDepartments(selectedDeptNum) {
         subDepartmentSelect.appendChild(option);
     });
 
-    console.log("✅ 하위 부서 목록 업데이트 완료!", subDepartmentSelect.innerHTML); // 🔥 콘솔에서 확인
+    console.log("하위 부서 목록 업데이트 완료!", subDepartmentSelect.innerHTML); // 🔥 콘솔에서 확인
 }
 
 // Daum 우편번호 API를 활용한 주소 검색 함수
