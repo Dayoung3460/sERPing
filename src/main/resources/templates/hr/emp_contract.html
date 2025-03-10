@@ -341,12 +341,12 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         })
         .then(data => {
-            alert("테스트 계약 등록 성공!");
+        	showAlert("테스트 계약 등록 성공!", "success");
             window.location.reload();
         })
         .catch(error => {
-            console.error("❌ 테스트 계약 등록 오류:", error);
-            alert("서버 오류: " + error.message);
+            console.error("테스트 계약 등록 오류:", error);
+            showSwal("error", "서버 오류", "테스트 계약 등록 중 문제가 발생했습니다.");
         });
     };
 
@@ -360,6 +360,11 @@ document.addEventListener("DOMContentLoaded", function() {
         el: document.getElementById('employeeGrid'),
         scrollX: false,
         scrollY: false,
+        pageOptions: {
+            useClient: false,
+            perPage: 5,
+            visiblePages: 5,
+        },
         columns: [
             { header: "사원ID", name: "employeeId", align: "center" },
             { header: "사원번호", name: "employeeNum", align: "center", hidden: true },
@@ -371,12 +376,16 @@ document.addEventListener("DOMContentLoaded", function() {
             { header: "회사명", name: "companyName", align: "center" },
         ]
     });
+    
+
 
     // 모달이 열릴 때 자동으로 사원 목록 불러오기
     document.getElementById("employeeSelectModal").addEventListener("shown.bs.modal", function () {
         loadEmployees();
         grid.refreshLayout(); // 그리드가 모달 내에서 안 보이는 문제 해결
     });
+    
+    
     
  	// Bootstrap 모달 닫힐 때 `backdrop` 제거
     document.getElementById("employeeSelectModal").addEventListener("hidden.bs.modal", function () {
@@ -397,7 +406,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // 사원 목록 불러오기 (검색 포함)
-    function loadEmployees() {
+    function loadEmployees(page = 1) {
         let searchKeyword = document.getElementById("searchKeyword").value; // 검색어 가져오기
 
         if (!companyNum) {
@@ -406,7 +415,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // API 요청
-        fetch(`/hr/rest/emp/list-by-company?companyNum=${companyNum}&searchKeyword=${searchKeyword}`)
+        fetch(`/hr/rest/emp/list-by-company?companyNum=${companyNum}&searchKeyword=${searchKeyword}&page=${page}`)
             .then(response => response.json())
             .then(data => {
                 console.log("📊 사원 목록 데이터:", data);
@@ -414,7 +423,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (data.employees && data.employees.length > 0) {
                     grid.resetData(data.employees); // Toast Grid에 데이터 넣기
                 } else {
-                    alert("⚠️ 검색 결과가 없습니다.");
+                	showAlert("검색 결과가 없습니다.", "warning");
                     grid.resetData([]); // 결과 없을 경우 빈 배열 처리
                 }
             })
@@ -428,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const rowData = grid.getRow(ev.rowKey);
 
         if (!rowData) {
-            alert("⚠️ 데이터를 가져올 수 없습니다.");
+        	showSwal("error", "데이터 오류", "데이터를 가져올 수 없습니다.");
             return;
         }
         
@@ -632,6 +641,7 @@ function showAlert(message, type = "info") {
         customClass: { popup: 'custom-swal-popup' }
     });
 }
+
 
 </script>
 

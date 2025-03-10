@@ -27,6 +27,9 @@
         font-size: 14px;
         padding: 5px 10px;
     }
+	.tui-grid-cell {
+	    font-size: 16px !important;
+	}
 </style>
 </head>
 
@@ -78,7 +81,7 @@
 
     <!-- 검색 버튼 -->
     <div class="text-center mt-3">
-        <button type="button" class="btn btn-primary" onclick="searchContracts()">검색</button>
+        <button type="button" class="btn btn-primary me-2" onclick="searchContracts()">검색</button>
         <button type="button" class="btn btn-secondary" onclick="resetFilters()">초기화</button>
     </div>
 </div>
@@ -113,7 +116,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
 const grid = new tui.Grid({
     el: document.getElementById("contractGrid"),
     scrollX: false,
-    scrollY: true,
+    scrollY: false,
     pageOptions: {
         useClient: false, // 서버 사이드 페이지네이션 사용
         perPage: 10, // 기본 페이지당 10개 표시
@@ -121,7 +124,7 @@ const grid = new tui.Grid({
     },
     columns: [
         { header: "계약번호", name: "contractNum", align: "center", width: 80 }, 
-        { header: "사원명", name: "employeeName", align: "center", width: 150 },
+        { header: "사원명", name: "employeeName", align: "center", width: 130 },
         { 
             header: "계약 유형", 
             name: "contractType", 
@@ -134,21 +137,21 @@ const grid = new tui.Grid({
                 return "알 수 없음"; // 예외 처리
             }
         },
-        { header: "부서", name: "departmentName", align: "center", width: 130 },
-        { header: "직급", name: "position", align: "center", width: 130 },
-        { header: "급여 (월)", name: "monthlySalary", align: "right", width: 130, 
+        { header: "부서", name: "departmentName", align: "center", width: 120 },
+        { header: "직급", name: "position", align: "center", width: 120 },
+        { header: "급여 (월)", name: "monthlySalary", align: "right", width: 150, 
             formatter: ({ value }) => value.toLocaleString() + " 원" 
         },
         { header: "계약 시작일", name: "contractStartDate", align: "center", width: 140 },
         { header: "계약 종료일", name: "contractEndDate", align: "center", width: 140 },
-        { header: "계약 상태", name: "contractStatus", align: "center", width: 100, 
+        { header: "계약 상태", name: "contractStatus", align: "center", width: 120, 
             formatter: ({ value }) => value === "CS001" ? "🟢 진행중" : "🔴 종료" 
         },
         { 
             header: "계약서", 
             name: "actions", 
             align: "center", 
-            width: 160, 
+            width: 180, 
             formatter: function({ row }) {
                 return `
                     <button class="btn btn-outline-info btn-sm" onclick="viewContract(${row.employeeNum})">보기</button>
