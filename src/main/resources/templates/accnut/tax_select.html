@@ -6,58 +6,76 @@
 <head>
 <meta charset="UTF-8">
 <title>세금계산서 조회</title>
+<style>
+	#custom-container{
+		background-color: white; 
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
+		margin-bottom: 20px;
+	}
+</style>
 </head>
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		 <div>
-			 <h3>세금계산서 조회</h3>
-			 <hr>
-		 </div>
-		<!-- 검색바 -->
-		 <div class="stretch-card mb-3">
-		 	<div class="card">
-				<div class="card-body">
-					<span>지점</span>
-					<select id="bhf">
-						<option value="">지점을 선택해주세요</option>
-					
-					</select>
-					
-					<span>작성일자</span>
-					<input type="date" id="rgdate">
-					<button type="button" onclick="search()">검색</button>
-					<button type="button" onclick="reset()">초기화</button>
-				</div>
-			</div>	
-		 </div>
-		<!-- 그리드 -->
-		 <div class="stretch-card">
-		 	<div class="card">
-				<div class="card-body">
-					<div class="row mb-2">
-						<div class="col-9"></div>
-						<span class="label-search col-1">표시수량</span>
-						<select name="display_amount" id="display_amount" class="col-1 input-box" onchange="changeDisplay()">
-							<option value="5" selected>5</option>
-							<option value="10">10</option>
-							<option value="20">20</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
+		<h2 class="mt-2 mb-2"><b>세금계산서 조회</b></h2>
+		<hr>
+		<div class="row">
+			<!-- 검색바 -->
+			<div id="custom-container">
+				<div class="row">
+					<div class="col-md-5 mt-1 mb-1">
+						<label class="form-label">지점</label>
+						<select id="bhf" class="form-control input-box">
+							<option value="">지점을 선택해주세요</option>
 						</select>
 					</div>
-					<div id="grid"></div>
+					
+					<div class="col-md-5 mt-1 mb-1">
+						<label class="form-label">작성일자</label>
+						<input type="date" id="rgdate" class="form-control input-box">
+					</div>
+					
+					<div class="col-md-2 mt-4 mb-2">
+						<button type="button" class="btn btn-primary" style="margin: 0px 17px" onclick="search()">검색</button>
+						<button type="button" class="btn btn-secondary" onclick="reset()">초기화</button>
+					</div>
+					
 				</div>
-			</div>	
-		 </div>		 
-		 <!-- 세금계산서 모달 -->
-		 <div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
-						    	'taxLookModal', 
-						    	'modal-xl', 
-						    	'세금계산서', 
-						    	'accnut/modal/taxBody', 
-						    	'accnut/modal/taxFooter'
-						    )"></div>
+			 </div>
+			<!-- 그리드 -->
+			 <div class="col-md-12 stretch-card mt-2 mb-5">
+			 	<div class="card">
+					<div class="card-body">
+						<div id="rayout-container" class="row mb-3">
+							<div class="col-9"></div>
+							<!-- 그리드 표시 수량 인풋 -->
+							<div class="col-3 row ">
+								<div class="col-3"></div>
+								<span class="label-search col-5" style="font-size: 1em">표시수량</span>
+								<select name="display_amount" id="display_amount" class="col-4 input-box" onchange="changeDisplay()">
+									<option value="5" selected>5</option>
+									<option value="10">10</option>
+									<option value="20">20</option>
+									<option value="50">50</option>
+									<option value="100">100</option>
+								</select>
+							</div>
+						</div>
+						<div id="grid"></div>
+					</div>
+				</div>	
+			 </div>		 
+			 <!-- 세금계산서 모달 -->
+			 <div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+							    	'taxLookModal', 
+							    	'modal-xl', 
+							    	'세금계산서', 
+							    	'accnut/modal/taxBody', 
+							    	'accnut/modal/taxFooter'
+							    )"></div>
+		</div>
 	</div>
 	
 <script>

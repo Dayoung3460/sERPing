@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"></head>
+<head><meta charset="UTF-8">
+<style>
+	.row {
+		margin-bottom : 10px;
+	}
+
+</style>	
+</head>
 <body>
     <div class="container">
         <div class="row">
             <span class="col-2">채무 코드</span>
-            <input type="text" class="col-8" id="debtCode" disabled>
+            <input type="text" class="col-8 form-control input-box" id="debtCode" disabled>
         </div>
 
         <div class="row">
             <span class="col-2">구분</span>
-            <select type="text" class="col-8" id="section" disabled>
+            <select type="text" class="col-8 form-control input-box" id="section" disabled>
                 <option value="">구분</option>
                 <option value="AC07">대출금</option>
                 <option value="AC08">미지급금</option>
@@ -20,22 +27,22 @@
 
         <div class="row">
             <span class="col-2">채무명</span>
-            <input type="text" class="col-8" id="debtName">
+            <input type="text" class="col-8 form-control input-box" id="debtName">
         </div>
 
         <div class="row">
             <span class="col-2">채권자</span>
-            <input type="text" class="col-8" id="creditor">
+            <input type="text" class="col-8 form-control input-box" id="creditor">
         </div>
 
         <div class="row">
             <span class="col-2">금액</span>
-            <input type="number" class="col-8" id="amount">
+            <input type="number" class="col-8 form-control input-box" id="amount">
         </div>
 
         <div class="row">
             <span class="col-2">등록일</span>
-            <input type="date" class="col-8" id="registerDate" >
+            <input type="date" class="col-8 form-control input-box" id="registerDate" >
         </div>
         
     </div>
@@ -69,12 +76,12 @@
             case '대출금' :   
             				html += `<div class="row removeRow">
             							<span class="col-2">이자율</span>
-            							<input type="number" class="col-8" id="interest">
+            							<input type="number" class="col-8 form-control input-box" id="interest">
             						</div>
             						
             						<div class="row removeRow">
 	        							<span class="col-2">예정납기일</span>
-	        							<input type="date" class="col-8" id="prearrangementDueDate">
+	        							<input type="date" class="col-8 form-control input-box" id="prearrangementDueDate">
 	        						</div>
             				`;
             				amount.closest("div.row").insertAdjacentHTML("afterend", html);
@@ -83,7 +90,7 @@
             case '미지급금' :   
                             html += `<div class="row removeRow">
 		    							<span class="col-2">예정납기일</span>
-		    							<input type="date" class="col-8" id="prearrangementDueDate">
+		    							<input type="date" class="col-8 form-control input-box" id="prearrangementDueDate">
 		    						</div>
                             `;
                             amount.closest("div.row").insertAdjacentHTML("afterend", html);
@@ -93,12 +100,12 @@
             case '외상매입금' :   
             				 html += `<div class="row removeRow">
 		     							<span class="col-2">이자율</span>
-		     							<input type="number" class="col-8" id="interest">
+		     							<input type="number" class="col-8 form-control input-box" id="interest">
 		     						</div>
             				 
             				 		<div class="row removeRow">
 										<span class="col-2">기한</span>
-										<input type="date" class="col-8" id="timeLimit">
+										<input type="date" class="col-8 form-control input-box" id="timeLimit">
 									</div>
 					         `;
         					 amount.closest("div.row").insertAdjacentHTML("afterend", html);
