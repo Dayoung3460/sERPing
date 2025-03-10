@@ -168,12 +168,12 @@
 	<!-- 검색 필터 영역 (레이아웃 정리) -->
 	<!-- 검색 필터 영역 -->
 	<div class="search-box bg-light p-3 rounded shadow-sm d-flex justify-content-center" id="custom-container">
-	    <div class="search-box-inner">
-	        <div class="row g-3">
+	    <div class="search-box-inner d-flex flex-column align-items-center w-100" style="max-width: 900px;">
+	        <div class="row w-100 g-3 justify-content-center">
 	            <!-- 검색 기준 -->
-	            <div class="col-md-3">
+	            <div class="col-md-3 d-flex flex-column align-items-left">
 	                <label class="form-label">검색 기준</label>
-	                <select class="form-select" id="searchCategory">
+	                <select class="form-select w-100" id="searchCategory">
 	                    <option value="전체">전체</option>
 	                    <option value="employeeName">사원명</option>
 	                    <option value="employeeId">사원ID</option>
@@ -182,52 +182,53 @@
 	            </div>
 	
 	            <!-- 검색어 입력 -->
-	            <div class="col-md-6">
+	            <div class="col-md-6 d-flex flex-column align-items-left">
 	                <label class="form-label">검색어</label>
-	                <input type="text" class="form-control" placeholder="검색어 입력 후 [Enter]" id="searchKeyword">
+	                <input type="text" class="form-control w-100" placeholder="검색어 입력 후 [Enter]" id="searchKeyword">
 	            </div>
 	        </div>
 	
-	        <div class="row g-3 mt-2">
+	        <div class="row w-100 g-3 mt-2 justify-content-center">
 	            <!-- 부서 선택 -->
-	            <div class="col-md-3">
+	            <div class="col-md-3 d-flex flex-column align-items-left">
 	                <label class="form-label">부서</label>
-	                <select class="form-select" id="searchDepartment">
+	                <select class="form-select w-100" id="searchDepartment">
 	                    <option value="">선택</option>
 	                </select>
 	            </div>
 	
 	            <!-- 하위 부서 선택 -->
-	            <div class="col-md-3">
+	            <div class="col-md-3 d-flex flex-column align-items-left">
 	                <label class="form-label">하위 부서</label>
-	                <select class="form-select" id="searchSubDepartment">
+	                <select class="form-select w-100" id="searchSubDepartment">
 	                    <option value="">선택</option>
 	                </select>
 	            </div>
 	
 	            <!-- 직급 선택 -->
-	            <div class="col-md-3">
+	            <div class="col-md-3 d-flex flex-column align-items-left">
 	                <label class="form-label">직급</label>
-	                <select class="form-select" id="searchPosition">
+	                <select class="form-select w-100" id="searchPosition">
 	                    <option value="">선택</option>
 	                </select>
 	            </div>
 	        </div>
 	
-	        <div class="row g-3 mt-2">
+	        <div class="row w-100 g-3 mt-2 justify-content-center">
 	            <!-- 재직 상태 -->
-	            <div class="col-md-4">
+	            <div class="col-md-4 d-flex flex-column align-items-left">
 	                <label class="form-label">재직 상태</label>
 	                <div class="btn-group w-100" role="group" id="statusGroup"></div>
 	            </div>
 	
 	            <!-- 근무 유형 -->
-	            <div class="col-md-4">
+	            <div class="col-md-4 d-flex flex-column align-items-left">
 	                <label class="form-label">근무 유형</label>
 	                <div class="btn-group w-100" role="group" id="employmentTypeGroup"></div>
 	            </div>
 	        </div>
 	
+	        <!-- 버튼 중앙 정렬 -->
 	        <div class="row mt-3 text-center">
 	            <div class="col">
 	                <button class="btn btn-primary px-4 me-2" onclick="searchEmployees()" id="searchBtn">조회</button>
@@ -236,6 +237,7 @@
 	        </div>
 	    </div>
 	</div>
+
 
 
     <!-- 사원 검색 영역 끝 -->
