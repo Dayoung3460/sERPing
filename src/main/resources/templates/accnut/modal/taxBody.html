@@ -10,12 +10,16 @@
 
 </head>
 <body>
-	<div class="row">
-	<div class="col-8"></div>
-		<span class="col-2">페이지</span>
-		<select id="page" class="col-2" onchange="changePdf()">
-			<option value="1" selected>1</option>
-		</select>
+	<div id="rayout-container" class="row mb-3">
+		<div class="col-9"></div>
+		<!-- 그리드 표시 수량 인풋 -->
+		<div class="col-3 row ">
+			<div class="col-3"></div>
+			<span class="label-search col-5" style="font-size: 1em">페이지</span>
+			<select name="page" id="page" class="col-4 input-box" onchange="changePdf()">
+				<option value="1" selected>1</option>
+			</select>
+		</div>
 	</div>
 	
 	<div style="display:flex;">

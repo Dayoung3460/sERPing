@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"></head>
+<head><meta charset="UTF-8">
+<style>
+	.row {
+		margin-bottom : 10px;
+	}
+
+</style>
+</head>
 <body>
     <div class="container">
         <div class="row">
             <span class="col-2">자산 코드</span>
-            <input type="text" class="col-8" id="assetsCode" disabled>
+            <input type="text" class="col-8 form-control input-box" id="assetsCode" disabled>
         </div>
 
         <div class="row">
             <span class="col-2">구분</span>
-            <select type="text" class="col-8" id="section" disabled>
+            <select type="text" class="col-8 form-control input-box" id="section" disabled>
                 <option value="">구분</option>
                 <option value="AC01">현금</option>
                 <option value="AC02">통장</option>
@@ -21,22 +28,22 @@
 
         <div class="row">
             <span class="col-2">자산명</span>
-            <input type="text" class="col-8" id="assetsName">
+            <input type="text" class="col-8 form-control input-box" id="assetsName">
         </div>
 
         <div class="row">
             <span class="col-2">소유주</span>
-            <input type="text" class="col-8" id="owner">
+            <input type="text" class="col-8 form-control input-box" id="owner">
         </div>
 
         <div class="row">
             <span class="col-2">금액</span>
-            <input type="number" class="col-8" id="amount">
+            <input type="number" class="col-8 form-control input-box" id="amount">
         </div>
 
         <div class="row">
             <span class="col-2">등록일</span>
-            <input type="date" class="col-8" id="registerDate" >
+            <input type="date" class="col-8 form-control input-box" id="registerDate" >
         </div>
         
     </div>
@@ -72,7 +79,7 @@
             case '통장' :   
                             html += `<div class="row removeRow">
                                             <span class="col-2">은행</span>
-                                            <select class="col-8" id="financialInstitution">
+                                            <select class="col-8 form-control input-box" id="financialInstitution">
                                             	<option value="">은행</option>
                                             	<option value="FI01">농협</option>
                                             	<option value="FI02">국민</option>
@@ -86,7 +93,7 @@
 
                                         <div class="row removeRow">
                                             <span class="col-2">계좌번호</span>
-                                            <input type="text" class="col-8" id="financeInformation">
+                                            <input type="text" class="col-8 form-control input-box" id="financeInformation">
                                         </div>
                                     `;
                             assetsName.closest("div.row").insertAdjacentHTML("afterend", html);
@@ -96,7 +103,7 @@
             case '카드' :   
                             html += `<div class="row removeRow">
                                             <span class="col-2">카드사</span>
-                                            <select class="col-8" id="financialInstitution">
+                                            <select class="col-8 form-control input-box" id="financialInstitution">
 	                                        	<option value="">은행</option>
 	                                        	<option value="FI01">농협</option>
 	                                        	<option value="FI02">국민</option>
@@ -110,7 +117,7 @@
 
                                         <div class="row removeRow">
                                             <span class="col-2">카드번호</span>
-                                            <input type="text" class="col-8" id="financeInformation">
+                                            <input type="text" class="col-8 form-control input-box" id="financeInformation">
                                         </div>
                                     `;
                             assetsName.closest("div.row").insertAdjacentHTML("afterend", html);
@@ -121,12 +128,12 @@
             case '비품' :   
                             html += `<div class="row removeRow">
                                 		    <span class="col-2">비품 금액</span>
-                                	 	    <input type="number" class="col-8" id="fixturesAmount">
+                                	 	    <input type="number" class="col-8 form-control input-box" id="fixturesAmount">
                             		    </div>
 
                             		    <div class="row removeRow">
                                             <span class="col-2">비품 수량</span>
-                                            <input type="number" class="col-8" id="quantity">
+                                            <input type="number" class="col-8 form-control input-box" id="quantity">
                                         </div>
 
                                         

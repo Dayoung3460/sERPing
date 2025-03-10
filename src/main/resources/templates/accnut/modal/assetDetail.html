@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"></head>
+<head><meta charset="UTF-8">
+<style>
+	.row {
+		margin-bottom : 10px;
+	}
+
+</style>
+</head>
 <body>    
     <div class="container">
         <div class="row">
             <span class="col-2">자산 코드</span>
-            <input type="text" class="col-8" id="assetsCode" readonly>
+            <input type="text" class="col-8 form-control input-box" id="assetsCode" readonly>
         </div>
 
         <div class="row">
             <span class="col-2">구분</span>
-            <input type="text" class="col-8" id="section" readonly>
+            <input type="text" class="col-8 form-control input-box" id="section" readonly>
         </div>
 
         <div class="row">
             <span class="col-2">자산명</span>
-            <input type="text" class="col-8" id="assetsName" readonly>
+            <input type="text" class="col-8 form-control input-box" id="assetsName" readonly>
         </div>
 
         <div class="row">
             <span class="col-2">소유주</span>
-            <input type="text" class="col-8" id="owner" readonly>
+            <input type="text" class="col-8 form-control input-box" id="owner" readonly>
         </div>
 
         <div class="row">
             <span class="col-2">금액</span>
-            <input type="number" class="col-8" id="amount" readonly>
+            <input type="number" class="col-8 form-control input-box" id="amount" readonly>
         </div>
 
         <div class="row">
             <span class="col-2">등록일</span>
-            <input type="date" class="col-8" id="registerDate" readonly>
+            <input type="date" class="col-8 form-control input-box" id="registerDate" readonly>
         </div>
         
     </div>
@@ -63,36 +70,36 @@
                 case '현금' :   break;
                 case '통장' :   html += `<div class="row removeRow">
                                             <span class="col-2">은행</span>
-                                            <input type="text" class="col-8" id="financialInstitution" readonly value="${rowData.financialInstitution}">
+                                            <input type="text" class="col-8 form-control input-box" id="financialInstitution" readonly value="${rowData.financialInstitution}">
                                         </div>
 
                                         <div class="row removeRow">
                                             <span class="col-2">계좌번호</span>
-                                            <input type="text" class="col-8" id="financeInformation" readonly value="${rowData.financeInformation}">
+                                            <input type="text" class="col-8 form-control input-box" id="financeInformation" readonly value="${rowData.financeInformation}">
                                         </div>
                                     `;
                                 assetsName.closest("div.row").insertAdjacentHTML("afterend", html);
                                 break;
                 case '카드' :   html += `<div class="row removeRow">
                                             <span class="col-2">카드사</span>
-                                            <input type="text" class="col-8" id="financialInstitution" readonly value="${rowData.financialInstitution}">
+                                            <input type="text" class="col-8 form-control input-box" id="financialInstitution" readonly value="${rowData.financialInstitution}">
                                         </div>
 
                                         <div class="row removeRow">
                                             <span class="col-2">카드번호</span>
-                                            <input type="text" class="col-8" id="financeInformation" readonly value="${rowData.financeInformation}">
+                                            <input type="text" class="col-8 form-control input-box" id="financeInformation" readonly value="${rowData.financeInformation}">
                                         </div>
                                     `;
                                 assetsName.closest("div.row").insertAdjacentHTML("afterend", html);
                                 break;
                 case '비품' :   html += `<div class="row removeRow">
                                             <span class="col-2">비품 수량</span>
-                                            <input type="number" class="col-8" id="quantity" readonly value="${rowData.quantity}">
+                                            <input type="number" class="col-8 form-control input-box" id="quantity" readonly value="${rowData.quantity}">
                                         </div>
 
                                         <div class="row removeRow">
                                             <span class="col-2">비품 금액</span>
-                                            <input type="number" class="col-8" id="fixturesAmount" readonly value="${rowData.fixturesAmount}">
+                                            <input type="number" class="col-8 form-control input-box" id="fixturesAmount" readonly value="${rowData.fixturesAmount}">
                                         </div>
                                     `;
                                 owner.closest("div.row").insertAdjacentHTML("afterend", html);
