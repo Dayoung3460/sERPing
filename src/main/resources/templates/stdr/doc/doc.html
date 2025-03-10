@@ -47,9 +47,11 @@
         </div>
         <div id="editor"></div>
         <button class="btn btn-primary mt-4 ml-auto d-block" id="addBtn">등록</button>
+        <div id="companyName" data-company="[[${session.companyEngName}]]"></div>
 
         <script src="/js/stdr/doc.js"></script>
-        <script>
+        <script th:inline="javascript">
+            let sessionCompanyName = /*[[${session.companyEngName}]]*/ "회사명";
             let Grid = tui.Grid;
 
             const dataSource = {
@@ -89,27 +91,52 @@
 
             const Editor = toastui.Editor;
             const { tableMergedCell } = Editor.plugin;
-
             const tableContent = `
-# (템플릿 작성 예시) 근태 수정 요청서
-
-
-| 항목       |         |
-|-------------|--------|
-| **사원번호** | [사원번호 입력] |
-| **사원명**  | [사원명 입력] |
-| **부서**    | [부서 입력] |
-| **수정 요청일** | [YYYY-MM-DD] |
-| **기존 출근 시간** | [기존 출근 시간 입력] |
-| **기존 퇴근 시간** | [기존 퇴근 시간 입력] |
-| **실제 출근 시간** | [실제 출근 시간 입력] |
-| **실제 퇴근 시간** | [실제 퇴근 시간 입력] |
-| **수정 사유** | [수정 사유 입력] |
-| **이미지 첨부** |  |
-
-
+<div style="display: flex; justify-content: center;">
+<h1 class="text-center">휴가신청서</h1>
+    <table border="1" style="margin: auto;">
+        <tr>
+            <th>부서</th>
+            <td>[부서 입력]</td>
+            <th>직급</th>
+            <td>[직급 입력]</td>
+        </tr>
+        <tr>
+            <th>성명</th>
+            <td>[성명 입력]</td>
+            <th>비상연락망</th>
+            <td>[연락처 입력]</td>
+        </tr>
+        <tr>
+            <th>유형</th>
+            <td colspan="3">□ 연차 &nbsp;&nbsp; □ 반차 &nbsp;&nbsp; □ 병가 &nbsp;&nbsp; □ 기타</td>
+        </tr>
+        <tr>
+            <th>기간</th>
+            <td colspan="3">[YYYY년 MM월 DD일] ~ [YYYY년 MM월 DD일] (총 [일수] 일)</td>
+        </tr>
+        <tr>
+            <th>세부 사항</th>
+            <td colspan="3" height="100">[세부 사항 입력]</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="center">
+                위와 같이 휴가를 신청하오니 허락하여 주시기 바랍니다.
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="center">
+                <strong>신청일:</strong> [YYYY년 MM월 DD일] <br><br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="center">
+                <h2>주식회사 ${sessionCompanyName}</h2>
+            </td>
+        </tr>
+    </table>
+    </div>
 `;
-
             const editor = new Editor({
                 el: document.querySelector('#editor'),
                 previewStyle: 'vertical',
@@ -146,6 +173,26 @@
                     }
                 }
             });
+
+            editor.getMarkdown(); // 현재 에디터 내용 가져오기
+            // setTimeout(() => {
+            //     const editorContent = editor.getHTML();
+            //     editor.setHTML(`<div style="display: flex; flex-direction: column;">${editorContent}</div>`);
+            // }, 100);
+
+            setTimeout(() => {
+                const editorRoot = editor.getRootElement(); // Toast UI Editor의 루트 요소 가져오기
+                const contentElement = editorRoot.querySelector('.toastui-editor-contents');
+                console.log(editorRoot)
+
+                if (contentElement) {
+                    contentElement.style.display = 'flex';
+                    contentElement.style.flexDirection = 'column';
+                    contentElement.style.alignItems = 'center'; // 중앙 정렬
+                    contentElement.style.justifyContent = 'center';
+                }
+            }, 100);
+
 
             const addBtn = document.getElementById('addBtn')
             addBtn.addEventListener('click', () => {
