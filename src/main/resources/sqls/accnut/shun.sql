@@ -797,3 +797,12 @@ FROM accnut_tax_header th;
 
 
 select TO_CHAR(sysdate, 'Month') from dual;
+
+
+select * from bsn_bhf;
+
+select * from hr_department where company_num = 45 and parent_department_num is not null;
+
+update accnut_salary_account_book
+set bonus = 0;
+commit;

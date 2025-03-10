@@ -88,124 +88,145 @@
 <body layout:fragment="content">
 	<div class="container">
 		<!-- 메뉴이름 -->
-		 <div>
-			 <h2>세금계산서 발행</h2>
-		 </div>
-		 <!-- 계산서 등록 -->
-	 	<table class="table tax">
-			<tr>
-				<th rowspan="6" class="sero realLeft">공<br><br><br>급<br><br><br>자</th>
-				<th class="left fontRed menuTh"><span class="star">*</span> 등록<br>번호</th>
-				<td class="left inputTh" id="bsnNum1"></td>
-				<th class="left fontRed menuTh">종사업장<br>번호</th>
-				<td class="left inputTh"></td>
-				
-				<th rowspan="6" class="sero realRight">공<br><br>급<br><br>받<br><br>는<br><br>자</th>
-				<th class="right fontBlue menuTh"><span class="star">*</span>등록<br>번호</th>
-				<td class="right inputTh">
-					<select name="bhf" id="bhf" class="form-control form-control-sm height-15" onchange="displayBhf()">
-						<option value="">지점을 선택해주세요</option>
-						
-					</select>
-				</td>
-				<th class="right fontBlue menuTh">종사업장<br>번호</th>
-				<td class="right inputTh"></td>
-			</tr>
-			<tr>
-				<th class="left fontRed menuTh"><span class="star">*</span> 상호</th>
-				<td class="left inputTh" id="coName1"></td>
-				<th class="left fontRed menuTh"><span class="star">*</span> 성명</th>
-				<td class="left inputTh" id="representor1"></td>
-				
-				<th class="right fontBlue menuTh"><span class="star">*</span> 상호</th>
-				<td class="right inputTh" id="name2"></td>
-				<th class="right fontBlue menuTh"><span class="star">*</span> 성명</th>
-				<td class="right inputTh" id="manager2"></td>
-			</tr>
-			<tr>
-				<th class="left fontRed menuTh">사업장</th>
-				<td colspan="3" class="left longTh" id="address1"></td>
-				
-				<th class="right fontBlue menuTh">사업장</th>
-				<td colspan="3" class="right longTh" id="address2"></td>
-			</tr>
-			<tr>
-				<th class="left fontRed menuTh">업태</th>
-				<td class="left inputTh" id="status1"></td>
-				<th class="left fontRed menuTh">종목</th>
-				<td class="left inputTh" id="cate1"></td>
-				
-				<th class="right fontBlue menuTh">업태</th>
-				<td class="right inputTh" id="status2"></td>
-				<th class="right fontBlue menuTh">종목</th>
-				<td class="right inputTh" id="cate2"></td>
-			</tr>
-			<tr>
-				<th rowspan="2" class="left fontRed menuTh">이메일</th>
-				<td colspan="3" rowspan="2" class="left longTh" id="email1"></td>
-				
-				<th class="right fontBlue menuTh">이메일</th>
-				<td colspan="3" class="right longTh" id="email2">
-					<div class="flexArea">
-						<input type="text" name="email2Head" id="email2Head" class="form-control form-control-sm height-15">
-						<span class="textMail">@</span>
-						<select id="email2Tail" class="form-control form-control-sm height-15" onchange="changeDomain(this)">
-							<option value="" selected>도메인</option>
-							<option value="naver.com">네이버</option>
-					        <option value="gmail.com">G메일</option>
-					        <option value="daum.net">다음</option>
-					        <option value="hotmail.com">핫메일</option>
-						
-						</select>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th class="right fontBlue menuTh">이메일</th>
-				<td colspan="3" class="right longTh" id="email3">
-					<div class="flexArea">
-						<input type="text" name="email3Head" id="email3Head" class="form-control form-control-sm height-15">
-						<span class="textMail">@</span>
-						<select id="email3Tail" class="form-control form-control-sm height-15" onchange="changeDomain(this)">
-							<option value="" selected>도메인</option>
-							<option value="naver.com">네이버</option>
-					        <option value="gmail.com">G메일</option>
-					        <option value="daum.net">다음</option>
-					        <option value="hotmail.com">핫메일</option>
-						</select>			
-					</div>
-				</td>
-			</tr>
-		</table>
-		<!-- 합계 테이블 -->
-		<table class="table total">
-			<tr>
-				<th class="menuTh totals"><span class="star">*</span> 작성일자</th>
-				<td colspan="2" class="totals longTd nopadding"><input type="date" name="regiserDate" id="regiserDate" class="form-control form-control-sm height-15" ></td>
-				<!-- onchange="gridmonthchange()"  -->
-				<th class="menuTh totals" >비고</th>
-				<td colspan="2" class="totals longTd"><input type="text" name="note" id="note" class="form-control form-control-sm height-15"></td>
-			</tr>
-			<tr>
-				<th class="menuTh totals">&nbsp;&nbsp;합계금액</th>
-				<td class="totals" id="total">0</td>
-				<th class="menuTh totals">공급가액</th>
-				<td class="totals" id="supplyPrice">0</td>
-				<th class="menuTh totals">세액</th>
-				<td class="totals" id="tax">0</td>
-			</tr>
-		</table>
-		<!-- 품목 추가 버튼 -->
-		<p class="nomargin">※품목의 월은 작성일자의 월이 표시되고 변경은 작성일자 수정시 자동 반영됨</p>
-		<div class="row">
-		<!-- 
-			<button type="button" onclick="addgrid()" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2">품목추가</button>
-		 -->
-			<button type="button" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2" data-bs-toggle="modal" data-bs-target="#closingSearchModal">정산 선택</button>
+		<h2 class="mt-2 mb-2"><b>세금계산서 발행</b></h2>
+		<hr>
+		
+		<div class="col-md-12 stretch-card mt-2">
+			<div class="card">
+				<div class="card-body">
+					 <!-- 계산서 등록 -->
+				 	<table class="table tax">
+						<tr>
+							<th rowspan="6" class="sero realLeft">공<br><br><br>급<br><br><br>자</th>
+							<th class="left fontRed menuTh"><span class="star">*</span> 등록<br>번호</th>
+							<td class="left inputTh" id="bsnNum1"></td>
+							<th class="left fontRed menuTh">종사업장<br>번호</th>
+							<td class="left inputTh"></td>
+							
+							<th rowspan="6" class="sero realRight">공<br><br>급<br><br>받<br><br>는<br><br>자</th>
+							<th class="right fontBlue menuTh"><span class="star">*</span>등록<br>번호</th>
+							<td class="right inputTh">
+								<select name="bhf" id="bhf" class="form-control form-control-sm height-15" onchange="displayBhf()">
+									<option value="">지점을 선택해주세요</option>
+									
+								</select>
+							</td>
+							<th class="right fontBlue menuTh">종사업장<br>번호</th>
+							<td class="right inputTh"></td>
+						</tr>
+						<tr>
+							<th class="left fontRed menuTh"><span class="star">*</span> 상호</th>
+							<td class="left inputTh" id="coName1"></td>
+							<th class="left fontRed menuTh"><span class="star">*</span> 성명</th>
+							<td class="left inputTh" id="representor1"></td>
+							
+							<th class="right fontBlue menuTh"><span class="star">*</span> 상호</th>
+							<td class="right inputTh" id="name2"></td>
+							<th class="right fontBlue menuTh"><span class="star">*</span> 성명</th>
+							<td class="right inputTh" id="manager2"></td>
+						</tr>
+						<tr>
+							<th class="left fontRed menuTh">사업장</th>
+							<td colspan="3" class="left longTh" id="address1"></td>
+							
+							<th class="right fontBlue menuTh">사업장</th>
+							<td colspan="3" class="right longTh" id="address2"></td>
+						</tr>
+						<tr>
+							<th class="left fontRed menuTh">업태</th>
+							<td class="left inputTh" id="status1"></td>
+							<th class="left fontRed menuTh">종목</th>
+							<td class="left inputTh" id="cate1"></td>
+							
+							<th class="right fontBlue menuTh">업태</th>
+							<td class="right inputTh" id="status2"></td>
+							<th class="right fontBlue menuTh">종목</th>
+							<td class="right inputTh" id="cate2"></td>
+						</tr>
+						<tr>
+							<th rowspan="2" class="left fontRed menuTh">이메일</th>
+							<td colspan="3" rowspan="2" class="left longTh" id="email1"></td>
+							
+							<th class="right fontBlue menuTh">이메일</th>
+							<td colspan="3" class="right longTh" id="email2">
+								<div class="flexArea">
+									<input type="text" name="email2Head" id="email2Head" class="form-control form-control-sm height-15">
+									<span class="textMail">@</span>
+									<select id="email2Tail" class="form-control form-control-sm height-15" onchange="changeDomain(this)">
+										<option value="" selected>도메인</option>
+										<option value="naver.com">네이버</option>
+								        <option value="gmail.com">G메일</option>
+								        <option value="daum.net">다음</option>
+								        <option value="hotmail.com">핫메일</option>
+									
+									</select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th class="right fontBlue menuTh">이메일</th>
+							<td colspan="3" class="right longTh" id="email3">
+								<div class="flexArea">
+									<input type="text" name="email3Head" id="email3Head" class="form-control form-control-sm height-15">
+									<span class="textMail">@</span>
+									<select id="email3Tail" class="form-control form-control-sm height-15" onchange="changeDomain(this)">
+										<option value="" selected>도메인</option>
+										<option value="naver.com">네이버</option>
+								        <option value="gmail.com">G메일</option>
+								        <option value="daum.net">다음</option>
+								        <option value="hotmail.com">핫메일</option>
+									</select>			
+								</div>
+							</td>
+						</tr>
+					</table>
+					<!-- 합계 테이블 -->
+					<table class="table total">
+						<tr>
+							<th class="menuTh totals"><span class="star">*</span> 작성일자</th>
+							<td colspan="2" class="totals longTd nopadding"><input type="date" name="regiserDate" id="regiserDate" class="form-control form-control-sm height-15" ></td>
+							<!-- onchange="gridmonthchange()"  -->
+							<th class="menuTh totals" >비고</th>
+							<td colspan="2" class="totals longTd"><input type="text" name="note" id="note" class="form-control form-control-sm height-15"></td>
+						</tr>
+						<tr>
+							<th class="menuTh totals">&nbsp;&nbsp;합계금액</th>
+							<td class="totals" id="total">0</td>
+							<th class="menuTh totals">공급가액</th>
+							<td class="totals" id="supplyPrice">0</td>
+							<th class="menuTh totals">세액</th>
+							<td class="totals" id="tax">0</td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
-		<!-- 그리드로 정보 입력 -->
-		<div id="taxgrid"></div>
-		<!-- 등록 초기화 버튼 -->
+		
+		<div class="col-md-12 stretch-card mt-2 mb-5">
+			<div class="card">
+				<div class="card-body">
+					<!-- 품목 추가 버튼 -->
+					<p class="nomargin">※품목의 월은 작성일자의 월이 표시되고 변경은 작성일자 수정시 자동 반영됨</p>
+					<div class="row">
+					<!-- 
+						<button type="button" onclick="addgrid()" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2">품목추가</button>
+					 -->
+						<button type="button" class="btn btn-outline-secondary btn-inverse-secondary btn-fw btn-sm col-2" data-bs-toggle="modal" data-bs-target="#closingSearchModal">정산 선택</button>
+					</div>
+					<!-- 그리드로 정보 입력 -->
+					<div id="taxgrid"></div>
+					<!-- 등록 초기화 버튼 -->
+					<!-- 하단 버튼 -->
+					<div class="underBtn mt-5" style="text-align : center">
+						<button style="margin: 0px 10px;" class="btn btn-primary" onclick="insertBtn()">등록</button>
+						<button style="margin: 0px 10px;" class="btn btn-secondary" onclick="resetBtn()">초기화</button>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+		<!-- 
 		<div class="row">
 			<div class="col-4"></div>
 			<button type="button" class="col-1" onclick="resetBtn()">초기화</button>
@@ -213,6 +234,7 @@
 			<button type="button" class="col-1" onclick="insertBtn()">등록</button>
 			<div class="col-4"></div>
 		</div>
+		 -->
 		 <!-- 상품 검색 모달
 		<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
 						    	'optSearchModal', 
