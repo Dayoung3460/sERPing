@@ -11,7 +11,7 @@ public class DebtDTO {
 	String section;
 	Date registerDate;
 	String creditor;
-	int amount;
+	Long amount;
 	double interest;
 	Date timeLimit;
 	Date prearrangementDueDate;
