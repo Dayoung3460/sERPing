@@ -21,6 +21,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	.tui-grid-row-highlight {
 		    background-color: #f0f8ff !important; /* 연한 하늘색 */
 	}
+	
   </style>
   
 
@@ -30,64 +31,56 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   <!-- 페이지 내용 시작 -->
   <div class="container">
 	
-    <h3>주문 등록</h3>
+    <h2 class="mt-2 mb-2"><b>주문 등록</b></h2>
 	<hr>
     <!-- 🔍 검색 조건 -->
     <div class="row mb-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">검색 조건</h4>
-                    <p class="card-description">검색 조건을 선택하세요.</p>
-                    <!--  <form name='searchForm' action="/bsn/order" class="forms-sample"> -->
-                        <div class="d-flex align-items-center gap-3">
+                    
+                        <div class="row align-items-center ">
                             <!-- 라디오 버튼 -->
-                            <div class="d-flex gap-3">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" value="notSelect" checked onclick="toggleDateInputs(false)">
-                                        사용안함
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" value="orderDate" onclick="toggleDateInputs(true)">
-                                        주문일자
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="optionsRadios" value="dueDate" onclick="toggleDateInputs(true)">
-                                        납기일자
-                                    </label>
-                                </div>
+                            <div class="col-2  gap-3">
+                            	<label for="selectedOption">날짜</label>
+                                <select class="form-select" onclick="toggleDateInputs()" id="selectedOption" style="height: 38px;">
+                                	<option value="">선택</option>
+                                	<option value="orderDate">주문일자</option>
+                                	<option value="dueDate">납기일자</option>
+                                </select>    
+                                
                             </div>
-
                             <!-- 날짜 입력 -->
-                            <div class="d-flex gap-3">
+                            <div class="col-auto gap-3">
                                 <div>
-                                    <label for="startDate">시작 날짜</label>
+                                	<label for="startDate">From</label>
                                     <input type="date" class="form-control" id="startDate" name="startDate" disabled>
                                 </div>
+                            </div>
+                            <div class="col-auto gap-3">
                                 <div>
-                                    <label for="endDate">끝 날짜</label>
+                                	<label for="endDate">To</label>
                                     <input type="date" class="form-control" id="endDate" name="endDate" disabled>
                                 </div>
                             </div>
+                            <!-- TODO: 현재는 DB에서 지점명들을 가져오기 곤란해서 지점을 DB에서 가져오는 동적 방식이 아니라 작성된 지점 목록에서 조회하는 방식으로 했습니다-->
+							<!-- 이 코드를 저말고 보는 분이 있다면, 프로젝트를 같이해줘서 고맙다는 말을 전해드리고 싶어요!-->
+                            <div class="col-3 form-group m-3">
+							    <label for="inputBhf">발주지점</label>
+							    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
+							    <ul id="suggestionList" class="list-group" style="position: absolute; width: 95%; z-index: 1000; display: none;"></ul>
+							    
+							</div>
+                            
+                            <div class="col-auto  text-center mt-4 mx-5">
+	                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
+	                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
+                        	</div>
+                            
                         </div>
 
-                        <div class="form-group m-3">
-						    <label for="inputBhf">발주지점</label>
-						    <input type="text" class="form-control" id="inputBhf" placeholder="발주지점을 입력하세요">
-						</div>
-                        
-						<div class="col-12 text-center">
-                        	<button class="btn btn-primary mr-2" onclick="search()">검색</button>
-                        	<button class="btn btn-secondary"        onclick="reset()">초기화</button>
-                        </div>
-                    <!-- </form> -->
-                </div>
-            </div>
+            	</div>
+        	</div>
         </div>
     </div>
 
@@ -97,10 +90,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-md-9 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">검색 결과</h4>
-                    <p class="card-description">지점측 발주 요청 목록</p>
+                    <h4 class="card-title">발주 요청 목록</h4>
+                    <p class="card-description"></p>
                     <div id="orderList"></div>
-                    <div id="pagination" class="tui-pagination"></div>
+                    <!-- <div id="pagination" class="tui-pagination"></div> -->
                 </div>
             </div>
         </div>
@@ -109,8 +102,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-md-3 col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">선택한 발주 요청 정보</h4>
-                    <p class="card-description">선택한 발주 정보를 표시합니다.</p>
+                    <h5 class="card-title">발주 요청 정보</h5>
+                    <p class="card-description"></p>
                     <div id="selectedOrder"></div>
                 </div>
             </div>
@@ -122,8 +115,8 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">📦 선택한 발주 상세 </h4>
-                    <p class="card-description">상품 목록</p>
+                    <h5 class="card-title">발주 상품 목록</h5>
+                    <p class="card-description"></p>
                     <div id="orderDetailList"></div>
                     <div id="pagination" class="tui-pagination"></div>
                 </div>
@@ -135,7 +128,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     <div class="row mt-3">
         <div class="col-12 text-center">
             <button class="btn btn-primary" id="registerButton">승인</button>
-            <button class="btn btn-danger"  id="cancelButton">반려</button>
+            <button class="btn btn-danger"  id="cancelButton">취소</button>
         </div>
     </div>
     
@@ -147,7 +140,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 						    	'modal-md', 
 						    	'주문 등록', 
 						    	'bsn/modal/bsnOrdRegister', 
-						    	'bsn/modal/bsnModalFooter'
+						    	'bsn/modal/bsnCheckModalFooter'
 						    )">
      </div>
      
@@ -177,7 +170,11 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  <script>
 	  
 	  <!-- 검색창 날짜 비활성 -->
-	  	function toggleDateInputs(enable) {
+	  	function toggleDateInputs() {
+	  		let enable = true;
+	  		if(event.target.value == ''){
+	  			enable= false;
+	  		}
 	      document.getElementById("startDate").disabled = !enable;
 	      document.getElementById("endDate").disabled = !enable;
 	      //console.log(companyNum);
@@ -185,7 +182,48 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	      
 	     
 	    }
-	 
+	 	// TODO: DB 연동 후 branchList를 동적으로 가져오도록 개선 필요
+	 	
+	    const branches = ["부산점", "대구점", "홍대점"];
+	    const inputBhf = document.getElementById("inputBhf");
+	    const suggestionList = document.getElementById("suggestionList");
+	
+	    inputBhf.addEventListener("input", function() {
+	        let inputValue = this.value.toLowerCase();
+	        suggestionList.innerHTML = ""; // 기존 목록 삭제
+	
+	        if (inputValue.trim() === "") {
+	            suggestionList.style.display = "none";
+	            return;
+	        }
+	
+	        let matchedBranches = branches.filter(branch => branch.toLowerCase().includes(inputValue));
+	        
+	        if (matchedBranches.length > 0) {
+	            matchedBranches.forEach(branch => {
+	                let listItem = document.createElement("li");
+	                listItem.classList.add("list-group-item");
+	                listItem.textContent = branch;
+	                listItem.addEventListener("click", function() {
+	                    inputBhf.value = branch;
+	                    suggestionList.style.display = "none";
+	                });
+	                suggestionList.appendChild(listItem);
+	            });
+	
+	            suggestionList.style.display = "block";
+	        } else {
+	            suggestionList.style.display = "none";
+	        }
+	    });
+	
+	    // 클릭하면 자동완성 목록 닫기
+	    document.addEventListener("click", function(event) {
+	        if (!inputBhf.contains(event.target) && !suggestionList.contains(event.target)) {
+	            suggestionList.style.display = "none";
+	        }
+	    });
+	 	/////////////////////////
 	  
 	  
 	    var Grid = tui.Grid;
@@ -214,7 +252,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			//rowHeaders: ['checkbox'],
 			columns: [ 
 				{ header : "주문코드", name : "orderCode", align: "left",},
-				{ header : "지점코드", name : "branchOfficeId", align: "left",},
+				{ header : "지점", name : "branchOfficeId", align: "left",},
 				{ header : "주문일", name : "orderDate", formatter: ({ value }) => formatDate(value, 'order'), sortable : true, align: "center",},
 				{ header : "납기일", name : "dueDate", formatter: ({ value }) => formatDate(value, 'due'), sortable : true, align: "center",},
 				{ header : "비고", name : "remark", formatter: ({ value }) => truncate(value, 10), align: "left",},
@@ -267,7 +305,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			if (selectedRow) {
 		        document.querySelector('#selectedOrder').innerHTML = `
 		            <p><strong>주문 코드:</strong> ${selectedRow.orderCode}</p>
-		            <p><strong>지점ID:</strong> ${selectedRow.branchOfficeId}</p>
+		            <p><strong>지점:</strong> ${selectedRow.branchOfficeId}</p>
 		            <p><strong>주문일:</strong> ${formatDate(selectedRow.orderDate, 'order')}</p>
 		            <p><strong>납기일:</strong> ${formatDate(selectedRow.dueDate, 'due')}</p>
 		            ${selectedRow.remark ? `<p><strong>비고:</strong> ${selectedRow.remark}</p>` : ''}
@@ -344,18 +382,22 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		
 		//페이지로드 시 자동으로 전체 검색
 		document.addEventListener('DOMContentLoaded', function() {
+			REnodata();
+		    REDnodata();
+			
 		    search();  // DOMContentLoaded 이벤트 후 자동으로 검색 실행
+		    
 		});
 
 		//검색
 		function search(){
-			let selectedOption = document.querySelector('input[name="optionsRadios"]:checked').value; // 라디오 버튼 선택 값
+			let selectedOption = document.getElementById('selectedOption').value; 
 		    let startDate = document.getElementById("startDate").value; // 시작 날짜
 		    let endDate = document.getElementById("endDate").value; // 끝 날짜
 		    //let selectedBhf = document.getElementById("selectBhf").value; // 발주지점 선택 값
 		    let selectedBhf = document.getElementById("inputBhf").value; // 발주지점 텍스트 입력 값
 		    
-		    console.log(selectedOption, startDate, endDate, selectedBhf);
+		    //console.log(selectedOption, startDate, endDate, selectedBhf);
 		    
 		    let params = {
 		    		"companyNum": companyNum,
@@ -365,9 +407,10 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		            "branch": selectedBhf
 		    };
 		    
-		    console.log("검색 조건:", params);
+		    //console.log("검색 조건:", params);
 		    
 		 	grid.readData(1, params, true);
+		 	refreshOrderGrid();
 		   
 		}
 		
@@ -375,26 +418,30 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		function reset(){
 			// 라디오 버튼 선택 값 초기화
 		    // "사용안함" 라디오 버튼을 체크하도록 설정
-		    let notSelectRadio = document.querySelector('input[name="optionsRadios"][value="notSelect"]');
+		    let notSelectRadio = document.getElementById('selectedOption'); 
+			//.value
 		    if (notSelectRadio) {
-		        notSelectRadio.checked = true;  // "사용안함" 라디오 버튼을 선택 상태로
-		        toggleDateInputs(false);  // 날짜 입력 비활성화
+		    	notSelectRadio.value = "";   // "사용안함" 라디오 버튼을 선택 상태로
+		        toggleDateInputs();  // 날짜 입력 비활성화
 		    }
+			
 
 			// 시작 날짜와 끝 날짜 초기화
 	    	document.getElementById("startDate").value = "";
 	    	document.getElementById("endDate").value = "";
 	    	// 발주지점 선택 값 초기화
-	        document.getElementById("selectBhf").value = "";
+	        document.getElementById("inputBhf").value = "";
 	    	
 	        search();
+	        
 
 		}
 		
 		
 		// 주문등록, 발주취소 한뒤 화면 초기화
 		function refreshOrderGrid() {
-			
+			REnodata();
+			REDnodata();
 			
 		    // 상세 테이블 초기화
 		    detailGrid.resetData([]);
@@ -442,7 +489,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		        }
 		    }
 		
-		    console.log("모든 상세 데이터:", allDetails);
+		    //console.log("모든 상세 데이터:", allDetails);
 		
 		    let orderDTO = {
 		        orderCode: selectedRow.orderCode,
@@ -455,7 +502,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		        orderDetails: allDetails
 		    };
 		
-		    console.log("등록할 주문:", orderDTO);
+		    //console.log("등록할 주문:", orderDTO);
 		    
 		 	// 등록 함수 호출
 		    registerOrder(orderDTO);
@@ -464,7 +511,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		 	//refreshOrderGrid();
 		 	
 		}
-
+		
 		
 	    
 		// 주문 등록 함수
@@ -619,6 +666,26 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		        }
 		    });
 		});
+		
+		
+		
+		
+		
+		// 교환및반품 테이블 데이터 없을때 나오는 문구
+		function REnodata(){
+			setTimeout( () => {
+				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[0];
+				nodata.innerHTML = '요청이 존재하지 않습니다.';
+			}, 100)
+		}
+		// 교환및반품 상세 테이블 데이터 없을때 나오는 문구
+		function REDnodata(){
+			setTimeout( () => {
+				let nodata = document.querySelectorAll('.tui-grid-layer-state-content p')[1];
+				nodata.innerHTML = '주문을 선택해야합니다.';
+			}, 100)
+		}
+		
 
 
 

@@ -185,9 +185,9 @@ import lombok.extern.log4j.Log4j2;
 	            }
 	        } else {
 	            //log.info("🚨 프로필 이미지 없음, 기본 이미지 적용");
-	            //empDTO.setProfileImage("/file/image/mypage/profile/noProfileImg.jpg"); // 기본 이미지 설정
 	            log.info("🚨 프로필 이미지 없음, `null`로 설정");
-	            empDTO.setProfileImage(null); // 기본 이미지 설정을 없애고 `null` 저장
+	            //empDTO.setProfileImage(null); // 기본 이미지 설정을 없애고 `null` 저장
+	            empDTO.setProfileImage("/file/image/mypage/profile/noProfileImg.jpg"); // 기본 이미지 설정
 	        }
 	
 	        // ✅ 사원 등록 실행

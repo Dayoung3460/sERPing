@@ -10,7 +10,7 @@
         
         .button-container { margin-top: 15px; }
         .container {
-		    max-width: 1200px; /* ✅ 두 번째 페이지와 동일한 크기로 설정 */
+		    
 		    margin: 0 auto; /* ✅ 가운데 정렬 */
 		}
 		        
@@ -95,7 +95,7 @@
 	    </div>
 	
 	    <!-- 🔹 Toast Grid -->
-	    <div id="grid" class="tui-grid-container" style="height: 200px;"></div>
+	    <div id="grid" class="tui-grid-container"></div>
 	   
         
 	 
@@ -124,7 +124,7 @@
   'purchs/modal/brandFooter'
   )"></div>
   
-   <!-- 상품 모달 -->
+   <!-- 재고 모달 -->
  <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (
   'goodsNumModal', 
   'modal-xl', 
@@ -133,7 +133,7 @@
   'purchs/modal/brandFooter'
   )"></div>  
   
-   <!-- 상품 모달 -->
+   <!-- 주문서 모달 -->
  <div th:include="purchs/modal/ModalTemplate :: ModalTemplate (
   'orderlistModal', 
   'modal-xl', 

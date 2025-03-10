@@ -8,9 +8,7 @@ let email1 = document.getElementById('email1')
 let email2 = document.getElementById('email2')
 let address = document.getElementById('address')
 let zipCode = document.getElementById('zipCode')
-let phone1 = document.getElementById('phone1')
-let phone2 = document.getElementById('phone2')
-let phone3 = document.getElementById('phone3')
+let phone = document.getElementById('phone')
 let position = document.getElementById('position')
 // let salary = document.getElementById('salary')
 let bankName = document.getElementById('bankName')
@@ -82,9 +80,7 @@ const setInfo = (data) => {
     email2.value = data.email.split('@')[1]
     address.value = data.address
     zipCode.value = data.zipCode
-    phone1.value = data.phone.slice(0, 3)
-    phone2.value = data.phone.slice(3, 7)
-    phone3.value = data.phone.slice(7, 11)
+    phone.value = data.phone
     position.value = data.position
     // salary.value = data.salary || '-'
     bankName.value = data.bankName
@@ -98,6 +94,10 @@ const setInfo = (data) => {
 
 }
 
+const setEmptyImg = () => {
+    profileImg.src = '/file/image/mypage/profile/noProfileImg.jpg';
+}
+
 const getProfileInfo = () => {
     const url = '/api/mypage/profile'
     fetch(url, {
@@ -109,6 +109,8 @@ const getProfileInfo = () => {
         return data.json()
     }).then((data) => {
         setInfo(data)
+    }).catch((e) => {
+        setEmptyImg()
     })
 }
 

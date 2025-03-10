@@ -6,7 +6,8 @@
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
     <a class="navbar-brand brand-logo mr-5" href="/">
       <img src="/images/logo-mini.svg" class="mr-2" alt="logo"/>
-      <span class="font-italic fw-bold m-0" th:text="${session.companyEngName}"></span>
+      <span class="font-italic fw-bold m-0" th:if="${session.companyEngName}" th:text="${session.companyEngName}"></span>
+      <span class="font-italic fw-bold m-0" th:unless="${session.companyEngName}" sec:authentication="name"></span>
     </a>
     <a class="navbar-brand brand-logo-mini" href="/"><img src="/images/logo-mini.svg" alt="logo"/></a>
   </div>

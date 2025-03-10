@@ -110,7 +110,7 @@ const modalElement = document.getElementById("contractModal");
 	const emailInput = document.getElementById("email");
 	const emailErrorMsg = document.createElement("small"); // 오류 메시지 요소 생성
 	emailErrorMsg.style.color = "red";
-	emailInput.parentNode.appendChild(emailErrorMsg); // 이메일 입력 필드 아래에 추가
+	emailInput.parentNode.appendChild(emailErrorMsg); // ㄹ 입력 필드 아래에 추가
 	
 	emailInput.addEventListener("blur", function () {
 	    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -241,18 +241,34 @@ function validateResidentNumber() {
    let file = null;
 
     profileInputIMG.addEventListener("change", function (event) {
-		file = event.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                profileImgView.src = e.target.result;
-            };
-
-            reader.readAsDataURL(file); // 파일을 읽어 base64 URL로 변환
-        }
-
+	    let file = event.target.files[0];
+	
+	    if (file) {
+	        // 파일 크기 확인 (2MB 제한)
+	        if (file.size > 2 * 1024 * 1024) { 
+	            alert("이미지 크기가 너무 큽니다! (최대 2MB)");
+	            profileInputIMG.value = "";  // 파일 선택 취소
+	            return;
+	        }
+	        
+	        // 파일 확장자 제한 (jpg, jpeg, png만 허용)
+	        let allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+	        if (!allowedExtensions.exec(file.name)) {
+	            alert("jpg, jpeg, png 형식의 파일만 업로드 가능합니다.");
+	            event.target.value = ""; // 파일 선택 취소
+	            return;
+	        }
+	
+	        const reader = new FileReader();
+	        reader.onload = function (e) {
+	            document.getElementById("profilePreview").src = e.target.result;
+	            document.getElementById("profilePreview").style.width = "150px";
+	            document.getElementById("profilePreview").style.height = "150px";
+	            document.getElementById("profilePreview").style.objectFit = "cover";
+	        };
+	
+	        reader.readAsDataURL(file);
+	    }
     });
     
     
@@ -377,7 +393,7 @@ function initializeGrid() {
             width: 50,
         }],
         columns: [
-            { header: "사원ID", name: "employeeId", align: "center", width: 100 },
+            { header: "사원ID", name: "employeeId", align: "center",sortable: true, width: 100 },
             { header: "사원명", name: "employeeName", align: "center", sortable: true, width: 150 },
             { header: "부서", name: "departmentName", align: "center", sortable: true, width: 100 },
             { header: "직급", name: "position", align: "center", sortable: true, width: 100, formatter: formatCommonCode('position') },
@@ -385,11 +401,11 @@ function initializeGrid() {
             { header: "근무 유형", name: "employmentType", align: "center", sortable: true, width: 120, formatter: formatCommonCode('employmentType') },
             { header: "입사일", name: "hireDate", align: "center", sortable: true, width: 150, formatter: ({ value }) => value?.split('T')[0] || '' },
             { header: "연락처", name: "phone", align: "center", sortable: true, width: 150, formatter: ({ value }) => formatPhoneNumberForDB(value) },
-            { header: "이메일", name: "email", align: "center", sortable: true, width: 200 },
+            { header: "이메일", name: "email", align: "left", sortable: true, width: 200 },
             { header: "근로계약서", name: "employeeContract", align: "center", sortable: true, width: 120,
 					formatter: function({ row }) {
 					    if (row.contractStatus === "보기") {
-					        return `<button class="btn btn-info btn-sm contractBtn" data-id="${row.employeeNum}">보기</button>`;
+					        return `<button class="btn btn-outline-info btn-sm contractBtn" data-id="${row.employeeNum}">보기</button>`;
 					    } else {
 					        return `<span class="text-danger">미계약</span>`;
 					    }

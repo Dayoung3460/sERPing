@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.beauty1nside.hr.mapper.EmpContractMapper">
 
-    <!-- ✅ 계약 등록 -->
+    <!-- 계약 등록 -->
     <insert id="insertContract" parameterType="com.beauty1nside.hr.dto.EmpContractDTO">
         INSERT INTO HR_EMPLOYEE_CONTRACT (
             CONTRACT_NUM, EMPLOYEE_NUM, COMPANY_NUM, DEPARTMENT_NUM, POSITION, CONTRACT_TYPE,
@@ -22,7 +22,7 @@
         )
     </insert>
 
-    <!-- ✅ 특정 사원의 최근 계약 조회 -->
+    <!-- 특정 사원의 최근 계약 조회 -->
     <select id="getLastContract" parameterType="long" resultType="com.beauty1nside.hr.dto.EmpContractDTO">
         SELECT * FROM HR_EMPLOYEE_CONTRACT 
         WHERE EMPLOYEE_NUM = #{employeeNum}
@@ -30,7 +30,7 @@
         FETCH FIRST 1 ROWS ONLY
     </select>
 
-    <!-- ✅ 전체 계약 목록 조회 -->
+    <!-- 전체 계약 목록 조회 -->
     <select id="getAllContracts" resultType="com.beauty1nside.hr.dto.EmpContractDTO">
         SELECT * FROM HR_EMPLOYEE_CONTRACT ORDER BY REGISTER_DATE DESC
     </select>
@@ -59,7 +59,7 @@
 </select>
 
 
-<select id="searchContracts" parameterType="com.beauty1nside.hr.dto.EmpContractSearchDTO" resultType="com.beauty1nside.hr.dto.EmpContractDTO">
+<select id="searchContracts" resultType="com.beauty1nside.hr.dto.EmpContractDTO">
     SELECT * FROM (
         SELECT 
             ROWNUM AS rn, data.*
@@ -68,59 +68,105 @@
                 C.CONTRACT_NUM, 
                 E.EMPLOYEE_NUM, 
                 E.EMPLOYEE_NAME, 
-                D.DEPARTMENT_NAME AS departmentName, 
-                PARENT_D.DEPARTMENT_NAME AS parentDepartmentName,
-                C.CONTRACT_TYPE, 
-                TO_CHAR(C.CONTRACT_START_DATE, 'YYYY-MM-DD') AS CONTRACT_START_DATE, 
-                TO_CHAR(C.CONTRACT_END_DATE, 'YYYY-MM-DD') AS CONTRACT_END_DATE,
-                C.MONTHLY_SALARY, 
-                C.CONTRACT_STATUS
-            FROM HR_EMPLOYEE_CONTRACT C
-            JOIN HR_EMPLOYEE E ON C.EMPLOYEE_NUM = E.EMPLOYEE_NUM
-            JOIN HR_DEPARTMENT D ON C.DEPARTMENT_NUM = D.DEPARTMENT_NUM
-            LEFT JOIN HR_DEPARTMENT PARENT_D ON D.PARENT_DEPARTMENT_NUM = PARENT_D.DEPARTMENT_NUM
-            WHERE C.COMPANY_NUM = #{companyNum}
+			    COALESCE(D.DEPARTMENT_NAME, '부서 없음') AS departmentName, 
+			    COALESCE(PARENT_D.DEPARTMENT_NAME, '상위 부서 없음') AS parentDepartmentName,
+                C.POSITION,
+                C.CONTRACT_TYPE,
 
-            <!-- ✅ 사원명 검색 -->
-            <if test="searchType == 'employeeName' and searchKeyword != null and searchKeyword != ''">
-                AND E.EMPLOYEE_NAME LIKE '%' || #{searchKeyword} || '%'
-            </if>
+                TO_CHAR(C.CONTRACT_START_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CONTRACT_START_DATE, 
+                TO_CHAR(C.CONTRACT_END_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CONTRACT_END_DATE,
 
-            <!-- ✅ 상위 부서 검색 -->
-            <if test="parentDepartmentNum != null">
-                AND D.PARENT_DEPARTMENT_NUM = #{parentDepartmentNum}
-            </if>
+                C.WORK_LOCATION,
+                C.JOB_DESCRIPTION,
+                C.WORK_START_TIME,
+                C.WORK_END_TIME,
+                C.WORK_HOURS,
+                C.WORK_DAYS,
+                C.BREAK_START_TIME,
+                C.BREAK_END_TIME,
+                C.PROBATION_PERIOD,
 
-            <!-- ✅ 하위 부서 검색 -->
-            <if test="departmentNum != null">
-                AND C.DEPARTMENT_NUM = #{departmentNum}
-            </if>
+                C.MONTHLY_SALARY,
+                C.ANNUAL_SALARY,
+                C.BONUS,
+                C.ADDITIONAL_PAY,
+                C.SALARY_PAYMENT_DATE,
+                C.PAYMENT_METHOD,
 
-            <!-- ✅ 계약 유형 검색 -->
-            <if test="contractType != null and contractType != ''">
-                AND C.CONTRACT_TYPE = #{contractType}
-            </if>
+                C.ANNUAL_LEAVE_POLICY,
+                C.SOCIAL_INSURANCE,
 
-            <!-- ✅ 계약 상태 검색 -->
-            <if test="contractStatus != null and contractStatus != ''">
-                AND C.CONTRACT_STATUS = #{contractStatus}
-            </if>
+                C.CONTRACT_STATUS,
+                C.TERMINATION_REASON
 
-            <!-- ✅ 기간 필터링 -->
-            <if test="startDate != null and startDate != ''">
-                AND C.CONTRACT_START_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-            </if>
-            <if test="endDate != null and endDate != ''">
-                AND C.CONTRACT_END_DATE <![CDATA[<=]]> TO_DATE(#{endDate}, 'YYYY-MM-DD')
-            </if>
+				FROM HR_EMPLOYEE_CONTRACT C
+				LEFT JOIN HR_EMPLOYEE E ON C.EMPLOYEE_NUM = E.EMPLOYEE_NUM
+				LEFT JOIN HR_DEPARTMENT D ON C.DEPARTMENT_NUM = D.DEPARTMENT_NUM
+				LEFT JOIN HR_DEPARTMENT PARENT_D ON D.PARENT_DEPARTMENT_NUM = PARENT_D.DEPARTMENT_NUM
+				WHERE C.COMPANY_NUM = #{companyNum}
+
+            <!-- ✅ 검색 조건 추가 -->
+            <include refid="searchContractConditions"/>
 
             ORDER BY C.CONTRACT_START_DATE DESC
         ) data
-        WHERE ROWNUM <![CDATA[<=]]> #{end}
+        <![CDATA[
+        WHERE ROWNUM <= #{end} 
+        ]]>
     ) 
-    WHERE rn >= #{start}
+    <![CDATA[
+    WHERE rn >= #{start}  
+    ]]>
 </select>
 
+<sql id="searchContractConditions">
+    <if test="searchKeyword != null and searchKeyword != ''">
+        <choose>
+            <when test="searchType == 'employeeName'">
+                AND E.EMPLOYEE_NAME LIKE '%' || #{searchKeyword} || '%'
+            </when>
+            <when test="searchType == 'contractType'">
+                AND C.CONTRACT_TYPE = #{searchKeyword}
+            </when>
+            <when test="searchType == 'departmentName'">
+                AND D.DEPARTMENT_NAME LIKE '%' || #{searchKeyword} || '%'
+            </when>
+        </choose>
+    </if>
+
+    <if test="contractStatus != null and contractStatus != ''">
+        AND C.CONTRACT_STATUS = #{contractStatus}
+    </if>
+
+    <if test="startDate != null and startDate != ''">
+        AND C.CONTRACT_START_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    </if>
+
+    <if test="endDate != null and endDate != ''">
+        AND C.CONTRACT_END_DATE <![CDATA[ <= ]]> TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    </if>
+
+    <if test="departmentNum != null and departmentNum != ''">
+        AND C.DEPARTMENT_NUM IN (
+            SELECT department_num 
+            FROM hr_department
+            WHERE company_num = #{companyNum}
+            START WITH department_num = #{departmentNum} 
+            CONNECT BY PRIOR department_num = parent_department_num
+        )
+    </if>
+</sql>
+
+
+
+<!-- ✅ 계약 개수 조회 -->
+<select id="countContracts" resultType="int" parameterType="EmpContractSearchDTO">
+    SELECT COUNT(*)
+    FROM HR_EMPLOYEE_CONTRACT C
+    JOIN HR_EMPLOYEE E ON C.EMPLOYEE_NUM = E.EMPLOYEE_NUM
+    JOIN HR_DEPARTMENT D ON C.DEPARTMENT_NUM = D.DEPARTMENT_NUM
+    WHERE C.COMPANY_NUM = #{companyNum}
+</select>
 
 
 	

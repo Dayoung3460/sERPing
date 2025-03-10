@@ -1,12 +1,11 @@
 
-
-
-// calendar
 const Calendar = tui.Calendar;
 const container = document.getElementById('calendar');
 let employeeNum = document.getElementById("sessionEmployeeNum").value;
 const deptListUrl = '/api/mainpage/dept'
 let deptList = []
+let initEvents = []
+let calendar = null
 fetch(deptListUrl, {
     method: 'GET',
     headers: {
@@ -36,8 +35,12 @@ fetch(deptListUrl, {
         backgroundColor: color[scheduleType.length]
     })
 
-    let calendar = new Calendar(container,  {
+    calendar = new Calendar(container,  {
         defaultView: 'month',
+        month: {
+            eventView: true, // true면 일정 내용 보이도록 설정
+            scheduleView: ['allday', 'time'], // 일정 상세 정보 보이기
+        },
         isReadOnly: false,
         timezone: {
             zones: [
@@ -126,6 +129,7 @@ fetch(deptListUrl, {
         useFormPopup: true,
         useDetailPopup: true,
     });
+
     const url = 'api/mainpage/schedule'
     fetch(url, {
         method: 'get',
@@ -155,7 +159,8 @@ fetch(deptListUrl, {
 
         })
 
-        calendar.createEvents(schedules)
+        initEvents = schedules
+        calendar.createEvents(initEvents)
     })
 
     calendar.on('beforeCreateEvent', (eventObj) => {
@@ -206,7 +211,6 @@ const updateSchedule = (calendar, event, changes) => {
         }
     })
 }
-
 
 const deleteSchedule = (calendar, eventObj) => {
     const url = `api/mainpage/schedule/${eventObj.id}`

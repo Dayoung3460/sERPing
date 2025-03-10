@@ -49,71 +49,110 @@
 
 <!--  Custom CSS -->
 <style>
-/* 모달 내부 간격 */
-.modal-body {
-	padding: 20px;
-}
-
-/* 입력 필드 스타일 */
-.form-control, .form-select {
-	border-radius: 6px;
-}
-
-/* 프로필 이미지 스타일 */
-.profile-image {
-	width: 100%;
-	max-width: 150px;
-	cursor: pointer;
-	border-radius: 10px;
-	border: 1px solid #ccc;
-	padding: 5px;
-}
-
-/* 버튼 아이콘 스타일 */
-.btn-icon {
-	font-size: 14px;
-	padding: 6px 12px;
-}
-
-/* 탭 스타일 */
-.nav-tabs .nav-link {
-	font-weight: bold;
-}
-
-/* 모달 푸터 */
-.modal-footer {
-	justify-content: center;
-}
-
-.custom-swal-popup {
-    word-wrap: break-word;  /* 긴 문장 자동 줄바꿈 */
-    white-space: pre-line;  /* \n도 줄바꿈 적용 */
-    padding: 24px;          /* 적당한 패딩 */
-    max-height: 80vh;       /* 내용이 많으면 스크롤 */
-    overflow-y: auto;       /* 세로 스크롤 자동 */
-}
-
-/* 프로필 이미지 박스 */
-.profile-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 200px; /* 정사각형 */
-    height: 200px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    background-color: #f8f9fa;
-    overflow: hidden;
-}
-
-/* 프로필 이미지 스타일 */
-.profile-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
-}
-
+	/* 모달 내부 간격 */
+	.modal-body {
+		padding: 20px;
+	}
+	
+	/* 입력 필드 스타일 */
+	.form-control, .form-select {
+		border-radius: 6px;
+	}
+	
+	/* 프로필 이미지 스타일 */
+	.profile-image {
+		width: 100%;
+		max-width: 150px;
+		cursor: pointer;
+		border-radius: 10px;
+		border: 1px solid #ccc;
+		padding: 5px;
+	}
+	
+	/* 버튼 아이콘 스타일 */
+	.btn-icon {
+		font-size: 14px;
+		padding: 6px 12px;
+	}
+	
+	/* 탭 스타일 */
+	.nav-tabs .nav-link {
+		font-weight: bold;
+	}
+	
+	/* 모달 푸터 */
+	.modal-footer {
+		justify-content: center;
+	}
+	
+	.custom-swal-popup {
+	    word-wrap: break-word;  /* 긴 문장 자동 줄바꿈 */
+	    white-space: pre-line;  /* \n도 줄바꿈 적용 */
+	    padding: 24px;          /* 적당한 패딩 */
+	    max-height: 80vh;       /* 내용이 많으면 스크롤 */
+	    overflow-y: auto;       /* 세로 스크롤 자동 */
+	}
+	
+	/* 프로필 이미지 박스 */
+	.profile-box {
+	    display: flex;
+	    flex-direction: column; /* 요소들을 세로로 정렬 */
+	    align-items: center; /* 중앙 정렬 */
+	    width: 200px; /* 정사각형 */
+	    height: auto; /* 높이 자동 조정 */
+	    border-radius: 10px;
+	    border: 1px solid #ccc;
+	    background-color: #f8f9fa;
+	    overflow: hidden;
+	    padding: 10px; /* 내부 여백 추가 */
+	}
+	
+	/* 프로필 이미지 스타일 */
+	.profile-image {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	    cursor: pointer;
+	}
+	
+	
+	.input-group {
+	    display: flex;
+	    align-items: center; /* 버튼과 입력 필드를 수직 중앙 정렬 */
+	}
+	
+	input[type="file"] {
+	    height: 35px ;  /* Bootstrap 기본 form-control 높이와 맞춤 */
+	    padding: 6px 12px; /* 내부 여백 조정 */
+	    font-size: 14px;  /* 글자 크기 조정 */
+	}
+	
+	.input-group > .form-control {
+	    flex: 1; /* input이 너비를 꽉 채우도록 설정 */
+	    height: 35px ;  /* 버튼과 높이 일치 */
+	}
+	
+	/* 프로필 박스 */
+	.profile-box {
+	    display: flex;
+	    flex-direction: column; /* 요소를 세로로 정렬 */
+	    align-items: center; /* 중앙 정렬 */
+	    width: 150px; /* 기본 이미지 크기와 동일하게 설정 */
+	    height: 150px;
+	    border-radius: 10px;
+	    border: 1px solid #ccc;
+	    background-color: #f8f9fa;
+	    overflow: hidden;
+	    padding: 10px;
+	}
+	
+	/* 프로필 이미지 */
+	.profile-image {
+	    width: 100%;  /* 부모 요소(profile-box)에 맞춤 */
+	    height: 100%;
+	    object-fit: cover; /* 비율을 유지하면서 박스에 맞게 조정 */
+	    cursor: pointer;
+	}
 </style>
 
 <title>사원 등록 모달</title>
@@ -152,11 +191,12 @@
 								<div class="row">
 									<!-- 프로필 이미지 -->
 									<div class="col-md-3 text-center">
-										<label for="profileImage"> 
-										<img
-											src="https://via.placeholder.com/150" class="profile-image"
-											id="profilePreview" alt="프로필 이미지">
-										</label> <input type="file" id="profileImage">
+									    <div class="profile-box">
+									        <label for="profileImage"> 
+									            <img src="https://via.placeholder.com/150" class="profile-image" id="profilePreview" alt="프로필 이미지">
+									        </label>
+									        <input type="file" class="form-control mt-2" id="profileImage" accept="image/*">
+									    </div>
 									</div>
 
 									<!-- 사원 정보 입력 -->
@@ -274,7 +314,7 @@
 									<label class="fw-bold">주소</label>
 									<div class="input-group">
 										<button class="btn btn-outline-secondary" type="button"
-											onclick="openPostcode()">📌 우편번호 검색</button>
+											onclick="openPostcode()">우편번호 검색</button>
 										<input type="text" class="form-control" id="zipcode"
 											placeholder="우편번호" readonly>
 									</div>
