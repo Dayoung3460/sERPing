@@ -98,6 +98,10 @@ const setInfo = (data) => {
 
 }
 
+const setEmptyImg = () => {
+    profileImg.src = '/file/image/mypage/profile/noProfileImg.jpg';
+}
+
 const getProfileInfo = () => {
     const url = '/api/mypage/profile'
     fetch(url, {
@@ -109,6 +113,8 @@ const getProfileInfo = () => {
         return data.json()
     }).then((data) => {
         setInfo(data)
+    }).catch((e) => {
+        setEmptyImg()
     })
 }
 
