@@ -373,7 +373,8 @@ function search(){
     		"deteOption": selectedOption,
             "startDate": startDate,
             "endDate": endDate,
-            "branch": selectedBhf
+            "branch": selectedBhf,
+            "statusList": ['DS01']
     };
     
     //console.log("검색 조건:", params);
@@ -443,7 +444,7 @@ function loadDeliveryDetail(deliveryId) {
 //상세 그리드 형식 
 const DeliveryDetailDataSource = {
 		api: {
-			readData: { url: '/bsn/rest/deli/detail', method: 'GET', initParams: { page: 1, deliveryId:"0" }},
+			readData: { url: '/bsn/rest/deli/detail', method: 'GET', initParams: { page: 1, deliveryId:"0", deliveryStatus: "DS01" }},
 		},
 		contentType: 'application/json'
 };
