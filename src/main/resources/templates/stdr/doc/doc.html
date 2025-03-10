@@ -175,22 +175,9 @@
             });
 
             editor.getMarkdown(); // 현재 에디터 내용 가져오기
-            // setTimeout(() => {
-            //     const editorContent = editor.getHTML();
-            //     editor.setHTML(`<div style="display: flex; flex-direction: column;">${editorContent}</div>`);
-            // }, 100);
-
             setTimeout(() => {
-                const editorRoot = editor.getRootElement(); // Toast UI Editor의 루트 요소 가져오기
-                const contentElement = editorRoot.querySelector('.toastui-editor-contents');
-                console.log(editorRoot)
-
-                if (contentElement) {
-                    contentElement.style.display = 'flex';
-                    contentElement.style.flexDirection = 'column';
-                    contentElement.style.alignItems = 'center'; // 중앙 정렬
-                    contentElement.style.justifyContent = 'center';
-                }
+                const editorContent = editor.getHTML();
+                editor.setHTML(`<div style="display: flex; flex-direction: column;">${editorContent}</div>`);
             }, 100);
 
 
