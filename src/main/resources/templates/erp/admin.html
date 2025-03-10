@@ -930,7 +930,7 @@
 							method:"post",
 							headers: {
 							      "Content-Type": "application/json",
-							      //'X-CSRF-TOKEN': document.querySelector('#csrfToken').value,
+							      'X-CSRF-TOKEN': document.querySelector('#csrfToken').value,
 							    },
 							body : JSON.stringify(requestData),
 						})
@@ -992,6 +992,7 @@
 							method:"post",
 							headers: {
 							      "Content-Type": "application/json",
+							      'X-CSRF-TOKEN': document.querySelector('#csrfToken').value,
 							    },
 							body : JSON.stringify(requestData),
 						})
