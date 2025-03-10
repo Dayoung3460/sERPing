@@ -21,6 +21,19 @@
 		.container {
 		    max-width: 1400px;
 		}
+		
+    /* ✅ 검색 필터 박스 통일 (흰색 배경 + 그림자 추가) */
+    #custom-container {
+        background-color: white !important; /* 흰색 배경 */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+        margin-bottom: 20px;
+    }
+
+	.tui-grid-cell {
+	    font-size: 16px !important;
+	}
     </style>
 
     <title>인사 발령 관리</title>
@@ -28,31 +41,35 @@
 
 <body layout:fragment="content">
 <div class="container mt-3">
-    <h2>인사 발령 관리</h2>
+    <h2 class="fw-bold">인사 발령 관리</h2>
 	<hr>
 	
     <!-- 🔍 사원 검색 -->
-    <div class="search-box bg-light p-3 rounded shadow-sm">
-        <div class="row align-items-center">
-            <div class="col-md-2 text-end"><label class="fw-bold">사원 검색</label></div>
-            <div class="col-md-3">
-                <select class="form-select" id="employeeSearchCategory">
-                    <option value="전체">전체</option>
-                    <option value="employeeName">사원명</option>
-                    <option value="employeeId">사원ID</option>
-                    <option value="phone">연락처</option>
-                </select>
-            </div>
-            <div class="col-md-5">
-                <input type="text" class="form-control" id="employeeSearchKeyword" placeholder="검색어 입력 후 [Enter]">
-            </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col text-center">
-                <button class="btn btn-primary" id="searchEmployeeBtn">조회</button>
-            </div>
-        </div>
-    </div>
+	<div class="search-box bg-light p-3 rounded shadow-sm d-flex justify-content-center align-items-center gap-3 px-4" id="custom-container" style="max-width: 1400px; margin: auto;">
+	    <!-- 검색 기준 -->
+	    <div class="d-flex align-items-center gap-2">
+	        <label class="fw-bold mb-0">사원 검색</label>
+	        <select class="form-select" id="employeeSearchCategory" style="width: 130px;">
+	            <option value="전체">전체</option>
+	            <option value="employeeName">사원명</option>
+	            <option value="employeeId">사원ID</option>
+	            <option value="phone">연락처</option>
+	        </select>
+	    </div>
+	
+	    <!-- 검색어 입력 -->
+	    <div style="flex-grow: 1; max-width: 400px;">
+	        <input type="text" class="form-control" id="employeeSearchKeyword" placeholder="검색어 입력 후 [Enter]">
+	    </div>
+	
+	    <!-- 버튼 -->
+	    <div class="d-flex gap-2">
+	        <button class="btn btn-primary px-3" id="searchEmployeeBtn">조회</button>
+	        <button class="btn btn-secondary px-3" id="resetBtn">초기화</button>
+	    </div>
+	</div>
+
+
 
     <!-- 🔲 사원 목록 -->
     <div class="row mt-3">
@@ -65,7 +82,7 @@
     <!-- 인사 발령 추가 버튼 -->
     <div class="row mt-3">
         <div class="col text-end">
-            <button class="btn btn-warning" id="openHistoryModalBtn">+ 인사 발령 등록</button>
+            <button class="btn btn-success" id="openHistoryModalBtn">인사 발령 등록</button>
         </div>
     </div>
 
@@ -229,10 +246,10 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("📌 현재 권한 목록 로드 완료:", authList);
     	
         return [
-            { header: "사원번호", name: "employeeId", width: 100, align: 'center' },
+            { header: "사원번호", name: "employeeId", width: 150, align: 'center' },
             { header: "사원명", name: "employeeName", width: 150, align: 'center' },
-            { header: "직급", name: "position", width: 100, align: 'center' },
-            { header: "새 직급", name: "newPosition", width: 100, align: 'center' },
+            { header: "직급", name: "position", width: 110, align: 'center' },
+            { header: "새 직급", name: "newPosition", width: 110, align: 'center' },
             {
                 header: "새 직급",
                 name: "newPosition",
@@ -320,9 +337,112 @@ document.addEventListener("DOMContentLoaded", function () {
     
     
     initializeEmployeeGrid(); // 초기 Grid 생성
+    initializeHistoryGrid();  // ✅ 인사 발령 이력 Grid 초기화
     
     console.log("🔍 employeeGrid 데이터 확인:", employeeGrid.getData());
 });
+
+
+//✅ 인사 발령 이력 Grid 초기화
+function initializeHistoryGrid() {
+    console.log("🔥 인사 발령 이력 Grid 초기화");
+
+    const historyDataSource = {
+        api: {
+            readData: {
+                url: '/hr/rest/emp/history-list',  // ✅ 인사 발령 이력 API 엔드포인트 (수정 필요)
+                method: 'GET',
+                initParams: { page: 1 }
+            }
+        },
+        contentType: 'application/json',
+        initialRequest: false, // 자동 요청 방지 (조회 버튼 누를 때 요청)
+    };
+
+    historyGrid = new tui.Grid({
+        el: document.getElementById('historyGrid'),
+        width: "100%",
+        autoWidth: true,
+        pageOptions: {
+            useClient: false,
+            perPage: 5,
+        },
+        rowHeaders: ['checkbox'],
+        columns: [
+            { header: "발령 ID", name: "historyId", width: 100, align: 'center' },
+            { header: "사원번호", name: "employeeId", width: 120, align: 'center' },
+            { header: "사원명", name: "employeeName", width: 150, align: 'center' },
+            { header: "변경 유형", name: "changeType", width: 150, align: 'center' },
+            { header: "이전 직급", name: "oldPosition", width: 120, align: 'center' },
+            { header: "새 직급", name: "newPosition", width: 120, align: 'center' },
+            { header: "이전 부서", name: "oldDepartment", width: 120, align: 'center' },
+            { header: "새 부서", name: "newDepartment", width: 120, align: 'center' },
+            { header: "발령 사유", name: "reason", width: 200, align: 'center' },
+            { header: "등록일", name: "createdAt", width: 120, align: 'center', formatter: ({ value }) => value?.split('T')[0] || '' },
+        ],
+        data: historyDataSource,
+    });
+}
+
+
+
+//✅ 인사 발령 이력 데이터 불러오기
+function loadHistoryData() {
+    console.log("📌 인사 발령 이력 데이터 불러오기 실행");
+    
+    historyGrid.readData(1, {}, true);
+}
+
+
+document.getElementById("saveHistoryBtn").addEventListener("click", function () {
+    console.log("🔹 인사 발령 등록 버튼 클릭됨");
+
+    const employeeId = document.getElementById("modalEmployeeName").getAttribute("data-id");
+    const changeType = document.getElementById("modalChangeType").value;
+    const newPosition = document.getElementById("modalNewPosition").value;
+    const newDepartment = document.getElementById("modalNewDepartment").value;
+    const reason = document.getElementById("modalReason").value;
+    const effectiveDate = document.getElementById("modalEffectiveDate").value;
+
+    if (!employeeId || !changeType || !effectiveDate) {
+        Swal.fire("오류", "필수 값을 입력하세요!", "error");
+        return;
+    }
+
+    const requestData = {
+        employeeId,
+        changeType,
+        newPosition,
+        newDepartment,
+        reason,
+        effectiveDate
+    };
+
+    fetch('/hr/rest/emp/history-register', { // ✅ 엔드포인트 확인 필요
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire("성공", "인사 발령이 등록되었습니다!", "success").then(() => {
+                document.getElementById("historyModal").classList.remove("show"); // 모달 닫기
+                loadHistoryData(); // ✅ 인사 발령 이력 즉시 새로고침
+            });
+        } else {
+            Swal.fire("오류", data.message || "등록 실패", "error");
+        }
+    })
+    .catch(error => {
+        console.error("❌ 인사 발령 등록 실패:", error);
+        Swal.fire("오류", "서버 오류 발생", "error");
+    });
+});
+
+
 </script>
 <script src="/js/hr/common-codes.js"></script>
 </body>

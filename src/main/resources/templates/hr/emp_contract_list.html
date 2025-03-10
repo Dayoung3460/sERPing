@@ -33,50 +33,61 @@
 <body layout:fragment="content">
 
 <div class="container mt-4">
-    <h2>근로계약 조회</h2>
+    <h2 class="fw-bold">근로계약 조회</h2>
     <hr>
 
     <!-- 🔎 검색 필터 -->
-    <div class="card p-3 mb-4">
-        <div class="row">
-            <div class="col-md-3">
-                <label class="form-label">사원명 검색</label>
-                <input type="text" class="form-control" id="searchEmployeeName" placeholder="사원명 입력">
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">계약 상태</label>
-                <select class="form-select" id="searchContractStatus">
-                    <option value="">전체</option>
-                    <option value="CS001">진행중</option>
-                    <option value="CS002">종료</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">계약 유형</label>
-                <select class="form-select" id="searchContractType">
-                    <option value="">전체</option>
-                    <option value="ET001">정규직</option>
-                    <option value="ET002">계약직</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">계약 기간</label>
-                <div class="d-flex">
-                    <input type="date" class="form-control me-2" id="searchStartDate">
-                    <span class="mx-1">~</span>
-                    <input type="date" class="form-control" id="searchEndDate">
-                </div>
+<div class="card p-3 mb-4" style="max-width: 1295px; margin: auto;">
+    <div class="row w-100 justify-content-center">
+        <!-- 사원명 검색 -->
+        <div class="col-lg-3 col-md-6 col-sm-12 d-flex flex-column">
+            <label class="form-label  ms-3">사원명 검색</label>
+            <input type="text" class="form-control mx-auto" id="searchEmployeeName" placeholder="사원명 입력 후 [Enter]" style="max-width: 90%;">
+        </div>
+
+        <!-- 계약 기간 -->
+        <div class="col-lg-3 col-md-6 col-sm-12 d-flex flex-column">
+            <label class="form-label  ms-3">계약 기간</label>
+            <div class="d-flex justify-content-center">
+                <input type="date" class="form-control me-2 text-center" id="searchStartDate" style="max-width: 45%;">
+                <span class="mx-1">~</span>
+                <input type="date" class="form-control text-center" id="searchEndDate" style="max-width: 45%;">
             </div>
         </div>
 
-        <div class="text-end mt-3">
-            <button class="btn btn-primary" onclick="searchContracts()">🔍 검색</button>
-            <button class="btn btn-secondary" onclick="resetFilters()">⟲ 초기화</button>
+        <!-- 계약 유형 -->
+        <div class="col-lg-3 col-md-6 col-sm-12 d-flex flex-column">
+            <label class="form-label ms-3">계약 유형</label>
+            <select class="form-select mx-auto" id="searchContractType" style="max-width: 90%;">
+                <option value="">전체</option>
+                <option value="ET001">정규직</option>
+                <option value="ET002">계약직</option>
+            </select>
+        </div>
+
+        <!-- 계약 상태 -->
+        <div class="col-lg-3 col-md-6 col-sm-12 d-flex flex-column">
+            <label class="form-label  ms-3">계약 상태</label>
+            <select class="form-select mx-auto" id="searchContractStatus" style="max-width: 90%;">
+                <option value="">전체</option>
+                <option value="CS001">진행중</option>
+                <option value="CS002">종료</option>
+            </select>
         </div>
     </div>
 
+    <!-- 검색 버튼 -->
+    <div class="text-center mt-3">
+        <button type="button" class="btn btn-primary" onclick="searchContracts()">검색</button>
+        <button type="button" class="btn btn-secondary" onclick="resetFilters()">초기화</button>
+    </div>
+</div>
+
+	
     <!-- 📊 계약 목록 -->
     <div id="contractGrid"></div>
+    
+    <div id="pagination" class="d-flex justify-content-center mt-3"></div>
 </div>
 
 <!-- 📄 근로계약서 보기 모달 -->
@@ -103,33 +114,69 @@ const grid = new tui.Grid({
     el: document.getElementById("contractGrid"),
     scrollX: false,
     scrollY: true,
+    pageOptions: {
+        useClient: false, // 서버 사이드 페이지네이션 사용
+        perPage: 10, // 기본 페이지당 10개 표시
+        visiblePages: 5, // 한 번에 표시할 페이지 개수
+    },
     columns: [
-        { header: "계약번호", name: "contractNum", align: "center", width: 80 },
+        { header: "계약번호", name: "contractNum", align: "center", width: 80 }, 
         { header: "사원명", name: "employeeName", align: "center", width: 150 },
-        { header: "계약 유형", name: "contractType", align: "center", width: 120 },
-        { header: "계약 시작일", name: "contractStartDate", align: "center", width: 120 },
-        { header: "계약 종료일", name: "contractEndDate", align: "center", width: 120 },
-        { header: "급여 (월)", name: "monthlySalary", align: "center", width: 120, formatter: ({ value }) => value.toLocaleString() + "원" },
-        { header: "계약 상태", name: "contractStatus", align: "center", width: 100, formatter: ({ value }) => value === "CS001" ? "🟢 진행중" : "🔴 종료" },
-        { header: "계약서", name: "contractNum", align: "center", width: 150, 
+        { 
+            header: "계약 유형", 
+            name: "contractType", 
+            align: "center", 
+            width: 120,
+            formatter: ({ value }) => {
+                console.log("📌 [DEBUG] contractType 값:", value); // 디버깅용 로그 추가
+                if (value === "ET001") return "정규직";
+                if (value === "ET002") return "계약직";
+                return "알 수 없음"; // 예외 처리
+            }
+        },
+        { header: "부서", name: "departmentName", align: "center", width: 130 },
+        { header: "직급", name: "position", align: "center", width: 130 },
+        { header: "급여 (월)", name: "monthlySalary", align: "right", width: 130, 
+            formatter: ({ value }) => value.toLocaleString() + " 원" 
+        },
+        { header: "계약 시작일", name: "contractStartDate", align: "center", width: 140 },
+        { header: "계약 종료일", name: "contractEndDate", align: "center", width: 140 },
+        { header: "계약 상태", name: "contractStatus", align: "center", width: 100, 
+            formatter: ({ value }) => value === "CS001" ? "🟢 진행중" : "🔴 종료" 
+        },
+        { 
+            header: "계약서", 
+            name: "actions", 
+            align: "center", 
+            width: 160, 
             formatter: function({ row }) {
                 return `
-                    <button class="btn btn-info btn-sm" onclick="viewContract(${row.employeeNum})">보기</button>
-                    <button class="btn btn-success btn-sm" onclick="downloadContract(${row.employeeNum})">다운로드</button>
+                    <button class="btn btn-outline-info btn-sm" onclick="viewContract(${row.employeeNum})">보기</button>
+                    <button class="btn btn-outline-success btn-sm" onclick="downloadContract(${row.employeeNum})">다운로드</button>
                 `;
             }
         }
     ]
 });
 
-// ✅ 검색 실행
-function searchContracts() {
+
+//✅ 검색 실행
+
+let currentPage = 1; // 현재 페이지 (초기값)
+let perPage = grid.getPagination().perPage;
+
+function searchContracts(page = 1) {
+    currentPage = page;
+
     const params = {
-        employeeName: document.getElementById("searchEmployeeName").value,
+        searchType: "employeeName",
+        searchKeyword: document.getElementById("searchEmployeeName").value,
         contractStatus: document.getElementById("searchContractStatus").value,
         contractType: document.getElementById("searchContractType").value,
         startDate: document.getElementById("searchStartDate").value,
-        endDate: document.getElementById("searchEndDate").value
+        endDate: document.getElementById("searchEndDate").value,
+        page: page,
+        perPage: perPage
     };
 
     fetch("/hr/rest/contract/search", {
@@ -143,10 +190,24 @@ function searchContracts() {
     .then(response => response.json())
     .then(data => {
         console.log("📊 계약 데이터:", data);
-        grid.resetData(data.contracts);
+        
+        if (data.contracts.length > 0) {
+            grid.resetData(data.contracts);
+            grid.getPagination().setTotalItems(data.totalPages * perPage); // ✅ 총 페이지 반영
+            grid.getPagination().movePageTo(page); // ✅ 현재 페이지로 이동
+        } else {
+            grid.resetData([]);
+            grid.getPagination().setTotalItems(1); // ✅ 검색 결과가 없어도 페이지네이션 유지
+            grid.getPagination().movePageTo(1);
+        }
     })
     .catch(error => console.error("❌ 검색 실패:", error));
-}
+};
+
+//✅ 페이지네이션 동작 설정
+grid.getPagination().on("beforeMove", function(event) {
+    searchContracts(event.page);
+});
 
 // ✅ 필터 초기화
 function resetFilters() {
@@ -170,8 +231,34 @@ function downloadContract(employeeNum) {
     window.location.href = `/hr/rest/contract/report/down?employeeNum=${employeeNum}`;
 }
 
-// ✅ 페이지 로드 시 자동 검색 실행
-document.addEventListener("DOMContentLoaded", searchContracts);
+//✅ Enter 키로 검색 실행 가능하도록 이벤트 추가
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("input, select").forEach((input) => {
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // 기본 동작 방지
+                searchContracts(); // 검색 실행
+            }
+        });
+    });
+
+    searchContracts(); // ✅ 페이지 로드 시 자동 검색 실행
+});
+
+document.getElementById("searchContractType").addEventListener("change", function() {
+    let selectedValue = this.value;
+
+    if (selectedValue === "정규직") {
+        this.value = "ET001";  // ✅ 정규직 선택 시 서버에 ET001로 전달
+    } else if (selectedValue === "계약직") {
+        this.value = "ET002";  // ✅ 계약직 선택 시 서버에 ET002로 전달
+    }
+
+    console.log("📌 [DEBUG] 변경된 contractType 값:", this.value); // ✅ 디버깅 추가
+});
+
+
+
 </script>
 
 </body>
