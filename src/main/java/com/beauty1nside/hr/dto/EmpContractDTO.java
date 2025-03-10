@@ -23,6 +23,7 @@ public class EmpContractDTO {
     private Long employeeNum;  // 사원번호 (FK)
     private Long companyNum;   // 회사번호 (FK)
     private Long departmentNum; // 부서번호 (FK)
+    private String departmentName; // 부서번호 (FK)
     private String position;   // 직급
     private String contractType; // 계약 유형 (공통코드: CT)
     
@@ -45,6 +46,7 @@ public class EmpContractDTO {
     private String contractStatus; // 계약 상태 (CS001: 진행중, CS002: 종료)
     private String terminationReason; // 계약 해지 사유
     private String contractFilePath; // 계약서 파일 경로
+    
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date registerDate; // 등록일

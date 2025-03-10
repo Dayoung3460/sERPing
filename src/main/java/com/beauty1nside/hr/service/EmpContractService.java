@@ -14,12 +14,15 @@ public interface EmpContractService {
     // 특정 사원의 최근 계약 조회
     EmpContractDTO getLastContract(Long employeeNum);
 
-    // 전체 계약 목록 조회
+    // 전체 계약 조회
     List<EmpContractDTO> getAllContracts();
     
     byte[] generateContractPdf(Long employeeNum, Long companyNum);
     
-    // ✅ 동적 검색 및 페이징 포함 근로계약 조회
+    // 검색 및 페이징 포함 계약 조회
     List<EmpContractDTO> searchContracts(EmpContractSearchDTO searchDTO);
+    
+    // 계약 개수 카운트
+    int countContracts(EmpContractSearchDTO searchDTO);
 
 }

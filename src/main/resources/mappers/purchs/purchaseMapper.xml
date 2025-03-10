@@ -224,6 +224,7 @@ and purchase_num = #{purchaseNum}
 </update>
 
 
+
 <!-- 주문서 내역 조회 -->
 <select id="orderlist" resultType="OrderlistDTO">
 SELECT * FROM (
@@ -238,27 +239,45 @@ SELECT * FROM (
         od.option_name,
         od.goods_standard,
         od.quantity,
+        p.option_num,  
+        g.vendor_id,
+        g.goods_supply_price,
+        v.vendor_name,
         ROW_NUMBER() OVER (ORDER BY o.due_date DESC) AS RN
     FROM bsn_order o
     JOIN bsn_order_detail od 
         ON o.order_id = od.order_id  
+    JOIN purchse_option p
+        ON od.option_code = p.option_code
+    JOIN purchse_goods g
+        ON g.goods_num = p.goods_num
+    JOIN grpwr_vendor v
+        ON g.vendor_id = v.vendor_id
     WHERE o.company_num = #{companyNum}
     AND o.order_status = 'VS001'
     <include refid="searchOrderListInfo"/>
-) WHERE RN BETWEEN #{start} AND #{end}  
+) WHERE RN BETWEEN #{start} AND #{end}
 </select>
 
 
+<!-- 주문서 내역 개수 조회 -->
 <!-- 주문서 내역 개수 조회 -->
 <select id="countOrderList" resultType="int">
 SELECT COUNT(*)
 FROM bsn_order o
 JOIN bsn_order_detail od 
     ON o.order_id = od.order_id  
+JOIN purchse_option p
+    ON od.option_code = p.option_code
+JOIN purchse_goods g
+    ON g.goods_num = p.goods_num
+JOIN grpwr_vendor v
+    ON g.vendor_id = v.vendor_id
 WHERE o.company_num = #{companyNum}
 AND o.order_status = 'VS001'
 <include refid="searchOrderListInfo"/>
 </select>
+
 
 <!-- 검색 조건 추가 -->
 <sql id="searchOrderListInfo">

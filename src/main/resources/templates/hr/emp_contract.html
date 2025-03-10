@@ -19,13 +19,18 @@
 		    max-height: 80vh;       /* 내용이 많으면 스크롤 */
 		    overflow-y: auto;       /* 세로 스크롤 자동 */
 		}
+
+		
+	.tui-grid-cell {
+	    font-size: 16px !important;
+	}
   </style>
 </head>
 
 <body layout:fragment="content">
 
 <div class="container mt-4">
-    <h2>근로계약 등록</h2>
+    <h2 class="fw-bold">근로계약 등록</h2>
     <hr>
 
     <form id="contractForm">
@@ -49,7 +54,7 @@
                         <label class="form-label">사원명</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="employeeName" required readonly>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" onclick="resetEmployeeSelection()" data-bs-target="#employeeSelectModal">사원 선택</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" onclick="resetEmployeeSelection()" data-bs-target="#employeeSelectModal">사원 선택</button>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -96,7 +101,7 @@
                 <div class="row mt-3">
                     <div class="col-md-6">
                         <label class="form-label">근무지</label>
-                        <input type="text" class="form-control" id="workLocation" required>
+                        <input type="text" class="form-control" id="workLocation" required readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">업무 내용</label>
@@ -183,7 +188,7 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-primary w-100" onclick="submitContract()">📄 계약 등록</button>
+        <button type="button" class="btn btn-primary w-100" onclick="submitContract()">계약 등록</button>
     </form>
 </div>
 
@@ -471,16 +476,7 @@ function getSelectedInsurance() {
 function submitContract(event) {
 	
     if (!selectedEmployee || !selectedEmployee.employeeNum) {
-        Swal.fire({
-            icon: 'warning',
-            title: '사원 선택 필요',
-            html: '먼저 사원을 선택해주세요!',
-            confirmButtonText: 'OK',
-            width: '450px', // 📌 적당한 너비 유지
-            customClass: {
-                popup: 'custom-swal-popup' // 📌 커스텀 스타일 적용
-            }
-        });
+    	showSwal("warning", "사원 선택 필요", "먼저 사원을 선택해주세요!");
         return;
     }
 	
@@ -515,19 +511,10 @@ function submitContract(event) {
     
     // 유효성 검사 (필수 필드 체크)
     if (!contractData.employeeNum || !contractData.companyNum || !contractData.contractStartDate || !contractData.annualSalary) {
-        Swal.fire({
-            icon: 'error',
-            title: '입력 오류',
-            text: '필수 정보를 모두 입력해주세요!',
-            width: '450px', // 📌 적당한 너비 유지
-            customClass: {
-                popup: 'custom-swal-popup' // 📌 커스텀 스타일 적용
-            }
-            
-        });
+        showSwal("error", "입력 오류", "필수 정보를 모두 입력해주세요!");
         return;
     }
-
+    
     // AJAX 요청 (근로계약 + 급여 등록 API 호출)
     fetch("/hr/rest/contract/register", { 
         method: "POST",
@@ -552,48 +539,36 @@ function submitContract(event) {
         } else {
             return response.text().then(text => ({
                 success: false, 
-                message: "⚠️ JSON이 아닌 응답을 받았습니다.",
+                message: "JSON이 아닌 응답을 받았습니다.",
                 rawResponse: text
             }));
         }
     })
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: '근로계약 등록 완료!',
-                text: '사원 조회 페이지로 이동하시겠습니까?',
-                showCancelButton: true,
-                confirmButtonText: '네, 이동할게요',
-                cancelButtonText: '아니요, 계속 등록할게요',
-                width: '450px',
-                customClass: { popup: 'custom-swal-popup' }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "/hr/employee";
-                } else {
-                    window.location.reload();
-                }
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: '근로계약 등록 실패',
-                text: data.message || '다시 시도해주세요!',
-                width: '450px',
-                customClass: { popup: 'custom-swal-popup' }
-            });
-        }
-    })
+	.then(data => {
+	    if (data.success) {
+	        Swal.fire({
+	            icon: "success",
+	            title: "근로계약 등록 완료!",
+	            text: "사원 조회 페이지로 이동하시겠습니까?",
+	            showCancelButton: true, // ❗ "계속 등록" 버튼 추가
+	            confirmButtonText: "네, 이동할게요",  // ✅ 확인 버튼 → 사원 조회 이동
+	            cancelButtonText: "아니요, 계속 등록할게요",  // 🔄 취소 버튼 → reload
+	            width: "450px",
+	            customClass: { popup: "custom-swal-popup" }
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+	                window.location.href = "/hr/employee";  // ✅ 사원 조회 페이지 이동
+	            } else {
+	                window.location.reload();  // 🔄 계속 등록 (새로고침)
+	            }
+	        });
+	    } else {
+	        showSwal("error", "근로계약 등록 실패", data.message || "다시 시도해주세요!");
+	    }
+	})
     .catch(error => {
         console.error("❌ 계약 등록 오류:", error);
-        Swal.fire({
-            icon: 'error',
-            title: '서버 오류 발생',
-            text: '근로계약 등록 중 문제가 발생했습니다.',
-            width: '450px',
-            customClass: { popup: 'custom-swal-popup' }
-        });
+        showSwal("error", "서버 오류 발생", "근로계약 등록 중 문제가 발생했습니다.");
     });
 }
 
@@ -628,6 +603,34 @@ function resetEmployeeSelection() {
     document.getElementById("companyName").value = "";
     document.getElementById("companyNum").value = "";
     document.getElementById("workLocation").value = "";
+}
+
+//✅ SweetAlert2 (사용자가 확인 버튼을 눌러야 하는 경우)
+function showSwal(type, title, text, callback = null) {
+    Swal.fire({
+        icon: type, // 'success', 'error', 'warning', 'info'
+        title: title,
+        text: text,
+        confirmButtonText: '확인',
+        width: '450px',
+        customClass: { popup: 'custom-swal-popup' }
+    }).then((result) => {
+        if (callback && result.isConfirmed) {
+            callback(); // ✅ 확인 버튼 클릭 후 실행할 함수
+        }
+    });
+}
+
+// ✅ showAlert (단순 메시지 출력)
+function showAlert(message, type = "info") {
+    Swal.fire({
+        icon: type, // 'success', 'error', 'warning', 'info'
+        title: message,
+        timer: 2000,  // 2초 후 자동 닫힘
+        showConfirmButton: false,
+        width: '450px',
+        customClass: { popup: 'custom-swal-popup' }
+    });
 }
 
 </script>

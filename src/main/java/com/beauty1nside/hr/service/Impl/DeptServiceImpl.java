@@ -108,7 +108,7 @@ public class DeptServiceImpl implements DeptService {
         //  부서 존재 여부 확인
         DeptDTO existingDept = deptMapper.getDepartmentByNum(dto.getDepartmentNum());
         if (existingDept == null) {
-            throw new IllegalArgumentException("❌ 해당 부서가 존재하지 않습니다.");
+            throw new IllegalArgumentException("해당 부서가 존재하지 않습니다.");
         }
 
         //  부서명 & 상태 업데이트 (DeptDTO로 한 번에 전달)
@@ -118,7 +118,7 @@ public class DeptServiceImpl implements DeptService {
         if ("DU002".equals(dto.getDepartmentStatus())) { 
             int employeeCount = deptMapper.countTotalEmployeesByDepartment(dto.getDepartmentNum());
             if (employeeCount > 0) {
-                throw new IllegalStateException("❌ 하위 부서에 직원이 있어 비활성화할 수 없습니다.");
+                throw new IllegalStateException("하위 부서에 사원이 있어 비활성화할 수 없습니다.");
             }
         }
 

@@ -7,28 +7,22 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div th:fragment="ModalTemplate(modalId, modalSize, modalTitle, modalContent, modalFooter)">
+    <div th:fragment="ModalTemplate (modalId, modalSize, modalTitle, modalContent, modalFooter)">
         <div class="modal fade" th:id="${modalId}" tabindex="-1" th:aria-labelledby="|${modalId}Label|" aria-hidden="true">
-         
             <div class="modal-dialog" th:classappend="${modalSize}">
-            	 
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" th:text="${modalTitle}"></h5>
+                <div class="modal-content" >
+                    <div class="modal-header" style="background-color:#3f3e91;  padding: 12px 16px;">
+                        <h5 class="modal-title text-white" th:text="${modalTitle}"></h5>
                     </div>
-                    
                     <div class="modal-body">
-                        <th:block th:replace="${modalContent}"></th:block>
+                        <div th:replace="${modalContent}"></div>
+                        
                     </div>
-                    
-                    <div class="modal-footer">
-                        <th:block th:replace="${modalFooter}"></th:block>
+                    <div class="modal-footer" style="padding: 8px 16px;">
+                        <div th:replace="${modalFooter}"></div>
                     </div>
-                    
                 </div>
-                
             </div>
-            
         </div>
     </div>
 </body>
