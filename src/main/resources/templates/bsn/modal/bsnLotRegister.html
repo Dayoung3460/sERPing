@@ -63,7 +63,9 @@
                     { header: 'LOT예약수량(box)', name: 'deliveryQnt', editor: 'text'  }
                 ],
                 data: [],
-                rowHeaders: ['rowNum', 'checkbox'],
+                rowHeaders: ['rowNum', 
+                	//'checkbox'
+				],
                 pageOptions: {
                     useClient: false,
                     perPage: 50
@@ -95,6 +97,8 @@
             }
         	
         	showLoading();
+        	//registerGrid.readData(1, {optionCode}, {deliveryDetailId}, {companyNum});
+        	
         	
             fetch(`/bsn/rest/goods/lot?optionCode=${optionCode}&deliveryDetailId=${deliveryDetailId}&companyNum=${companyNum}`)
             	
@@ -119,13 +123,16 @@
                         registerGrid.refreshLayout();
                     }, 100);
             	});
+        	
+        	
         }
+        
         
      // 📌 REST API에서 데이터 가져오는 함수
      
      const LotListDataSource = {
 		api: {
-			readData: { url: '/bsn/rest/goods/lot', method: 'GET', initParams: { page: 1 }},
+			readData: { url: '/bsn/rest/goods/lot', method: 'GET', initParams: { page: 1, optionCode:"0", deliveryDetailId:0, companyNum:0 }},
 			//?optionCode=${selectedRow.optionCode}&deliveryDetailId=${selectedRow.deliveryDetailId}
 		},
 		contentType: 'application/json'
