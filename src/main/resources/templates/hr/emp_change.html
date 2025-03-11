@@ -179,6 +179,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         employeeGrid = new tui.Grid({
             el: document.getElementById('employeeGrid'),
+            scrollX: false,
+            scrollY: false,
             width: "100%",
             autoWidth: true,
             pageOptions: {
@@ -237,9 +239,9 @@ document.addEventListener("DOMContentLoaded", function () {
     	
         return [
             { header: "사원ID", name: "employeeId", width: 150, sortable: true, align: 'center' },
-            { header: "사원명", name: "employeeName", width: 130, sortable: true, align: 'center' },
+            { header: "사원명", name: "employeeName", width: 140, sortable: true, align: 'center' },
             { header: "직급", name: "position", width: 110, align: 'center' },
-            { header: "새 직급", name: "newPosition", width: 110, align: 'center' },
+            { header: "새 직급", name: "newPosition", width: 120, align: 'center' },
             {
                 header: "새 직급",
                 name: "newPosition",
@@ -341,6 +343,8 @@ function initializeHistoryGrid() {
 
     historyGrid = new tui.Grid({
         el: document.getElementById('historyGrid'),
+        scrollX: false,
+        scrollY: false,
         width: "100%",
         autoWidth: true,
         pageOptions: {

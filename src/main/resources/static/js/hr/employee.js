@@ -366,12 +366,14 @@ function initializeGrid() {
     };
     
 	Grid.applyTheme('stripe', {
-	    row: { fontSize: '16px' },
-	    cell: { fontSize: '16px' }
+	    row: { fontSize: '14px' },
+	    cell: { fontSize: '14px' }
 	});
 
     grid = new Grid({
         el: document.getElementById('grid'),
+        scrollX: false,
+        scrollY: false,
         width: "100%",
         autoWidth: true,
         pageOptions: {
@@ -386,14 +388,14 @@ function initializeGrid() {
         columns: [
             { header: "사원ID", name: "employeeId", align: "center",sortable: true, width: 100 },
             { header: "사원명", name: "employeeName", align: "center", sortable: true, width: 150 },
-            { header: "부서", name: "departmentName", align: "center", sortable: true, width: 100 },
-            { header: "직급", name: "position", align: "center", sortable: true, width: 100, formatter: formatCommonCode('position') },
+            { header: "부서", name: "departmentName", align: "center", sortable: true, width: 110 },
+            { header: "직급", name: "position", align: "center", sortable: true, width: 110, formatter: formatCommonCode('position') },
             { header: "재직 상태", name: "status", align: "center", sortable: true, width: 120, formatter: formatCommonCode('status') },
             { header: "근무 유형", name: "employmentType", align: "center", sortable: true, width: 120, formatter: formatCommonCode('employmentType') },
             { header: "입사일", name: "hireDate", align: "center", sortable: true, width: 150, formatter: ({ value }) => value?.split('T')[0] || '' },
             { header: "연락처", name: "phone", align: "center", sortable: true, width: 150, formatter: ({ value }) => formatPhoneNumberForDB(value) },
             { header: "이메일", name: "email", align: "left", sortable: true, width: 200 },
-            { header: "근로계약서", name: "employeeContract", align: "center", sortable: true, width: 120,
+            { header: "근로계약서", name: "employeeContract", align: "center", sortable: true, width: 130,
 					formatter: function({ row }) {
 					    if (row.contractStatus === "보기") {
 					        return `<button class="btn btn-outline-info btn-sm contractBtn" data-id="${row.employeeNum}">보기</button>`;
@@ -410,7 +412,9 @@ function initializeGrid() {
 }
 
 // 공통 코드 목록 불러오기 (동적 적용)
-let commonCodes = {}; // 🔹 공통 코드 저장 변수
+if (typeof commonCodes === "undefined") {
+    var commonCodes = {};  // 변수 정의
+}; // 🔹 공통 코드 저장 변수
 function loadCommonCodes() {
     fetch("/hr/rest/emp/common-codes")
         .then(response => response.json())
