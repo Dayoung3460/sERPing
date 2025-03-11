@@ -40,7 +40,7 @@ public class MailService {
 
         // ✅ 5) 메일 전송
         mailSender.send(message);
-        System.out.println("✅ 메일 전송 완료: " + toEmail);
+        //System.out.println("✅ 메일 전송 완료: " + toEmail);
 		  
 		  
 		

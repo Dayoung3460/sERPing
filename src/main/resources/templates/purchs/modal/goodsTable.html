@@ -55,17 +55,17 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ 상품 조회 모달 스크립트 실행됨");
+    //console.log("✅ 상품 조회 모달 스크립트 실행됨");
     initProductGrid();
     
     if (typeof productGrid !== 'undefined' && productGrid !== null) {
     	
         productGrid.on("click", function (ev) {
-            console.log("📢 상품 조회 그리드 셀 클릭됨:", ev);
+            //console.log("📢 상품 조회 그리드 셀 클릭됨:", ev);
 
             if (ev.rowKey !== null && ev.rowKey !== undefined) {
                 const rowData = productGrid.getRow(ev.rowKey);
-                console.log("📢 선택한 행의 데이터:", rowData);
+                //console.log("📢 선택한 행의 데이터:", rowData);
 
                 // ✅ sessionStorage에 저장 (각 키에 대해 저장)
                 sessionStorage.setItem("selectedGoodsCode", rowData.goodsCode || '');
@@ -104,19 +104,19 @@ let productGrid;
 
 function initProductGrid() {
 	
-	console.log("initProductGrid()실행")
+	//console.log("initProductGrid()실행")
 
     const companyNum = [[${session.companyNum}]];
   
 
 	if (!companyNum) {
-        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
         return; // companyNum이 없으면 요청을 하지 않음
     } 
     
     //const companyNum = 1;
 
-    console.log("✅ 설정된 companyNum:", companyNum);
+    //console.log("✅ 설정된 companyNum:", companyNum);
 
     const productDataSource = {
             api: {  
@@ -153,7 +153,7 @@ function initProductGrid() {
             serverSidePagination: true
         };
         
-        console.log("✅ productDataSource 설정 완료:", productDataSource);
+        //console.log("✅ productDataSource 설정 완료:", productDataSource);
 
         productGrid = new tui.Grid({
             el: document.getElementById('productGrid'),
@@ -187,7 +187,7 @@ function initProductGrid() {
             }
         });
         
-        console.log("✅ Toast Grid 초기화 완료");
+        //console.log("✅ Toast Grid 초기화 완료");
         
         // ✅ 상품 선택 시 sessionStorage에 저장
         productGrid.on('click', function (ev) {

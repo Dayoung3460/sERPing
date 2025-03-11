@@ -172,7 +172,7 @@
 	
 	  // PDF 로드
 	  pdfjsLib.getDocument(reportUrl).promise.then(pdf => {
-	    console.log('PDF loaded, total pages:', pdf.numPages);
+	    //console.log('PDF loaded, total pages:', pdf.numPages);
 	    // 첫 페이지만 렌더링 (필요시 여러 페이지 지원 가능)
 	    pdf.getPage(1).then(page => {
 	      const scale = 1.5; // 확대/축소 비율
@@ -267,12 +267,12 @@
 	  // 그리드나 PrintRenderer를 통해 sessionStorage에 저장된 발주번호 사용
 	  const warehousingChit = sessionStorage.getItem("warehousingChit");
 	  if (!warehousingChit) {
-	    alert("발주번호가 존재하지 않습니다.");
+	    showAlert("발주번호가 존재하지 않습니다.","danger");
 	    return;
 	  }
 	  // 다운로드 엔드포인트 URL 구성 (/purchs/report/reportDownload 엔드포인트 사용)
 	  const downloadUrl = `/purchs/report/statementreportDownload?companynum=${companyNum}&warehousingChit=${warehousingChit}`;
-	  console.log("Download URL:", downloadUrl);
+	  //console.log("Download URL:", downloadUrl);
 	  // 브라우저를 해당 URL로 이동시켜 파일 다운로드를 유도
 	  window.location.href = downloadUrl;
 	});
@@ -281,7 +281,7 @@
   
   // 2. 페이지 로드 후 그리드 초기화
   document.addEventListener("DOMContentLoaded", function () {
-      console.log("✅ 발주서 그리드 초기화");
+      //console.log("✅ 발주서 그리드 초기화");
       initWarehouseGrid();
   });
 
@@ -290,7 +290,7 @@
   function initWarehouseGrid() {
       const companyNum = [[${session.companyNum}]];
       if (!companyNum) {
-          console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+          //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
           return;
       }
       const warehouselistDataSource = {
@@ -307,18 +307,7 @@
                       perPage: 10,
                       companyNum: companyNum
                   },
-                  beforeRequest: function(request) {
-                      console.log("📢 서버로 요청 보내기 전 requestParams:", request.params);
-                  },
-                  afterResponse: function(response) {
-                      console.log("📢 서버 응답:", response);
-                      if (response.data && response.data.contents) {
-                          console.log("✅ 변환된 데이터:", response.data.contents);
-                          return { data: response.data.contents, totalCount: response.data.pagination.totalCount };
-                      }
-                      console.warn("⚠️ 서버 응답에 contents가 없습니다.");
-                      return { data: [], totalCount: 0 };
-                  }
+                
               }
           },
           contentType: 'application/json',
@@ -349,7 +338,7 @@
           ]
       });
 
-      console.log("✅ Toast Grid 초기화 완료");
+      //console.log("✅ Toast Grid 초기화 완료");
   }
 
   // 3. 기타 함수들 (검색, 필터 초기화, 표시 수량 변경 등)
@@ -400,7 +389,7 @@
               modalInstance.hide(); // ✅ Bootstrap 방식으로 모달 닫기
               
           } catch (error) {
-              console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
+              //console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
               modalElement.classList.remove("show");
               modalElement.style.display = "none";
               document.body.classList.remove("modal-open");
@@ -417,7 +406,7 @@
   
 	//PDF 모달 닫힘 시 sessionStorage의 발주번호 삭제 (예: printModal)
 	  modalElement.addEventListener("hidden.bs.modal", function () {
-	      console.log("PDF 모달이 닫혔습니다. 구매전표번호 삭제");
+	      //console.log("PDF 모달이 닫혔습니다. 구매전표번호 삭제");
 	      sessionStorage.removeItem("warehousingChit");
 	  });
 	

@@ -136,12 +136,12 @@
 
  <script>
 
-console.log("갯수그리드")
+//console.log("갯수그리드")
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOMContentLoaded 실행됨");
+    //console.log("✅ DOMContentLoaded 실행됨");
 
     // ✅ productNumGrid가 있는지 확인
-    console.log("📌 productNumGrid 엘리먼트 존재 여부: ", document.getElementById('productNumGrid'));
+    //console.log("📌 productNumGrid 엘리먼트 존재 여부: ", document.getElementById('productNumGrid'));
 
     if (document.getElementById('productNumGrid')) {
         initProductNumGrid();
@@ -154,10 +154,10 @@ document.addEventListener("DOMContentLoaded", function () {
  // ✅ 그리드가 초기화된 후 클릭 이벤트 등록
     setTimeout(() => {
         if (typeof productNumGrid !== 'undefined' && productNumGrid !== null) {
-            console.log("✅ productNumGrid 이벤트 등록");
+            //console.log("✅ productNumGrid 이벤트 등록");
             
             productNumGrid.on("click", function (ev) {
-                console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
+                //console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
                 
                 if (selectedRowKey !== null) {
                 	productNumGrid.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sessionStorage.setItem("selectedGoodsSupplyPrice", rowData.goodsSupplyPrice || '');
               
 
-                console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
+                //console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
             });
         } else {
             console.warn("❌ orderListGrid가 정의되지 않음");
@@ -199,16 +199,16 @@ let productNumGrid;
 let selectedCompanyNum = [[${session.companyNum}]];
 
 function initProductNumGrid() {
-    console.log("✅ initProductGrid() 실행");
+    //console.log("✅ initProductGrid() 실행");
 
     
     if (!selectedCompanyNum) {
-        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
         return;
     }
     
 
-    console.log("✅ 설정된 companyNum:", selectedCompanyNum);
+    //console.log("✅ 설정된 companyNum:", selectedCompanyNum);
 
     const productNumDataSource = {
         api: {  
@@ -252,7 +252,7 @@ function initProductNumGrid() {
         ]
     });
 
-    console.log("✅ 상품 그리드 초기화 완료");
+    //console.log("✅ 상품 그리드 초기화 완료");
     
     // ✅ 총 재고가 안전재고 이하인 경우 스타일 적용
     productNumGrid.on("onGridUpdated", function () {

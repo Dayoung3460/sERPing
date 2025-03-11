@@ -39,7 +39,7 @@ public class OracleArrayProductUpdateHandler implements TypeHandler<Object> {
 	  
 	    OracleConnection conn = ps.getConnection().unwrap(OracleConnection.class); 	
 
-	    System.out.println("=====>>>>>"+parameter);
+	    //System.out.println("=====>>>>>"+parameter);
 	    List<ProdUpdateDtlVO> files = (List<ProdUpdateDtlVO>) parameter;	   
 	    Struct[] array = new Struct[files.size()];
 	    
