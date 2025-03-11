@@ -236,6 +236,10 @@ const openChatRoom = (employeeNum) => {
     }).then((result) => {
         return result.json()
     }).then((data) => {
+        if(!data.length) {
+            chatContainer.innerHTML = ''
+        }
+
         roomId = Object.keys(data)[0]
 
         stompClient.subscribe(`/topic/public/${roomId}`, function (message) {
