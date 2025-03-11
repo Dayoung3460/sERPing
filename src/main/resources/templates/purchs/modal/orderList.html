@@ -11,6 +11,11 @@
 			margin-bottom: 20px;
 		
 		}
+		
+		/* 그리드 선택하면 생기는 색상 */
+		.tui-grid-row-highlight {
+		    background-color: #d7fffe !important; /* f0f8ff 연한 하늘색 */
+		}
     
 
 </style>
@@ -65,6 +70,53 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.warn("❌ productNumGrid 요소를 찾을 수 없습니다.");
     }
+    
+    let selectedRowKey = null;
+ // ✅ 그리드가 초기화된 후 클릭 이벤트 등록
+    setTimeout(() => {
+        if (typeof orderListGrid !== 'undefined' && orderListGrid !== null) {
+            console.log("✅ orderListGrid 이벤트 등록");
+            
+            orderListGrid.on("click", function (ev) {
+                console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
+                
+                if (selectedRowKey !== null) {
+                	orderListGrid.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
+                }
+            	// 클릭한 행에 강조 효과 추가
+        		orderListGrid.addRowClassName(ev.rowKey, 'tui-grid-row-highlight');
+        		 selectedRowKey = ev.rowKey; // 현재 선택한 행 저장
+            	
+            	
+                const rowData = orderListGrid.getRow(ev.rowKey);
+                if (!rowData) {
+                    console.warn("❌ 선택한 데이터가 없음.");
+                    return;
+                }
+
+                // ✅ sessionStorage에 저장
+                sessionStorage.setItem("selectedGoodsCode", rowData.goodsCode || '');
+                sessionStorage.setItem("selectedGoodsName", rowData.goodsName || '');
+                sessionStorage.setItem("selectedOptionCode", rowData.optionCode || '');
+                sessionStorage.setItem("selectedOptionName", rowData.optionName || '');
+                sessionStorage.setItem("selectedOptionNum", rowData.optionNum || '');
+                sessionStorage.setItem("selectedVendorName", rowData.vendorName || '');
+                sessionStorage.setItem("selectedVendorId", rowData.vendorId || '');
+                sessionStorage.setItem("selectedGoodsStandard", rowData.goodsStandard || '');
+                sessionStorage.setItem("selectedGoodsSupplyPrice", rowData.goodsSupplyPrice || '');
+                sessionStorage.setItem("selectedQuantity", rowData.quantity || '');
+
+                console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
+            });
+        } else {
+            console.warn("❌ orderListGrid가 정의되지 않음");
+        }
+    }, 500);
+    
+
+
+    
+    
 });
 
 

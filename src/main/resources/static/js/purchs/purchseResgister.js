@@ -89,6 +89,17 @@ const companyNum = document.getElementById("companyNum").value;
     } else {
         console.warn("❌ goodsNumModal 요소를 찾을 수 없음");
     }
+	
+	if (goodsNumModal) {
+		        goodsNumModal.addEventListener('hidden.bs.modal', function () {
+		            console.log("📢 재고갯수 모달 닫힘 → 데이터 이동 실행");
+		            setupNumModalCloseEvent();
+		        });
+		    } else {
+		        console.warn("❌ goodsNumModal 요소를 찾을 수 없음");
+		    }
+	
+	
     
     // ✅ 모달이 열릴 때 그리드 레이아웃을 새로고침
     const orderlistModal = document.getElementById('orderlistModal');
@@ -110,9 +121,18 @@ const companyNum = document.getElementById("companyNum").value;
         console.warn("❌ orderListGrid 요소를 찾을 수 없음");
     }
 	
-	
+	if (orderlistModal) {
+	        orderlistModal.addEventListener('hidden.bs.modal', function () {
+	            console.log("📢 주문서 모달 닫힘 → 데이터 이동 실행");
+	            setuporderModalCloseEvent();
+	        });
+	    } else {
+	        console.warn("❌ orderlistModal 요소를 찾을 수 없음");
+	    }
     
 });
+
+
 
 // ✅ 발주서 등록 Toast Grid 초기화
 
@@ -485,6 +505,85 @@ function purchaseRegister() {
 	
 	
 }
+
+// ✅ 모달이 닫힐 때 sessionStorage에서 데이터를 가져와 `purchaseGrid`에 추가
+function setuporderModalCloseEvent() {
+    console.log("✅ 주문서 데이터 → 발주서 추가 실행");
+
+    const newRow = {
+        goodsCode: sessionStorage.getItem("selectedGoodsCode"),
+        goodsName: sessionStorage.getItem("selectedGoodsName"),
+        optionCode: sessionStorage.getItem("selectedOptionCode"),
+        optionName: sessionStorage.getItem("selectedOptionName"),
+        optionNum: sessionStorage.getItem("selectedOptionNum"),
+        vendorName: sessionStorage.getItem("selectedVendorName"),
+        vendorId: sessionStorage.getItem("selectedVendorId"),
+        goodsStandard: sessionStorage.getItem("selectedGoodsStandard"),
+        purchaseQuantity: formatNumberWithCommas(sessionStorage.getItem("selectedQuantity")), // ✅ 주문 수량 반영
+        purchaseUnitPrice: formatNumberWithCommas(sessionStorage.getItem("selectedGoodsSupplyPrice")), // ✅ 공급가격 반영
+        purchaseSupplyPrice: "", // 자동 계산됨
+        purchaseVat: "", // 자동 계산됨
+        orderPlanBodyNum: null,
+    };
+
+    console.log("📌 추가할 데이터:", newRow);
+
+	// ✅ `purchaseGrid`에 추가
+	    purchaseGrid.appendRow(newRow, { at: 0 });
+
+	    // ✅ 추가된 행의 rowKey 가져오기 (가장 최근 추가된 행)
+	    const rowCount = purchaseGrid.getRowCount(); // 전체 행 개수 가져오기
+	    const rowKey = rowCount > 0 ? rowCount - 1 : null; // 마지막 행의 rowKey
+
+	    // ✅ 추가된 행의 공급가격 자동 계산
+	    if (rowKey !== null) {
+	        calculateSupplyPrice(rowKey);
+	    } else {
+	        console.warn("❌ 추가된 행의 rowKey를 가져올 수 없습니다.");
+	    }
+		
+		
+    // ✅ sessionStorage 데이터 삭제
+    Object.keys(newRow).forEach((key) => sessionStorage.removeItem(key));
+
+    console.log("✅ 주문서 데이터가 발주서에 추가됨.");
+}
+
+
+// ✅ 모달이 닫힐 때 sessionStorage에서 데이터를 가져와 `purchaseGrid`에 추가
+function setupNumModalCloseEvent() {
+    console.log("✅ 주문서 데이터 → 발주서 추가 실행");
+
+    const newRow = {
+        goodsCode: sessionStorage.getItem("selectedGoodsCode"),
+        goodsName: sessionStorage.getItem("selectedGoodsName"),
+        optionCode: sessionStorage.getItem("selectedOptionCode"),
+        optionName: sessionStorage.getItem("selectedOptionName"),
+        optionNum: sessionStorage.getItem("selectedOptionNum"),
+        vendorName: sessionStorage.getItem("selectedVendorName"),
+        vendorId: sessionStorage.getItem("selectedVendorId"),
+        goodsStandard: sessionStorage.getItem("selectedGoodsStandard"),
+        purchaseQuantity: "", 
+        purchaseUnitPrice: formatNumberWithCommas(sessionStorage.getItem("selectedGoodsSupplyPrice")), // ✅ 공급가격 반영
+        purchaseSupplyPrice: "", // 자동 계산됨
+        purchaseVat: "", // 자동 계산됨
+        orderPlanBodyNum: null,
+    };
+
+    console.log("📌 추가할 데이터:", newRow);
+
+	// ✅ `purchaseGrid`에 추가
+	    purchaseGrid.appendRow(newRow, { at: 0 });
+
+	  
+		
+		
+    // ✅ sessionStorage 데이터 삭제
+    Object.keys(newRow).forEach((key) => sessionStorage.removeItem(key));
+
+    console.log("✅ 주문서 데이터가 발주서에 추가됨.");
+}
+
 
 
 
