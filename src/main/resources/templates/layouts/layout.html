@@ -195,5 +195,16 @@
 
 
 <!-- End custom js for this page-->
+
+<script th:inline="javascript">
+    let env = /*[[${@environment.getProperty('spring.profiles.active')}]]*/ 'prod';
+
+    if (env !== 'dev') {
+        console.log = function() {};
+        console.warn = function() {};
+        console.error = function() {};
+    }
+</script>
+
 </body>
 </html>

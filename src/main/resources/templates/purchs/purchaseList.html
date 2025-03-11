@@ -241,7 +241,7 @@
           el.textContent = 'EMAIL';
           el.className = 'btn btn-outline-warning btn-sm';
           el.addEventListener('click', () => {
-              console.log("메일 전송 버튼 클릭");
+              //console.log("메일 전송 버튼 클릭");
               const focusedCell = purchaselistGrid.getFocusedCell();
               if (!focusedCell) {
                   showAlert("먼저 발주 행을 선택하세요.","danger");
@@ -266,7 +266,7 @@
               sessionStorage.setItem("vendorEmail", vendorEmail);
               sessionStorage.setItem("employeeEmail", employeeEmail);
             
-              console.log("vendorEmail:", vendorEmail, "employeeEmail:", employeeEmail);
+              //console.log("vendorEmail:", vendorEmail, "employeeEmail:", employeeEmail);
               
               // mailsender 모달 표시
               const mailSenderModalEl = document.getElementById("mailsenderModal");
@@ -279,16 +279,18 @@
 
                   if (fromEmailInput) {
                       fromEmailInput.value = employeeEmail || "";
-                      console.log("✅ fromEmail 필드 값 설정 완료:", fromEmailInput.value);
+                      //console.log("✅ fromEmail 필드 값 설정 완료:", fromEmailInput.value);
                   } else {
-                      console.warn("⚠️ fromEmail 입력 필드를 찾을 수 없음.");
+                	  showAlert("발신메일을 입력하세요 " ,"danger");
+                      
                   }
 
                   if (toEmailInput) {
                       toEmailInput.value = vendorEmail || "";
-                      console.log("✅ toEmail 필드 값 설정 완료:", toEmailInput.value);
+                      //console.log("✅ toEmail 필드 값 설정 완료:", toEmailInput.value);
                   } else {
-                      console.warn("⚠️ toEmail 입력 필드를 찾을 수 없음.");
+                	  showAlert("수신메일을 입력하세요 " ,"danger");
+                      
                   }
               } else {
                   console.error("메일 전송 모달(mailsenderModal)을 찾을 수 없습니다.");
@@ -318,7 +320,7 @@
 
               if (purchaseNum) {
                   sessionStorage.setItem("purchaseNum", purchaseNum);
-                  console.log("sessionStorage 저장 완료:", purchaseNum);
+                  //console.log("sessionStorage 저장 완료:", purchaseNum);
               } else {
                   console.warn("발주번호 데이터가 없습니다.");
               }
@@ -330,7 +332,7 @@
               //     예: '/purchs/report/report?companynum=...&purchasenum=...'
               //     (HTML이 아니라 PDF 바이너리를 반환해야 함)
               const reportUrl = `/purchs/report/report?companynum=${companyNum}&purchasenum=${purchaseNum}`;
-              console.log("PDF URL:", reportUrl);
+              //console.log("PDF URL:", reportUrl);
 
               // (2) PDF.js로 캔버스 렌더링
               renderPDF(reportUrl);
@@ -362,7 +364,7 @@
 	  }
 	  // 다운로드 엔드포인트 URL 구성 (/purchs/report/reportDownload 엔드포인트 사용)
 	  const downloadUrl = `/purchs/report/reportDownload?companynum=${companyNum}&purchasenum=${purchaseNum}`;
-	  console.log("Download URL:", downloadUrl);
+	  //console.log("Download URL:", downloadUrl);
 	  // 브라우저를 해당 URL로 이동시켜 파일 다운로드를 유도
 	  window.location.href = downloadUrl;
 	});
@@ -371,7 +373,7 @@
   
   // 2. 페이지 로드 후 그리드 초기화
   document.addEventListener("DOMContentLoaded", function () {
-      console.log("✅ 발주서 그리드 초기화");
+      //console.log("✅ 발주서 그리드 초기화");
       initPurchaseGrid();
   });
 
@@ -380,7 +382,7 @@
   function initPurchaseGrid() {
       const companyNum = [[${session.companyNum}]];
       if (!companyNum) {
-          console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+          //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
           return;
       }
       const purchaselistDataSource = {
@@ -433,7 +435,7 @@
           const columnName = event.columnName;
           const rowData = purchaselistGrid.getRow(rowKey);
 
-          console.log("✅ 발주서 클릭:", rowData);
+          //console.log("✅ 발주서 클릭:", rowData);
 
           // 특정 컬럼 클릭 시 실행 (예: purchaseNum, vendorName, goodsName 등)
           if (columnName === "purchaseNum" || columnName === "vendorName" || columnName === "goodsName") {
@@ -542,7 +544,7 @@
 		     sessionStorage.removeItem("employeeEmail");
 	      });
 	    } else {
-	      console.warn("❌ 메일 모달 닫기 버튼을 찾을 수 없습니다.");
+	      console.warn(" 메일 모달 닫기 버튼을 찾을 수 없습니다.");
 	    }
 	    
 	    if (emailModal) {
@@ -602,7 +604,7 @@
 		        purchaselistGrid.export('xlsx', options, filteredData);
 		        console.log(`✅ 엑셀 다운로드 성공! 파일명: purchaseOrderlist_${formattedDate}.xlsx`);
 		    } catch (error) {
-		        console.error("❌ 엑셀 다운로드 오류 발생:", error);
+		        //console.error("❌ 엑셀 다운로드 오류 발생:", error);
 		        showAlert("엑셀 다운로드 중 오류가 발생했습니다.","danger");
 		    }
 		}

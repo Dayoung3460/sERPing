@@ -117,16 +117,18 @@
 		let sessioCompanyNum = [[${session.companyNum}]];
 		let departmentNum = [[${session.departmentNum}]];
 		
-		function getDeptName() {
-			fetch(`/deptName/${departmentNum}`)
-	        .then(response => {
-	            return response.text(); // 서버에서 문자열(부서명) 응답을 받음
-	        })
-	        .then(data => {
-	            document.getElementById("branchOfficeId").value = data; // 부서명 필드에 값 넣기
-	        })
-	        .catch(error => console.error("부서명 가져오기 실패:", error)); 
-        }
+		if(departmentNum > 0){
+			function getDeptName() {
+				fetch(`/deptName/${departmentNum}`)
+		        .then(response => {
+		            return response.text(); // 서버에서 문자열(부서명) 응답을 받음
+		        })
+		        .then(data => {
+		            document.getElementById("branchOfficeId").value = data; // 부서명 필드에 값 넣기
+		        })
+		        .catch(error => console.error("부서명 가져오기 실패:", error)); 
+	        }
+		}
 		
 		document.addEventListener("DOMContentLoaded",()=>{
 			getDeptName();

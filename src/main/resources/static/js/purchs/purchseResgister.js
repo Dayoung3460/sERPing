@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
 const header = document.querySelector('meta[name="_csrf_header"]').content;
 const token = document.querySelector('meta[name="_csrf"]').content;
 const companyNum = document.getElementById("companyNum").value;
-    console.log("✅ 발주서 등록 페이지 스크립트 실행됨");
-	console.log("✅ 현재 companyNum 값:", companyNum);
+    //console.log("✅ 발주서 등록 페이지 스크립트 실행됨");
+	//console.log("✅ 현재 companyNum 값:", companyNum);
 	
 
 	
@@ -44,7 +44,7 @@ const companyNum = document.getElementById("companyNum").value;
 
 	if (closeButton) {
 	    closeButton.addEventListener("click", function () {
-	        console.log("✅ 창고 모달 닫기 버튼 클릭됨!");
+	        //console.log("✅ 창고 모달 닫기 버튼 클릭됨!");
 
 	        try {
 	        	let modalInstance = bootstrap.Modal.getInstance("#goodsModal") || new bootstrap.Modal("#goodsModal");
@@ -80,7 +80,7 @@ const companyNum = document.getElementById("companyNum").value;
             setTimeout(() => {
                 if (window.productNumGrid) {
                     productNumGrid.refreshLayout();
-                    console.log("✅ productNumGrid 레이아웃 리프레시 완료");
+                    //console.log("✅ productNumGrid 레이아웃 리프레시 완료");
                 } else {
                     console.warn("❌ productNumGrid가 정의되지 않음");
                 }
@@ -106,7 +106,7 @@ const companyNum = document.getElementById("companyNum").value;
 
     if (orderlistModal) {
         orderlistModal.addEventListener('shown.bs.modal', function () {
-            console.log("📢 주문서 조회 모달 열림");
+            //console.log("📢 주문서 조회 모달 열림");
 
             setTimeout(() => {
                 if (window.orderListGrid) {
@@ -138,7 +138,7 @@ const companyNum = document.getElementById("companyNum").value;
 
 
 function initPurchaseGrid() {
-    console.log("✅ 발주서 Grid 초기화");
+    //console.log("✅ 발주서 Grid 초기화");
     
     window.purchaseGrid = new tui.Grid({
         el: document.getElementById('grid'),
@@ -235,33 +235,33 @@ function initPurchaseGrid() {
 //모달 열기 함수 
 // ✅ 모달 열기 함수
 	function openGoodsModal(rowKey) {
-	    console.log("📢 선택한 행(rowKey):", rowKey);
+	    //console.log("📢 선택한 행(rowKey):", rowKey);
 	
 	    const modalElement = document.getElementById('goodsModal');
 	    if (!modalElement) {
-	        console.error("❌ 모달 요소를 찾을 수 없습니다.");
+	        //console.error("❌ 모달 요소를 찾을 수 없습니다.");
 	        return;
 	    }
 	
 	    if (typeof productGrid !== 'undefined' && productGrid !== null) {
-	        console.log("📢 상품 조회 그리드 데이터 갱신 시작");
+	        //console.log("📢 상품 조회 그리드 데이터 갱신 시작");
 	
 	        // 데이터를 먼저 불러온 후, 모달을 표시
 	        productGrid.readData();
 	        
 	        // ✅ 데이터 갱신 후 모달을 표시하도록 이벤트 리스너 추가
 	        productGrid.on("onGridUpdated", function () {
-	            console.log("📢 상품 조회 그리드 데이터 갱신 완료");
+	            //console.log("📢 상품 조회 그리드 데이터 갱신 완료");
 	            
 	            // ✅ 모달 표시
 	            const modalInstance = new bootstrap.Modal(modalElement);
 	            modalInstance.show();
-	            console.log("📢 상품 조회 모달 열림:", rowKey);
+	            //console.log("📢 상품 조회 모달 열림:", rowKey);
 	
 	            // ✅ 데이터 반영 후 레이아웃 새로고침 (지연 실행)
 	            setTimeout(() => {
 	                productGrid.refreshLayout();
-	                console.log("📢 상품 조회 그리드 리프레시 완료");
+	                //console.log("📢 상품 조회 그리드 리프레시 완료");
 	            }, 500);
 	        }); 
 	    } else {
@@ -275,7 +275,7 @@ function initPurchaseGrid() {
 	    if (typeof productGrid !== 'undefined' && productGrid !== null) {
 	        setTimeout(() => {
 	            productGrid.refreshLayout();
-	            console.log("📢 상품 조회 그리드 리프레시 실행됨");
+	            //console.log("📢 상품 조회 그리드 리프레시 실행됨");
 	        }, 500);
 	    } else {
 	        console.warn("❌ productGrid가 정의되지 않았습니다.");
@@ -301,14 +301,14 @@ function initPurchaseGrid() {
 
 // ✅ 모달 닫힐 때 sessionStorage 값 가져와서 그리드에 저장
 function setupModalCloseEvent() {
-	console.log("✅ 모달 닫힘 이벤트 실행");
+	//console.log("✅ 모달 닫힘 이벤트 실행");
 
 	 
   
 
  const rowKey = purchaseGrid.getFocusedCell()?.rowKey;
         if (rowKey === null || rowKey === undefined) {
-            console.warn("❌ 먼저 행을 선택해야 합니다.");
+            //console.warn("❌ 먼저 행을 선택해야 합니다.");
             return;
         }
 		
@@ -337,7 +337,7 @@ function setupModalCloseEvent() {
 		
 	
 
-        console.log("✅ 발주 그리드에 데이터 저장 완료");
+        //console.log("✅ 발주 그리드에 데이터 저장 완료");
   
 }
 
@@ -378,7 +378,7 @@ function updateVat() {
         purchaseGrid.setValue(rowIndex, "purchaseVat", formatNumberWithCommas(vat));
     });
 
-    console.log("✅ 부가세 적용 여부:", applyVat ? "적용됨" : "미적용");
+    //console.log("✅ 부가세 적용 여부:", applyVat ? "적용됨" : "미적용");
 }
 
 
@@ -474,7 +474,7 @@ function purchaseRegister() {
 
 	// groupedData를 배열로 변환 (각 그룹별 발주 데이터)
 	    const purchaseArray = Object.values(groupedData);
-	    console.log("서버로 전송할 데이터:", purchaseArray);
+	    //console.log("서버로 전송할 데이터:", purchaseArray);
 		
 		// CSRF 토큰 및 헤더 정보 (meta 태그에서 미리 읽어옴)
 		    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;

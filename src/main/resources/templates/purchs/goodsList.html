@@ -143,7 +143,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-	console.log("DOMContentLoaded 이벤트 실행 = 스크립트 실행")
+	//console.log("DOMContentLoaded 이벤트 실행 = 스크립트 실행")
     initProductGrid();
 });
 //✅ 텍스트를 굵게하고 정렬하는 렌더러
@@ -190,19 +190,19 @@ let selectedRowKey = null;
 
 function initProductGrid() {
 	
-	console.log("initProductGrid()실행")
+	//console.log("initProductGrid()실행")
 
     const companyNum = [[${session.companyNum}]];
   
 
 	if (!companyNum) {
-        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
         return; // companyNum이 없으면 요청을 하지 않음
     } 
     
     //const companyNum = 1;
 
-    console.log("✅ 설정된 companyNum:", companyNum);
+    //console.log("✅ 설정된 companyNum:", companyNum);
 
     const productDataSource = {
             api: {  
@@ -218,20 +218,7 @@ function initProductGrid() {
                         perPage: 10,
                         companyNum: companyNum
                     },
-                    beforeRequest: function(request) {
-                        console.log("📢 서버로 요청 보내기 전 requestParams:", request.params);
-                    },
-                    afterResponse: function(response) {
-                        console.log("📢 서버 응답:", response);
-
-                        if (response.data && response.data.contents) {
-                            console.log("✅ 변환된 데이터:", response.data.contents);
-                            return { data: response.data.contents, totalCount: response.data.pagination.totalCount };
-                        }
-
-                        console.warn("⚠️ 서버 응답에 contents가 없습니다.");
-                        return { data: [], totalCount: 0 };
-                    }
+                   
 
                 }
             },
@@ -239,7 +226,7 @@ function initProductGrid() {
             serverSidePagination: true
         };
         
-        console.log("✅ productDataSource 설정 완료:", productDataSource);
+        //console.log("✅ productDataSource 설정 완료:", productDataSource);
 
         productGrid = new tui.Grid({
             el: document.getElementById('productGrid'),
@@ -289,14 +276,14 @@ function initProductGrid() {
             }
         });
         
-        console.log("✅ Toast Grid 초기화 완료");
+        //console.log("✅ Toast Grid 초기화 완료");
         
      // ✅ 옵션명 클릭 시 상세 페이지 이동 (goodsCode, companyNum만 전달)
         productGrid.on("click", function(event) {
             const rowKey = event.rowKey;
             const columnName = event.columnName;
             const rowData = productGrid.getRow(rowKey);
-            console.log("클릭")
+            //console.log("클릭")
             
             if (columnName === "optionName" ||columnName === "optionCode" || columnName === "goodsName" || columnName === "goodsCode" ) {  // 옵션명을 클릭했을 때만 실행
                 const goodsCode = rowData.goodsCode;
@@ -309,7 +296,7 @@ function initProductGrid() {
 
                 	
                 } else {
-                    console.error("❌ 데이터가 부족하여 페이지 이동 실패", rowData);
+                    console.error(" 데이터가 부족하여 페이지 이동 실패", rowData);
                 }
             }
         });

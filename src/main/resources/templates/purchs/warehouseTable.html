@@ -3,21 +3,35 @@
 <head>
 <meta charset="UTF-8">
 
-<style>
-#custom-Modal-container{
-		background-color: #f8f9fa; /* 연한 회색 배경 */
-		padding: 20px;
-		border-radius: 10px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 박스 그림자 */
-		margin-bottom: 20px;
-	
-		}
-</style>
+<!-- timePicker -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+
+<!-- datePicker -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+
+
+<!-- paging -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+
+<!-- toast grid -->
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<!-- 엑셀 -->
+<script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<!-- bootsStrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
 
 </head>
 <body>
 	<!-- 검색창 -->
-	<div class="search-grid" id="custom-Modal-container">
+	<div class="search-grid" id="custom-container">
 			<div class="row 2row">
 				<div class="col-1"></div>
 				<div class="col-5 row ">
@@ -56,13 +70,15 @@
 
 const warehouseDataSource = {
 		api:{
-			readData: { url:'/purchs/rest/warehouse/list', 
+			readData: { url:'http://localhost:81/purchs/rest/warehouse/list', 
 						method: 'GET', 
-						initParams: { page: 1 ,
-									perPage: 5,
-									companyNum: [[${session.companyNum}]]
-									},
-						  
+						initParams: { page: 1 ,perPage: 5},
+						   beforeRequest: function(request) {
+				                console.log("📢 서버로 요청 보내기 전 requestParams:", request.params); // ✅ 서버 요청 전 데이터 확인
+				         },
+						afterResponse : function(response){
+							console.log("서버응답 결과==" , response);
+						}
 					   },
 		},
 		contentType: 'application/json'
@@ -74,8 +90,10 @@ const warehouseGrid = new tui.Grid({
 		perPage: 5,
 	},
 	columns: [
-		{ header : "창고번호", name : "warehouseId",  sortable : true ,align: "right"},
-		{ header : "창고명", name : "warehouseName" , sortable : true ,align: "left"}
+		{ header : "창고번호", name : "warehouseId",  sortable : true},
+		{ header : "창고명", name : "warehouseName" , sortable : true,
+
+		}
 	],
 	data : warehouseDataSource,
 });
@@ -89,11 +107,8 @@ function changeWarehouseDisplay() {
 
 function warehouseSearch(){
 	let warehouseName = document.querySelector('#searchWarehouseName').value;
-	//console.log("검색어==",warehouseName);
-	warehouseGrid.setRequestParams({
-		"companyNum": [[${session.companyNum}]],
-		"warehouseName" : warehouseName
-		})
+	console.log("검색어==",warehouseName);
+	warehouseGrid.setRequestParams({"warehouseName" : warehouseName})
 	warehouseGrid.readData();
 }
 
@@ -101,13 +116,13 @@ function warehouseSearch(){
 	warehouseGrid.on('click', (ev) => {
 	    const rowKey = ev.rowKey;
 	    const rowData = warehouseGrid.getRow(rowKey); 
-	    //console.log("선택된 행 데이터:", rowData);
+	    console.log("선택된 행 데이터:", rowData);
 	
 	    // 세션 스토리지에 데이터 저장
 	    sessionStorage.setItem("selectedWarehouseId", rowData.warehouseId);
 	    sessionStorage.setItem("selectedWarehouseName", rowData.warehouseName);
 	    
-	    //console.log("보낼 데이터 ==",rowData.warehouseId,rowData.warehouseName);
+	    console.log("보낼 데이터 ==",rowData.warehouseId,rowData.warehouseName);
 	 
 	
 	});
