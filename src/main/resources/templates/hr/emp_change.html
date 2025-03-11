@@ -40,6 +40,7 @@
 </head>
 
 <body layout:fragment="content">
+
 <div class="container mt-3">
     <h2 class="fw-bold">인사 발령 관리</h2>
 	<hr>
@@ -151,6 +152,9 @@
 
 <!-- 📌 JavaScript -->
 <script>
+//✅ 공통 코드 객체를 미리 정의
+var commonCodes = commonCodes || {};
+
 document.addEventListener("DOMContentLoaded", function () {
     loadCommonCodes();
     getUpdatedColumns();

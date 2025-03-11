@@ -13,6 +13,11 @@ let statuses = [];    // 재직 상태 저장
 let employmentTypes = []; // 근무 유형 저장
 let authos = []; // 권한 저장
 
+// ✅ commonCodes 변수를 안전하게 초기화
+if (typeof commonCodes === "undefined") {
+    var commonCodes = {};
+}
+
 // 공통 코드 데이터 불러오는 함수
 function loadCommonCodes() {
     fetch('/hr/rest/emp/common-codes/'+sessionData.companyNum)
