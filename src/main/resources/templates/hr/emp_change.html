@@ -153,6 +153,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     loadCommonCodes();
+    getUpdatedColumns();
 
     var Grid = tui.Grid;
     let employeeGrid;
@@ -222,11 +223,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
         
         
-        console.log("📌 직급 목록 로드 완료:", positionList);
-        console.log("📌 부서 목록 로드 완료:", departmentList);
-        console.log("📌 근무 유형 목록 로드 완료:", employmentTypeList);
-        console.log("📌 권한 목록 로드 완료:", authList);
-        
         // ✅ Grid 컬럼을 동적으로 업데이트
         employeeGrid.setColumns(getUpdatedColumns());
         
@@ -238,12 +234,6 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // ✅ 컬럼 동적 업데이트 함수
     function getUpdatedColumns() {
-    	
-    	console.log("🔥 getUpdatedColumns 실행됨"); // ✅ 실행 여부 확인
-    	console.log("📌 현재 직급 목록 로드 완료:", positionList);
-        console.log("📌 현재 부서 목록 로드 완료:", departmentList);
-        console.log("📌 현재 근무 유형 목록 로드 완료:", employmentTypeList);
-        console.log("📌 현재 권한 목록 로드 완료:", authList);
     	
         return [
             { header: "사원ID", name: "employeeId", width: 150, sortable: true, align: 'center' },
@@ -302,33 +292,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 포지션 Formatter
     function positionFormatter({ value }) {
-    	console.log("aa");
         const position = positionList.find(item => item.value === value);
-        console.log("🛠️ 매핑된 부서:", position);
         return position ? position.text : value;
     }
     
     // ✅ 부서 Formatter
     function departmentFormatter({ value }) {
-    	console.log("bb");
         const department = departmentList.find(item => item.value === String(value));
-        console.log("🛠️ 매핑된 부서:", department);
         return department ? department.text : value;
     }
     
     // ✅ 근무우형 Formatter
     function employmentTypeFormatter({ value }) {
-    	console.log("cc");
         const employmentType = employmentTypeList.find(item => item.value === value);
-        console.log("🛠️ 매핑된 부서:", employmentType);
         return employmentType ? employmentType.text : value;
     }
     
     // ✅ 근무우형 Formatter
     function authFormatter({ value }) {
-    	console.log("ddd");
         const auth = authList.find(item => item.value === value);
-        console.log("🛠️ 매핑된 부서:", auth);
         return auth ? auth.text : value;
     }
 
@@ -339,13 +321,11 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeEmployeeGrid(); // 초기 Grid 생성
     initializeHistoryGrid();  // ✅ 인사 발령 이력 Grid 초기화
     
-    console.log("🔍 employeeGrid 데이터 확인:", employeeGrid.getData());
 });
 
 
 //✅ 인사 발령 이력 Grid 초기화
 function initializeHistoryGrid() {
-    console.log("🔥 인사 발령 이력 Grid 초기화");
 
     const historyDataSource = {
         api: {
@@ -388,14 +368,12 @@ function initializeHistoryGrid() {
 
 //✅ 인사 발령 이력 데이터 불러오기
 function loadHistoryData() {
-    console.log("📌 인사 발령 이력 데이터 불러오기 실행");
     
     historyGrid.readData(1, {}, true);
 }
 
 
 document.getElementById("saveHistoryBtn").addEventListener("click", function () {
-    console.log("🔹 인사 발령 등록 버튼 클릭됨");
 
     const employeeId = document.getElementById("modalEmployeeName").getAttribute("data-id");
     const changeType = document.getElementById("modalChangeType").value;

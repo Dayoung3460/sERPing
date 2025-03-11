@@ -71,7 +71,7 @@ public class EmpServiceImpl implements EmpService {
 	    codes.put("positions", empMapper.getPositions());
 
 
-	    // ✅ 근무 유형을 리스트로 변환하여 반환
+	    // 근무 유형을 리스트로 변환하여 반환
 	    List<Map<String, String>> employmentTypeList = empMapper.getEmploymentTypes();
 	    if (employmentTypeList == null || employmentTypeList.isEmpty()) {
 	        employmentTypeList = new ArrayList<>(); // 빈 리스트 반환하여 `null` 방지
@@ -107,7 +107,7 @@ public class EmpServiceImpl implements EmpService {
 		/*
 		 * // 오늘 날짜 기준 (YYMMDD) String today = new SimpleDateFormat("yyMMdd").format(new
 		 * Date());
-		 * 
+//		 * 
 		 * // 현재 가장 큰 employee_id 가져오기 String maxEmployeeId = getNewEmployeeId(); int
 		 * newSeq = 1;
 		 * 
@@ -118,37 +118,37 @@ public class EmpServiceImpl implements EmpService {
 		 * // 새 employee_id 생성 String newEmployeeId = today + String.format("%03d",
 		 * newSeq); empDTO.setEmployeeId(newEmployeeId);
 		 * 
-		 * // ✅ 비밀번호 암호화 (예제: "beauty1nside"를 기본 비밀번호로 설정) if (empDTO.getPosition() ==
+		 * // 비밀번호 암호화 (예제: "beauty1nside"를 기본 비밀번호로 설정) if (empDTO.getPosition() ==
 		 * null) empDTO.setEmployeePw("0000"); // 기본 비밀번호
 		 * 
-		 * // ✅ 기본값 설정 (공통 코드 적용) if (empDTO.getPosition() == null)
+		 * // 기본값 설정 (공통 코드 적용) if (empDTO.getPosition() == null)
 		 * empDTO.setPosition("PO001"); // 기본 직급 if (empDTO.getAuthority() == null)
 		 * empDTO.setAuthority("AU004"); // 기본 권한 if (empDTO.getStatus() == null)
 		 * empDTO.setStatus("ST001"); // 재직 상태 if (empDTO.getEmploymentType() == null)
 		 * empDTO.setEmploymentType("ET001");
 		 */
     	
-        // ✅ 사원번호 길이 체크 (5~20자)
+        // 사원번호 길이 체크 (5~20자)
         if (empDTO.getEmployeeId().length() < 5 || empDTO.getEmployeeId().length() > 20) {
             throw new IllegalArgumentException("사원 ID는 5~20자리여야 합니다.");
         }
 
-        // ✅ 사원번호 형식 검증 (영문, 숫자, 언더바만 허용)
+        // 사원번호 형식 검증 (영문, 숫자, 언더바만 허용)
         if (!empDTO.getEmployeeId().matches("^[A-Za-z0-9_]+$")) {
             throw new IllegalArgumentException("사원 ID는 영문, 숫자, 언더바(_)만 사용할 수 있습니다.");
         }
 
-        // ✅ 사원 ID 중복 확인
+        // 사원 ID 중복 확인
         if (isEmployeeIdExists(empDTO.getEmployeeId())) {
             throw new DuplicateKeyException("이미 등록된 사원 ID입니다.");
         }
 
-        // ✅ 이메일 중복 확인
+        // 이메일 중복 확인
         if (checkEmailExists(empDTO.getEmail())) {
             throw new DuplicateKeyException("이미 등록된 이메일입니다.");
         }
 
-        // ✅ 데이터 저장
+        // 데이터 저장
         empMapper.insertEmployee(empDTO);
         
         
@@ -156,25 +156,25 @@ public class EmpServiceImpl implements EmpService {
     
     @Override
     public boolean isEmployeeIdExists(String employeeId) {
-        return empMapper.checkEmpIDExists(employeeId) > 0; // ✅ 변환 적용
+        return empMapper.checkEmpIDExists(employeeId) > 0; // 변환 적용
     }
 
 	@Override
 	public List<String> getDepartments(int companyNum) {
 		// TODO Auto-generated method stub
-		return empMapper.getDepartments(companyNum); // ✅ 기존 방식 유지
+		return empMapper.getDepartments(companyNum); // 기존 방식 유지
 	}
 
 	@Override
 	public List<Map<String, Object>> getDepartmentList() {
 		// TODO Auto-generated method stub
-		return empMapper.getDepartmentList(); // ✅ 새로운 방식 추가
+		return empMapper.getDepartmentList(); // 새로운 방식 추가
 	}
 
 	@Override
 	public List<Map<String, Object>> getSubDepartments(String departmentNum) {
 		// TODO Auto-generated method stub
-		return empMapper.getSubDepartments(departmentNum); // ✅ 하위 부서 조회 추가
+		return empMapper.getSubDepartments(departmentNum); // 하위 부서 조회 추가
 	}
 	
     @Override

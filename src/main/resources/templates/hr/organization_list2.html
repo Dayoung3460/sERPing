@@ -116,7 +116,7 @@
         <div class="row">
           <!-- 프로필 이미지 -->
           <div class="col-md-3 text-center">
-            <img src="https://via.placeholder.com/150" class="profile-image" id="modalProfileImage" alt="프로필 이미지">
+            <img src="/file/image/mypage/profile/noProfileImg.jpg" class="profile-image" id="modalProfileImage" alt="프로필 이미지">
           </div>
 
           <!-- 사원 정보 -->
@@ -324,8 +324,6 @@ OrgChart.templates.subDepartment.ripple = {
 
     // ✅ 4. 전체 조직도 데이터 구성
     const nodes = [companyNode, ...topDepartments, ...subDepartments];
-
-    console.log("📌 조직도 노드 데이터:", nodes);
 
     // ✅ 5. OrgChart 생성
     let chart = new OrgChart(document.getElementById("orgChartList"), {

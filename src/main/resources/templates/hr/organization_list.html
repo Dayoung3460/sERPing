@@ -140,7 +140,7 @@
         <div class="row">
           <!-- 프로필 이미지 -->
           <div class="col-md-3 text-center">
-            <img src="https://via.placeholder.com/150" class="profile-image" id="modalProfileImage" alt="프로필 이미지">
+            <img src="/file/image/mypage/profile/noProfileImg.jpg" class="profile-image" id="modalProfileImage" alt="프로필 이미지">
           </div>
 
           <!-- 사원 정보 -->
@@ -320,56 +320,41 @@
 
         .then(response => response.json())
 .then(data => {
-    if (data.length === 0) {
+    if (!data.length) {
         console.error("❌ 조직도 데이터가 없습니다.");
         return;
     }
 
-    // ✅ 1. 회사 노드 추가 (대표 포함)
-    const companyNode = {
-        id: "company_" + data[0].companyNum,
+    const nodes = [];
+    
+    // 회사 노드 추가
+    nodes.push({
+        id: `company_${data[0].companyNum}`,
         name: data[0].companyName,
-        title: "대표: " + data[0].representationName,
+        title: `대표: ${data[0].representationName}`,
         tags: ["Company"]
-    };
+    });
 
-    // ✅ 2. 상위 부서(TOP) 노드 추가 (parentDepartmentNum이 NULL)
-    const topDepartments = data
-        .filter(dept => !dept.parentDepartmentNum)
-        .map(dept => ({
+    // 부서 데이터 변환 
+    data.forEach(dept => {
+        nodes.push({
             id: dept.departmentNum,
-            pid: "company_" + dept.companyNum,  // ✅ 최상단 회사에 연결
+            pid: dept.parentDepartmentNum ? dept.parentDepartmentNum : `company_${dept.companyNum}`,
             name: dept.departmentName,
-            title: "팀장: " + (dept.managerName || "없음"),
-            tags: ["TopDepartment"]
-        }));
+            title: `팀장: ${dept.managerName || "없음"}`,
+            tags: dept.parentDepartmentNum ? ["SubDepartment"] : ["TopDepartment"]
+        });
+    });
 
-    // ✅ 3. 하위 부서(SUB) 노드 추가 (parentDepartmentNum이 있는 부서들)
-    const subDepartments = data
-        .filter(dept => dept.parentDepartmentNum)
-        .map(dept => ({
-            id: dept.departmentNum,
-            pid: dept.parentDepartmentNum,  // ✅ 상위 부서에 연결
-            name: dept.departmentName,
-            title: "팀장: " + (dept.managerName || "없음"),
-            tags: ["SubDepartment"]
-        }));
-
-    // ✅ 4. 전체 조직도 데이터 구성
-    const nodes = [companyNode, ...topDepartments, ...subDepartments];
-
-    console.log("📌 조직도 노드 데이터:", nodes);
-
-    // ✅ 5. OrgChart 생성
+    // 5. OrgChart 생성
 	let chart = new OrgChart(document.getElementById("orgChartList"), {
 	    orientation: OrgChart.orientation.left,
 	    compact: true, 
 	    mouseScrool: OrgChart.action.scroll,
-	    enableSearch: false,
-	    enableAI: false,    
+	    enableSearch: false,  
 	    enableDragDrop: true,
 	    nodeBinding: {
-	        field_0: "name",  // ✅ 도형에는 부서명만 표시
+	        field_0: "name",
 	    },
 	    tags: {
 	        "Company": { template: "company" }, 
