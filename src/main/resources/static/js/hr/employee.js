@@ -8,7 +8,6 @@ const header = document.querySelector('meta[name="_csrf_header"]').content;
 const token = document.querySelector('meta[name="_csrf"]').content;
 
 document.addEventListener("DOMContentLoaded", function () {
-
     setTimeout(() => {
         populateFilters(); // 필터 로딩 함수 실행
     }, 100);
@@ -417,7 +416,7 @@ function loadCommonCodes() {
         .then(response => response.json())
         .then(data => {
             commonCodes = data;
-            //populateFilters(); // 필터 UI 업데이트
+            populateFilters(); // 필터 UI 업데이트
             populateModals(); // 모달 UI 업데이트
         })
         .catch(error => console.error("공통 코드 로딩 실패:", error));
@@ -434,18 +433,6 @@ function populateFilters() {
     const statusSelect = document.getElementById("statusFilter");
     const employmentTypeSelect = document.getElementById("employmentTypeFilter");
     const departmentSelect = document.getElementById("departmentFilter");
- 
-	    
-    if (!positionSelect || !statusSelect || !employmentTypeSelect || !departmentSelect) {
-        console.error("❌ populateFilters() 실행 실패! 필터 요소 중 일부가 존재하지 않습니다.");
-        return; // 요소가 없으면 함수 실행 중단
-    }
-
-    // 기존 옵션 제거
-    positionSelect.innerHTML = '<option value="">전체</option>';
-    statusSelect.innerHTML = '<option value="">전체</option>';
-    employmentTypeSelect.innerHTML = '<option value="">전체</option>';
-    departmentSelect.innerHTML = '<option value="">전체</option>';
 
     // 공통 코드 옵션 추가
     Object.entries(commonCodes.position || {}).forEach(([key, value]) => {
@@ -929,9 +916,10 @@ function openPostcode() {
 
 
 
-querySelector("#contractBtn").addEventListener("click", ()=>{
-			alert("계약보기 클릭");
-		});
+const element = document.querySelector("#someElement");
+if (element) {
+    element.textContent = "Updated!";
+}
 
 		
 // (1) PDF.js로 PDF 파일을 캔버스에 렌더링

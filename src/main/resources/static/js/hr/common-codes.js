@@ -50,7 +50,7 @@ function loadCommonCodes() {
             // ✅ 이벤트 발생 (employee.js에서 로딩 완료 후 실행하도록)
             document.dispatchEvent(new Event("commonCodesLoaded"));
         })
-        .catch(error => console.error("❌ Error loading common codes:", error));
+        
 }
 
 // 부서 목록 동적으로 추가
