@@ -52,7 +52,7 @@
 	<sql id="searchInfo">
 		d.company_num = #{companyNum} AND d.delivery_status = 'DS02' and o.branch_office_id = #{branchOfficeId}
 		<if test="orderDate != null and ! orderDate.equals('')">
-			AND TO_CHAR(o.order_date, 'yyyy-mm-dd') = #{orderDate}
+			AND TO_CHAR(o.order_date, 'yyyy-mm-dd') = TO_CHAR(#{orderDate}, 'yyyy-mm-dd')
 		</if>
 	</sql>
 	
