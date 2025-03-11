@@ -618,11 +618,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		    	}
 					//////////////////처리 함수(재입고 + 교환)
 		    	else if (modal === csOrderRegisterModal){
+		    		
+		    		//교환 및 반품 처리 내역 기록 데이터(그리드 내용)
 		    		const returningDetailData = grid3.getData(); 
+		    		
+		    		//재입고 리스트(그리드에서 재입고 수량이 0이 아닌 상품들)
 		    		const warehousingList = returningDetailData.filter(row => Number( row.warehousingQnt || 0 ) != 0 );
+		    		
+		    		//교환 리스트(그리드에서 교환 신청인 상품들)
 		    		const exchangeList = returningDetailData.filter(row => row.exchangeReturningChoice === '교환' );
 		    		
-		    		// 동일한 goodsCode와 optionCode를 가진 항목들의 수량을 합친 새로운 배열 생성
+		    		// 동일한 상품인 항목들의 수량을 합친 새로운 배열 생성 
 				    const mergedExchangeList = [];
 
 				    // exchangeList를 순회하면서 처리
@@ -632,18 +638,17 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				            item.goodsCode === row.goodsCode && item.optionCode === row.optionCode);
 				        
 				        if (existingItem) {
-				            // 이미 존재하면 quantity 합산
+				            // 이미 존재하면 quantity(수량) 합산
 				            existingItem.quantity += row.quantity;
 				        } else {
 				            // 존재하지 않으면 새로운 항목으로 추가
 				            mergedExchangeList.push({
-				                ...row,  // 기존 항목의 모든 속성
-				                quantity: row.quantity  // 수량은 그대로
+				                ...row,
+				                quantity: row.quantity
 				            });
 				        }
 				    });
 
-				    //console.log("합쳐진 교환 품목 : ", mergedExchangeList);
 		    		
 		    		
 		    		returningData = {
@@ -705,7 +710,6 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 		                    if (!cancelRequest) return; // 취소 사유가 없으면 중단
 		                    //반품 신청 취소 처리
 		                    cancelReturning(cancelRequest);
-		                    //console.log(cancelRequest);
 		                    cancelModal.hide();
 		                }
 		            }
