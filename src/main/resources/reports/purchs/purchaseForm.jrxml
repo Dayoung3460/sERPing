@@ -5,6 +5,8 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="279"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="714"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="423"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="565"/>
 	<style name="han_font" fontName="맑은"/>
 	<parameter name="p_companynum" class="java.lang.Integer"/>
 	<parameter name="p_purchasenum" class="java.lang.Long"/>
@@ -20,7 +22,7 @@
     c.company_name AS company_name,
     e.employee_name AS employee_name,
     e.phone AS employee_phone,
-     to_char(h.PUCHASE_TOTAL_AMOUNT,'999,999,999') || '원' AS purchase_total_amount,
+    h.PUCHASE_TOTAL_AMOUNT AS purchase_total_amount,
     CASE 
         WHEN h.purchase_vat_flag = 1 THEN 'vat포함'
         WHEN h.purchase_vat_flag = 0 THEN 'vat미포함'
@@ -77,7 +79,7 @@ WHERE h.company_num = $P{p_companynum}
 	<field name="EMPLOYEE_PHONE" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="EMPLOYEE_PHONE"/>
 	</field>
-	<field name="PURCHASE_TOTAL_AMOUNT" class="java.lang.String">
+	<field name="PURCHASE_TOTAL_AMOUNT" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="PURCHASE_TOTAL_AMOUNT"/>
 	</field>
 	<field name="CASE_VAT_COMMENT" class="java.lang.String">
@@ -392,36 +394,43 @@ WHERE h.company_num = $P{p_companynum}
 			</staticText>
 			<textField>
 				<reportElement style="han_font" x="82" y="95" width="198" height="21" uuid="54def099-ee78-4d86-9d9e-99f28d35ba94"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{PURCHASE_NUM}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="82" y="116" width="198" height="20" uuid="5fc867ee-aadd-4da1-8160-c0600df9e5e2"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{VENDOR_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="82" y="136" width="198" height="22" uuid="9c25bae1-fbd1-433e-8659-d956b7c39af5"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{VENDOR_PHONE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="82" y="158" width="198" height="21" uuid="9e2d7e60-2484-4732-8968-6983abedfd05"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{VENDOR_EMAIL}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="82" y="180" width="198" height="20" uuid="772a9f28-46fe-4e68-8b39-55f8b6e803bc"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{PURCHASE_DUE_DATE}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="363" y="137" width="185" height="21" uuid="77667793-8038-40ba-8a47-d8277b73e8fd"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{BUSINESS_NUM}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="363" y="158" width="79" height="21" uuid="e88778ee-a1d9-4235-abae-cfff031f0c01"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
 			</textField>
@@ -432,6 +441,7 @@ WHERE h.company_num = $P{p_companynum}
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="363" y="179" width="78" height="20" uuid="80aac7ca-5fb5-4af3-91ae-1c007bff43e3"/>
+				<box leftPadding="3"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{EMPLOYEE_NAME}]]></textFieldExpression>
 			</textField>
@@ -452,16 +462,17 @@ WHERE h.company_num = $P{p_companynum}
 				</jr:barbecue>
 			</componentElement>
 			<textField>
-				<reportElement style="han_font" x="320" y="200" width="180" height="20" uuid="e56be027-3fe5-44c6-98a9-da3b161709ac"/>
+				<reportElement style="han_font" x="368" y="200" width="180" height="20" uuid="e56be027-3fe5-44c6-98a9-da3b161709ac"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{CASE_VAT_COMMENT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="82" y="199" width="210" height="22" uuid="26759367-0a78-4fd6-b86a-633ece7a208d"/>
+				<reportElement style="han_font" x="82" y="199" width="238" height="22" uuid="26759367-0a78-4fd6-b86a-633ece7a208d"/>
+				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="11" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{PURCHASE_TOTAL_AMOUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("###,###").format($F{PURCHASE_NUM}) + " 원"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="344" y="118" width="155" height="21" uuid="3448d02b-404a-4659-baa5-bf39c8ad0335"/>
@@ -703,8 +714,9 @@ WHERE h.company_num = $P{p_companynum}
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="49" y="21" width="500" height="21" uuid="ab0abb8b-9b5d-4366-8912-1887cc864f94"/>
+				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{PURCHASE_TOTAL_AMOUNT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("###,###").format($F{PURCHASE_NUM})+" 원"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="han_font" x="420" y="0" width="129" height="21" uuid="ab3a01fb-50e4-4ada-bce4-5fda6717eb29">
