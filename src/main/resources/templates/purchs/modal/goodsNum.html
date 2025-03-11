@@ -136,7 +136,7 @@
 
  <script>
 
-console.log("갯수그리드")
+//console.log("갯수그리드")
 document.addEventListener("DOMContentLoaded", function () {
     //console.log("✅ DOMContentLoaded 실행됨");
 
@@ -154,10 +154,10 @@ document.addEventListener("DOMContentLoaded", function () {
  // ✅ 그리드가 초기화된 후 클릭 이벤트 등록
     setTimeout(() => {
         if (typeof productNumGrid !== 'undefined' && productNumGrid !== null) {
-            console.log("✅ productNumGrid 이벤트 등록");
+            //console.log("✅ productNumGrid 이벤트 등록");
             
             productNumGrid.on("click", function (ev) {
-                console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
+                //console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
                 
                 if (selectedRowKey !== null) {
                 	productNumGrid.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sessionStorage.setItem("selectedGoodsSupplyPrice", rowData.goodsSupplyPrice || '');
               
 
-                console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
+                //console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
             });
         } else {
             console.warn("❌ orderListGrid가 정의되지 않음");

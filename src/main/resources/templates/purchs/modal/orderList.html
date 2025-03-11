@@ -58,7 +58,7 @@
 
  <script>
 
-console.log("갯수그리드")
+//console.log("갯수그리드")
 document.addEventListener("DOMContentLoaded", function () {
     //console.log("✅ DOMContentLoaded 실행됨");
 
@@ -75,10 +75,10 @@ document.addEventListener("DOMContentLoaded", function () {
  // ✅ 그리드가 초기화된 후 클릭 이벤트 등록
     setTimeout(() => {
         if (typeof orderListGrid !== 'undefined' && orderListGrid !== null) {
-            console.log("✅ orderListGrid 이벤트 등록");
+            //console.log("✅ orderListGrid 이벤트 등록");
             
             orderListGrid.on("click", function (ev) {
-                console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
+                //console.log("✅ 주문서에서 선택한 행:", ev.rowKey);
                 
                 if (selectedRowKey !== null) {
                 	orderListGrid.removeRowClassName(selectedRowKey, 'tui-grid-row-highlight');
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
             	
                 const rowData = orderListGrid.getRow(ev.rowKey);
                 if (!rowData) {
-                    console.warn("❌ 선택한 데이터가 없음.");
+                    //console.warn("❌ 선택한 데이터가 없음.");
                     return;
                 }
 
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sessionStorage.setItem("selectedGoodsSupplyPrice", rowData.goodsSupplyPrice || '');
                 sessionStorage.setItem("selectedQuantity", rowData.quantity || '');
 
-                console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
+                //console.log("✅ 주문서 데이터가 sessionStorage에 저장됨.");
             });
         } else {
             console.warn("❌ orderListGrid가 정의되지 않음");
@@ -129,7 +129,7 @@ function initOrderListGrid() {
 
     
     if (!selectedCompanyNum) {
-        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
         return;
     }
 

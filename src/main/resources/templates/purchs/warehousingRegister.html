@@ -167,7 +167,7 @@
 
  // 커스텀 렌더러 클래스 정의 (최상단)
   if (!window.CustomTextRenderer) {
-    console.log("✅ CustomTextRenderer 선언됨");
+    //console.log("✅ CustomTextRenderer 선언됨");
     window.CustomTextRenderer = class {
         constructor(props) {
             const el = document.createElement('div');
@@ -219,7 +219,7 @@
 
   // ✅ 빈 제조일자를 input 값으로 자동 채우는 함수
   function fillEmptyManufactureDates() {
-      console.log("📢 빈 제조일자 자동 입력 시작");
+      //console.log("📢 빈 제조일자 자동 입력 시작");
 
       // ✅ 현재 input 박스의 제조일자 값 가져오기
       const manufactureDateInput = document.querySelector("#manufactureDateInput").value;
@@ -348,7 +348,7 @@
       });
       // ✅ 전역 변수로 설정 (이벤트 등록 전에 필요)
       window.purchaseGrid = purchaselistGrid;
-      console.log("✅ Toast Grid 초기화 완료");
+      //console.log("✅ Toast Grid 초기화 완료");
   }
 
   // purchaselistGrid 검색
@@ -467,7 +467,7 @@
 
 		     // ✅ 기존 VAT 값이 있고 강제 업데이트가 아닐 경우 기존 값 유지
 		     if (!forceUpdate && existingVat !== 0) {
-		         console.log(`✅ 기존 부가세 유지 (rowKey: ${rowKey}) → 기존 부가세: ${existingVat}`);
+		         //console.log(`✅ 기존 부가세 유지 (rowKey: ${rowKey}) → 기존 부가세: ${existingVat}`);
 		         return;
 		     }
 
