@@ -105,12 +105,12 @@ document.addEventListener("DOMContentLoaded", function () {
     brandGrid.on('click', (ev) => {
         const { rowKey } = ev;
         const rowData = brandGrid.getRow(rowKey);
-        console.log("선택된 행 데이터:", rowData);
+        //console.log("선택된 행 데이터:", rowData);
 
         sessionStorage.setItem("selectedBrandId", rowData.brandId);
         sessionStorage.setItem("selectedBrandName", rowData.brandName);
 
-        console.log("보낼 데이터 ==", rowData.brandId, rowData.brandName);
+        //console.log("보낼 데이터 ==", rowData.brandId, rowData.brandName);
 
         // ✅ 기존 선택된 행의 하이라이트 제거
         brandGrid.getData().forEach((data) => {

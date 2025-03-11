@@ -209,17 +209,17 @@ const token = document.querySelector('meta[name="_csrf"]').content;
          return response.json();
      })
      .then(data => {
-         console.log("📢 서버 응답 데이터:", data);
+         //console.log("📢 서버 응답 데이터:", data);
 
          if (!Array.isArray(data)) {  
-             console.error("❌ 서버 응답이 배열이 아닙니다. 데이터 확인 필요:", data);
+             //console.error("❌ 서버 응답이 배열이 아닙니다. 데이터 확인 필요:", data);
              return;
          }
 
          const categorySelect = document.getElementById("classificationId");
 
          if (data.length === 0) {
-             console.warn("⚠️ 카테고리 데이터가 없습니다.");
+             //console.warn("⚠️ 카테고리 데이터가 없습니다.");
              return;
          }
 
@@ -230,7 +230,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
              categorySelect.appendChild(option);
          });
      })
-     .catch(error => console.error("❌ 카테고리 로드 중 오류:", error));
+     .catch(error => console.error(" 카테고리 로드 중 오류:", error));
     	
      
    
@@ -406,7 +406,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
 	});
 
     document.getElementById('brandModal').addEventListener('hidden.bs.modal', function () {
-   	    console.log("📢 모달이 닫힘. 선택된 브랜드를 input에 반영.");
+   	    //console.log("📢 모달이 닫힘. 선택된 브랜드를 input에 반영.");
 
    	    let selectedBrandName = sessionStorage.getItem("selectedBrandName");
    	    let selectedBrandId = sessionStorage.getItem("selectedBrandId");
@@ -420,7 +420,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
    	            brandIdInput.value = selectedBrandId;
    	        }
 
-   	        console.log("브랜드 선택 완료:", selectedBrandName, selectedBrandId);
+   	        //console.log("브랜드 선택 완료:", selectedBrandName, selectedBrandId);
 			
 	   	 
    	     
@@ -435,19 +435,19 @@ const token = document.querySelector('meta[name="_csrf"]').content;
     //공급처 모달 작업 
     // 모달이 열릴 때 그리드 다시 그리기
     document.getElementById('vendorModal').addEventListener('shown.bs.modal', function () {
-	    console.log("📢 모달이 열림. 그리드 리프레시 실행!");
+	    //console.log("📢 모달이 열림. 그리드 리프레시 실행!");
 	
 	    if (typeof vendorGrid !== 'undefined' && vendorGrid !== null) {
 	    	vendorGrid.readData(); // 모달이 열리면 데이터 다시 불러오기
 	    	vendorGrid.refreshLayout();
 	    	
 	    } else {
-	        console.warn(" brandGrid가 정의되지 않았습니다.");
+	        console.warn("brandGrid가 정의되지 않았습니다.");
 	    }
 	});
 
    document.getElementById('vendorModal').addEventListener('hidden.bs.modal', function () {
-  	    console.log("📢 모달이 닫힘. 선택된 브랜드를 input에 반영.");
+  	    //console.log("📢 모달이 닫힘. 선택된 브랜드를 input에 반영.");
   	  
 
   	    let selectedVendorName = sessionStorage.getItem("selectedVendorName");
@@ -465,7 +465,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
   	        	MarginRateInput.value = selectedMarginRate;
   	        }
 
-  	        console.log("브랜드 선택 완료:", selectedVendorName, selectedVendorId);
+  	       // console.log("브랜드 선택 완료:", selectedVendorName, selectedVendorId);
 			
 	   	 
   	     
@@ -504,7 +504,7 @@ const token = document.querySelector('meta[name="_csrf"]').content;
         const file = fileInput.files[0];
 
         if (!file) {
-            console.warn("⚠️ 업로드할 파일이 선택되지 않았습니다.");
+            //console.warn("⚠️ 업로드할 파일이 선택되지 않았습니다.");
             return null;
         }
 
@@ -522,22 +522,22 @@ const token = document.querySelector('meta[name="_csrf"]').content;
             });
 
             if (!response.ok) {
-                throw new Error("❌ 서버 응답 오류: " + response.statusText);
+                throw new Error(" 서버 응답 오류: " + response.statusText);
             }
 
             // ✅ JSON 응답 처리
             const data = await response.json();
 
             if (data.success) {
-                console.log("✅ 업로드된 파일명:", data.fileName);
+                //console.log("✅ 업로드된 파일명:", data.fileName);
                 document.getElementById("uploadedImageName").value = data.fileName;
                 return data.fileName; // ✅ 파일명 반환
             } else {
-                console.warn("❌ 파일 업로드 실패:", data.message);
+                //console.warn("❌ 파일 업로드 실패:", data.message);
                 return null;
             }
         } catch (error) {
-            console.error("❌ 파일 업로드 중 오류 발생:", error);
+            //console.error("❌ 파일 업로드 중 오류 발생:", error);
             return null;
         }
     }
@@ -547,16 +547,17 @@ const token = document.querySelector('meta[name="_csrf"]').content;
         try {
             const uploadedFileName = await imgSave(); // ✅ 이미지 업로드 후 파일명 반환
             if (uploadedFileName) {
-                console.log("✅ 이미지 파일명 저장됨:", uploadedFileName);
+                //console.log("✅ 이미지 파일명 저장됨:", uploadedFileName);
 
                 // ✅ 업로드된 파일명을 <input>에 반영
                 //document.getElementById("uploadedImageName").value = uploadedFileName;
                 //console.log("✅ Hidden Input 값 업데이트됨: ", document.getElementById("uploadedImageName").value);
             } else {
-                console.warn("⚠️ 서버에서 파일명을 반환하지 않았습니다.");
+                console.warn("서버에서 파일명을 반환하지 않았습니다.");
             }
         } catch (error) {
-            console.error("❌ 이미지 업로드 중 오류 발생:", error);
+        	showAlert("이미지 업로드 중 오류 발생 하였습니다. " ,"danger");
+            
         }
     });
 

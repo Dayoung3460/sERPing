@@ -125,10 +125,10 @@
 
 console.log("갯수그리드")
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOMContentLoaded 실행됨");
+    //console.log("✅ DOMContentLoaded 실행됨");
 
     // ✅ productNumGrid가 있는지 확인
-    console.log("📌 productNumGrid 엘리먼트 존재 여부: ", document.getElementById('productNumGrid'));
+    //console.log("📌 productNumGrid 엘리먼트 존재 여부: ", document.getElementById('productNumGrid'));
 
     if (document.getElementById('productNumGrid')) {
         initProductNumGrid();
@@ -143,15 +143,15 @@ let productNumGrid;
 let selectedCompanyNum = [[${session.companyNum}]];
 
 function initProductNumGrid() {
-    console.log("✅ initProductGrid() 실행");
+    //console.log("✅ initProductGrid() 실행");
 
     
     if (!selectedCompanyNum) {
-        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
         return;
     }
 
-    console.log("✅ 설정된 companyNum:", selectedCompanyNum);
+    //console.log("✅ 설정된 companyNum:", selectedCompanyNum);
 
     const productNumDataSource = {
         api: {  
@@ -198,7 +198,7 @@ function initProductNumGrid() {
         ]
     });
 
-    console.log("✅ 상품 그리드 초기화 완료");
+    //console.log("✅ 상품 그리드 초기화 완료");
     
  
     

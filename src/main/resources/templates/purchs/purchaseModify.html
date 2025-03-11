@@ -216,14 +216,14 @@ function initPurchaseGrid(optionsData) {
 
             const result = await response.json();
             if (result.status === "success") {
-                alert("✅ 발주가 취소되었습니다.");
+                showAlert("발주가 취소되었습니다.","success");
                 location.reload();
             } else {
-                alert("❌ 발주 취소 실패!");
+                showAlert(" 발주 취소 실패하였습니다.","danger");
             }
         } catch (error) {
-            console.error("❌ 발주 취소 오류:", error);
-            alert("⚠️ 서버 오류가 발생했습니다.");
+        	showAlert(" 서버 오류가 발생했습니다.","danger");
+            
         }
     });
     
@@ -253,10 +253,10 @@ function initPurchaseGrid(optionsData) {
 
         // 🔹 Toast Grid에서 체크된 행(row)만 가져오기
         const checkedRows = window.purchaseGrid.getCheckedRows(); // ✅ 체크된 데이터만 가져오기
-        console.log("✅ 체크된 데이터:", checkedRows);
+        //console.log("✅ 체크된 데이터:", checkedRows);
 
         if (checkedRows.length === 0) {
-            alert("수정할 항목을 선택해주세요."); 
+            showAlert("수정할 항목을 선택해주세요.","danger"); 
             return;
         }
 
@@ -280,7 +280,7 @@ function initPurchaseGrid(optionsData) {
             }))
         };
 
-        console.log("✅ 서버로 보낼 데이터:", requestData);
+        //console.log("✅ 서버로 보낼 데이터:", requestData);
 
         // 🔹 AJAX 요청 보내기
         fetch("/purchs/rest/purchase/update", {
@@ -298,13 +298,13 @@ function initPurchaseGrid(optionsData) {
             return response.json();
         })
         .then(data => {
-            console.log("✅ 발주 수정 완료:", data);
-            alert("발주 수정이 완료되었습니다.");
+            //console.log("✅ 발주 수정 완료:", data);
+            showAlert("발주 수정이 완료되었습니다.","success");
             location.reload(); // 수정 후 새로고침
         })
         .catch(error => {
-            console.error("❌ 발주 수정 중 오류 발생:", error);
-            alert("발주 수정 중 오류가 발생했습니다.");
+            //console.error("❌ 발주 수정 중 오류 발생:", error);
+            showAlert("발주 수정 중 오류가 발생했습니다.","danger");
         });
     });
 

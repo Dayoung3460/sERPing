@@ -125,7 +125,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOMContentLoaded 이벤트 실행");
+    //console.log("✅ DOMContentLoaded 이벤트 실행");
     initProductGrid();  // 상품 그리드 초기화
 });
 
@@ -151,15 +151,15 @@ let selectedCompanyNum = [[${session.companyNum}]];
 let selectedRowKey = null;
 
 function initProductGrid() {
-    console.log("✅ initProductGrid() 실행");
+    //console.log("✅ initProductGrid() 실행");
 
     
     if (!selectedCompanyNum) {
-        console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
+        //console.error("❌ 세션에서 companyNum 값을 찾을 수 없음.");
         return;
     }
 
-    console.log("✅ 설정된 companyNum:", selectedCompanyNum);
+    //console.log("✅ 설정된 companyNum:", selectedCompanyNum);
 
     const productDataSource = {
         api: {  
@@ -207,7 +207,7 @@ function initProductGrid() {
         ]
     });
 
-    console.log("✅ 상품 그리드 초기화 완료");
+    //console.log("✅ 상품 그리드 초기화 완료");
 
     // 옵션명을 클릭하면 LOT 정보를 가져오는 이벤트 추가
     productGrid.on("click", function(event) {
@@ -227,10 +227,10 @@ function initProductGrid() {
             
 
             if (selectedOptionNum && selectedCompanyNum) {
-                console.log("📢 선택된 옵션:", selectedOptionNum, "회사번호:", selectedCompanyNum);
+                //console.log("📢 선택된 옵션:", selectedOptionNum, "회사번호:", selectedCompanyNum);
                 loadLotData(selectedOptionNum, selectedCompanyNum);
             } else {
-                console.error("❌ 데이터가 부족하여 LOT 조회 실패", rowData);
+                console.error(" 데이터가 부족하여 LOT 조회 실패", rowData);
             }
         }
     });
@@ -239,47 +239,47 @@ function initProductGrid() {
 
 //✅ LOT 데이터 비동기 로드 & 그리드 갱신
 function fetchLotData(optionNum, companyNum) {
-    console.log("📢 fetchLotData 실행: optionNum =", optionNum, "companyNum =", companyNum);
+    //console.log("📢 fetchLotData 실행: optionNum =", optionNum, "companyNum =", companyNum);
 
     // ✅ optionNum을 int로 변환 (숫자로 변환 가능할 경우만 처리)
     let parsedOptionNum = parseInt(optionNum);
     if (isNaN(parsedOptionNum)) {
-        console.error("❌ optionNum이 숫자가 아닙니다:", optionNum);
+        //console.error("❌ optionNum이 숫자가 아닙니다:", optionNum);
         return;
     }
 
     fetch(`/purchs/rest/goodslot/nums?companyNum=${companyNum}&optionNum=${parsedOptionNum}`)
         .then(response => response.json())
         .then(data => {
-            console.log("✅ LOT 데이터 응답:", data);
+            //console.log("✅ LOT 데이터 응답:", data);
 
             // ✅ 응답 데이터 검증 후 처리
             if (data && data.contents && Array.isArray(data.contents)) {
-                console.log("✅ 정상적인 LOT 데이터 확인됨, 그리드 갱신 시작");
+                //console.log("✅ 정상적인 LOT 데이터 확인됨, 그리드 갱신 시작");
 
                 // ✅ LOT 그리드가 초기화되지 않았다면 먼저 초기화
                 if (!lotGrid) {
-                    console.log("🔹 LOT 그리드가 없으므로 초기화 수행");
+                    //console.log("🔹 LOT 그리드가 없으므로 초기화 수행");
                     initLotGrid(() => {
                         lotGrid.resetData(data.contents);
                     });
                 } else {
-                    console.log("🔹 LOT 그리드 존재, 데이터 업데이트");
+                    //console.log("🔹 LOT 그리드 존재, 데이터 업데이트");
                     lotGrid.resetData(data.contents);
                 }
             } else {
-                console.warn("⚠️ LOT 데이터가 비어있음. 그리드 초기화만 수행");
+                //console.warn("⚠️ LOT 데이터가 비어있음. 그리드 초기화만 수행");
                 lotGrid.resetData([]);
             }
         })
         .catch(error => {
-            console.error("❌ LOT 데이터 요청 실패:", error);
+            console.error("LOT 데이터 요청 실패:", error);
         });
 }
 
 // ✅ LOT 테이블을 클릭할 때마다 비동기 데이터 갱신
 function loadLotData(optionNum, companyNum) {
-    console.log("📢 LOT 데이터 로드 시작:", optionNum, companyNum);
+    //console.log("📢 LOT 데이터 로드 시작:", optionNum, companyNum);
 
     // ✅ LOT 테이블을 보이도록 설정
     document.getElementById("lot-container").style.display = "block";
@@ -313,7 +313,7 @@ function initLotGrid(callback) {
         ]
     });
 
-    console.log("✅ LOT 그리드 초기화 완료");
+    //console.log("✅ LOT 그리드 초기화 완료");
 
     // ✅ 콜백이 있다면 실행 (데이터 적용)
     if (typeof callback === "function") {

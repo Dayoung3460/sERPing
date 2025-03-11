@@ -38,7 +38,7 @@ public class OracleArrayProductHandler implements TypeHandler<Object> {
 	  
 	    OracleConnection conn = ps.getConnection().unwrap(OracleConnection.class); 	
 
-	    System.out.println("=====>>>>>"+parameter);
+	    //System.out.println("=====>>>>>"+parameter);
 	    List<ProdInsertDtlVO> files = (List<ProdInsertDtlVO>) parameter;	   
 	    Struct[] array = new Struct[files.size()];
 	    

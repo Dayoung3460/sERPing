@@ -384,7 +384,7 @@
             ],
             
         });
-        	 console.log("📢 Toast Grid 초기화 완료!");
+        	 //console.log("📢 Toast Grid 초기화 완료!");
         	 
         	// ✅ 페이지가 로드될 때 서버에서 데이터 불러오기
     	   setTimeout(() => {
@@ -392,9 +392,9 @@
 		
 		        if (Array.isArray(optionsData) && optionsData.length > 0) {
 		            grid.resetData(optionsData);
-		            console.log("✅ 적용 후 Toast Grid 데이터:", grid.getData());
+		            //console.log("✅ 적용 후 Toast Grid 데이터:", grid.getData());
 		        } else {
-		            console.warn("⚠️ optionsData가 비어있음.");
+		            console.warn(" optionsData가 비어있음.");
 		        }
 		    }, 500);
         	
@@ -467,13 +467,13 @@
                 throw new Error("❌ 서버 응답 오류: " + response.statusText);
             }
 
-            // ✅ JSON 응답 처리
+            // JSON 응답 처리
             const data = await response.json();
 
             if (data.success) {
                 console.log("✅ 업로드된 파일명:", data.fileName);
                 document.getElementById("uploadedImageName").value = data.fileName;
-                return data.fileName; // ✅ 파일명 반환
+                return data.fileName; //  파일명 반환
             } else {
                 console.warn("❌ 파일 업로드 실패:", data.message);
                 return null;
@@ -489,16 +489,16 @@
         try {
             const uploadedFileName = await imgSave(); // ✅ 이미지 업로드 후 파일명 반환
             if (uploadedFileName) {
-                console.log("✅ 이미지 파일명 저장됨:", uploadedFileName);
+                //console.log("이미지 파일명 저장됨:", uploadedFileName);
 
-                // ✅ 업로드된 파일명을 <input>에 반영
+                //  업로드된 파일명을 <input>에 반영
                 //document.getElementById("uploadedImageName").value = uploadedFileName;
-                //console.log("✅ Hidden Input 값 업데이트됨: ", document.getElementById("uploadedImageName").value);
+                //console.log(" Hidden Input 값 업데이트됨: ", document.getElementById("uploadedImageName").value);
             } else {
-                console.warn("⚠️ 서버에서 파일명을 반환하지 않았습니다.");
+                console.warn("서버에서 파일명을 반환하지 않았습니다.");
             }
         } catch (error) {
-            console.error("❌ 이미지 업로드 중 오류 발생:", error);
+            console.error("이미지 업로드 중 오류 발생:", error);
         }
     });
 
@@ -515,20 +515,20 @@ function openWarehouseModal(rowKey) {
    	    // 모달 요소 가져오기
    	    const modalElement = document.getElementById('warehouseModal');
    	    if (!modalElement) {
-   	        console.error("warehouseModal 요소를 찾을 수 없습니다.");
+   	        //console.error("warehouseModal 요소를 찾을 수 없습니다.");
    	        return;
    	    }
    	    
 
    	    // 창고 그리드가 정의되어 있는지 확인 후 데이터 갱신
    	    if (typeof warehouseGrid !== 'undefined' && warehouseGrid !== null) {
-   	        console.log("📢 창고 모달: 데이터 초기화 및 새로고침 시작");
+   	        //console.log("📢 창고 모달: 데이터 초기화 및 새로고침 시작");
    	
    	        // 기존 데이터 초기화
    	    
    	        let Data = warehouseGrid.getData();
-   	        console.log("그리드데이터",Data)
-   	        console.log(bootstrap.Version);
+   	        //console.log("그리드데이터",Data)
+   	        //console.log(bootstrap.Version);
 
    	        
    			 warehouseGrid.readData();
@@ -541,7 +541,7 @@ function openWarehouseModal(rowKey) {
 
    	        // 데이터를 다 불러온 후 모달 열기 (onGridUpdated 이벤트 활용)
    	         warehouseGrid.on("onGridUpdated", function () {
-   	            console.log("창고 모달: 데이터 새로고침 완료");
+   	            //console.log("창고 모달: 데이터 새로고침 완료");
    	            
 
    	            // 데이터 로드 완료 후 모달 열기
@@ -549,7 +549,7 @@ function openWarehouseModal(rowKey) {
    	            modalInstance.show(); // 모달 열기
    	            
    	            
-   	            console.log("창고 모달 열림:", rowKey);
+   	            //console.log("창고 모달 열림:", rowKey);
    	        }); 
    	    } else {
    	        console.warn("warehouseGrid가 정의되지 않았습니다.");
@@ -557,12 +557,12 @@ function openWarehouseModal(rowKey) {
    	}
  
 document.getElementById('warehouseModal').addEventListener('shown.bs.modal', function () {
-	    console.log(" 창고 모달이 열렸습니다. 그리드 새로고침 실행");
+	    //console.log(" 창고 모달이 열렸습니다. 그리드 새로고침 실행");
 
 	    if (typeof warehouseGrid !== 'undefined' && warehouseGrid !== null) {
 	        warehouseGrid.readData();       // 🚀 데이터 새로고침
 	  
-	        console.log("창고 그리드 데이터 새로고침 완료");
+	        //console.log("창고 그리드 데이터 새로고침 완료");
 	    } else {
 	        console.warn("warehouseGrid가 정의되지 않았습니다.");
 	    }
@@ -587,14 +587,14 @@ document.getElementById('warehouseModal').addEventListener('shown.bs.modal', fun
 	    console.log()
 	    if (closeButton) {
 	        closeButton.addEventListener("click", function () {
-	            console.log("✅ 창고 모달 닫기 버튼 클릭됨!");
+	            //console.log("✅ 창고 모달 닫기 버튼 클릭됨!");
 
 	            try {
 	            	let modalInstance = bootstrap.Modal.getInstance("#warehouseModal") || new bootstrap.Modal("#warehouseModal");
 	                modalInstance.hide(); // ✅ Bootstrap 방식으로 모달 닫기
 	                
 	            } catch (error) {
-	                console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
+	                //console.warn("❌ Bootstrap 5가 로드되지 않았음. 대체 방식 사용");
 	                modalElement.classList.remove("show");
 	                modalElement.style.display = "none";
 	                document.body.classList.remove("modal-open");
@@ -617,7 +617,7 @@ document.getElementById('warehouseModal').addEventListener('shown.bs.modal', fun
 	        let selectedWarehouseName = sessionStorage.getItem("selectedWarehouseName");
 	        let selectedRowKey = parseInt(sessionStorage.getItem("selectedRowKey"), 10); // ✅ 숫자로 변환
 
-	        console.log("📢 저장된 데이터 확인:", selectedWarehouseId, selectedWarehouseName, selectedRowKey);
+	        //console.log("📢 저장된 데이터 확인:", selectedWarehouseId, selectedWarehouseName, selectedRowKey);
 
 	        if (selectedWarehouseId && selectedWarehouseName && !isNaN(selectedRowKey)) {
 	            setTimeout(() => {
@@ -627,14 +627,14 @@ document.getElementById('warehouseModal').addEventListener('shown.bs.modal', fun
 	                console.log(`✅ 그리드에 값 설정 완료: ${selectedRowKey} => ${selectedWarehouseName} + ${selectedWarehouseId}`);
 
 	                let currentData = grid.getData();
-	                console.log("📢 현재 그리드 데이터:", currentData);
+	                //console.log("📢 현재 그리드 데이터:", currentData);
 
-	                // ✅ UI 업데이트 보장
+	                //  UI 업데이트 보장
 	                setTimeout(() => {
 	                    grid.refreshLayout();
 	                }, 50);
 
-	                // ✅ sessionStorage 데이터 삭제
+	                //  sessionStorage 데이터 삭제
 	                sessionStorage.removeItem("selectedWarehouseId");
 	                sessionStorage.removeItem("selectedWarehouseName");
 	                sessionStorage.removeItem("selectedRowKey");
@@ -685,7 +685,7 @@ document.getElementById('warehouseModal').addEventListener('shown.bs.modal', fun
 	                return;
 	            }
 
-	            console.log("📢 전송할 옵션 리스트:", optionData);
+	            //console.log("📢 전송할 옵션 리스트:", optionData);
 
 	            // ✅ 최종 데이터 JSON 구조 만들기
 	            let updateData = {
@@ -702,7 +702,7 @@ document.getElementById('warehouseModal').addEventListener('shown.bs.modal', fun
 	                files: optionData
 	            };
 
-	            console.log("📢 서버로 보낼 데이터:", updateData);
+	            //console.log("📢 서버로 보낼 데이터:", updateData);
 
 	            // ✅ 서버에 상품 수정 요청 (Ajax)
 	            const response = await fetch("/purchs/rest/product/update", {
@@ -717,15 +717,15 @@ document.getElementById('warehouseModal').addEventListener('shown.bs.modal', fun
 	            // ✅ 응답 처리
 	            const result = await response.json();
 	            if (result.status === "success") {
-	                alert("✅ 상품이 성공적으로 수정되었습니다!");
+	                showAlert(" 상품이 성공적으로 수정되었습니다!","success");
 	                location.reload();  // ✅ 페이지 새로고침
 	            } else {
-	                alert("❌ 상품 수정 실패: " + result.message);
+	                showAlert(" 상품 수정 실패 하였습니다. " ,"danger");
 	            }
 
 	        } catch (error) {
-	            console.error("❌ 상품 수정 중 오류 발생:", error);
-	            alert("⚠️ 서버 오류가 발생했습니다.");
+	            //console.error("❌ 상품 수정 중 오류 발생:", error);
+	        	showAlert("서버 오류 발생 하였습니다. " ,"danger");
 	        }
 	    });
 

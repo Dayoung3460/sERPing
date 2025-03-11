@@ -66,12 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     perPage: 5,
                     companyNum: [[${session.companyNum}]]
                 },
-                beforeRequest: function (request) {
-                    console.log("📢 서버로 요청 보내기 전 requestParams:", request.params);
-                },
-                afterResponse: function (response) {
-                    console.log("📢 서버 응답 결과:", response);
-                }
+                
             },
         },
         contentType: 'application/json'
@@ -101,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ 검색 기능
     function searchVendor() {
         let vendorName = document.querySelector('#searchVendorName').value;
-        console.log("검색어==", vendorName);
+        //console.log("검색어==", vendorName);
         vendorGrid.setRequestParams({
             "companyNum": [[${session.companyNum}]],
             "vendorName": vendorName
@@ -113,13 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
     vendorGrid.on('click', (ev) => {
         const rowKey = ev.rowKey;
         const rowData = vendorGrid.getRow(rowKey);
-        console.log("📢 선택된 행 데이터:", rowData);
+        //console.log("📢 선택된 행 데이터:", rowData);
 
         // ✅ 세션 스토리지에 데이터 저장
         sessionStorage.setItem("selectedVendorId", rowData.vendorId);
         sessionStorage.setItem("selectedVendorName", rowData.vendorName);
         sessionStorage.setItem("selectedMarginRate", rowData.marginRate);
-        console.log("📢 저장된 데이터:", rowData.vendorId, rowData.vendorName);
+        //console.log("📢 저장된 데이터:", rowData.vendorId, rowData.vendorName);
     });
 
     // ✅ 전역 함수 등록 (HTML에서 호출 가능)
