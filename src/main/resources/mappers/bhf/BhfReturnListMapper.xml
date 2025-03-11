@@ -62,7 +62,7 @@
 			AND progress_status = #{progressStatus}
 		</if>
 		<if test="requestDate != null and ! requestDate.equals('')">
-			AND TO_CHAR(request_date, 'yyyy-mm-dd') = #{requestDate}
+			AND TO_CHAR(request_date, 'yyyy-mm-dd') = TO_CHAR(#{requestDate}, 'yyyy-mm-dd')
 		</if>
 		<if test="branchOfficeId != null and ! branchOfficeId.equals('')">
 			AND branch_office_id = #{branchOfficeId}
