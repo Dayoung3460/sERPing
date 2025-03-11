@@ -627,17 +627,6 @@ function showSwal(type, title, text, callback = null) {
     });
 }
 
-// ✅ showAlert (단순 메시지 출력)
-function showAlert(message, type = "info") {
-    Swal.fire({
-        icon: type, // 'success', 'error', 'warning', 'info'
-        title: message,
-        timer: 2000,  // 2초 후 자동 닫힘
-        showConfirmButton: false,
-        width: '450px',
-        customClass: { popup: 'custom-swal-popup' }
-    });
-}
 
 
 </script>
