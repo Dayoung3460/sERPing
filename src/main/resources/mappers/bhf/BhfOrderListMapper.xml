@@ -47,10 +47,10 @@
 			AND progress_status = #{progressStatus}
 		</if>
 		<if test="orderDate != null and ! orderDate.equals('')">
-			AND TO_CHAR(order_date, 'yyyy-mm-dd') = #{orderDate}
+			AND TO_CHAR(order_date, 'yyyy-mm-dd') = TO_CHAR(TO_DATE(#{orderDate}, 'YYYY-MM-DD'), 'YYYY-MM-DD')
 		</if>
 		<if test="dueDate != null and ! dueDate.equals('')">
-			AND TO_CHAR(due_date, 'yyyy-mm-dd') = #{dueDate}
+			AND TO_CHAR(due_date, 'yyyy-mm-dd') = TO_CHAR(TO_DATE(#{dueDate}, 'YYYY-MM-DD'), 'YYYY-MM-DD')
 		</if>
 	</sql>
 	
