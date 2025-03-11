@@ -64,8 +64,16 @@
 						</div>
 				    	<!-- 하부 버튼 -->
 						<div class="button-bar row">
-							<button type="button" style="margin: 0px 10px;" class="btn btn-primary col-2">일괄처리</button>
+							<button type="button" style="margin: 0px 10px;" class="btn btn-primary col-2 btnPayment" data-bs-toggle="modal" data-bs-target="#unpayModal">일괄처리</button>
 						</div>
+						<!-- 일괄처리 -->
+						<div th:replace="purchs/modal/ModalTemplate :: ModalTemplate (
+										    	'unpayModal', 
+										    	'modal-lg', 
+										    	'일괄 처리', 
+										    	'accnut/modal/unpayBody',
+										    	'accnut/modal/unpayFooter'
+										    )"></div>
 					</div>
 				</div>
 			</div>
@@ -73,15 +81,17 @@
 	</div>
 
 <script>
+	var session = sessionData;
+	var checkArray = [];
 	document.addEventListener("DOMContentLoaded",()=>{
-		
+		btndisabled();
 	})
 	
 	var Grid = tui.Grid;
 	
 	const dataSource = {
 		api: {
-			readData: { url: '/accnut/rest/debt/list', method: 'GET', initParams: { page: 1, amount: 0, section: 'AC08' } },
+			readData: { url: '/accnut/rest/debt/list', method: 'GET', initParams: { page: 1, amount: 0, section: 'AC08', companyNum: session.companyNum } },
 			
 		},
 		contentType: 'application/json'
@@ -130,11 +140,12 @@
 	
 // grid 체크 박스 함수로 데이터 제어
 	
-	let checkArray = [];
+	var checkArray = [];
 	
 	grid.on('check', (ev)=> {
 		checkArray.push(grid.getRow(ev.rowKey));
-		console.log(checkArray);
+		//console.log(checkArray);
+		btndisabled();
 	})
 	
 	grid.on('uncheck', (ev)=>{
@@ -143,18 +154,30 @@
 				checkArray.splice(i, 1);
 			}
 		}
-		console.log(checkArray);
+		//console.log(checkArray);
+		btndisabled();
 	})
 	
 	grid.on('checkAll', (ev) => {
 		checkArray = grid.getData();
-		console.log(checkArray);
+		//console.log(checkArray);
+		btndisabled();
 	})
 	
 	grid.on('uncheckAll', (ev) => {
 		checkArray = [];
-		console.log(checkArray);
+		//console.log(checkArray);
+		btndisabled();
 	})
+	
+	function btndisabled() {
+	//console.log(checkArray.length);
+		if(checkArray.length > 0){
+			document.querySelector('.btnPayment').removeAttribute('disabled');	
+		} else {
+			document.querySelector('.btnPayment').setAttribute('disabled', 'true');
+		}
+	}
 
 </script>
 	

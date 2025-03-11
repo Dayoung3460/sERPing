@@ -39,7 +39,7 @@
 			AND types_of_transaction = #{typesOfTransaction}
 		</if>
 		<if test="dealDate != null and ! dealDate.equals('')">
-			AND TO_CHAR(deal_date, 'yyyy-mm-dd') = #{dealDate}
+			AND TO_CHAR(deal_date, 'yyyy-mm-dd') = TO_CHAR(#{dealDate}, 'YYYY-MM-DD')
 		</if>
 	</sql>
 	

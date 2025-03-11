@@ -10,5 +10,6 @@ public interface DebtMapper {
 	List<DebtDTO> list(DebtSearchDTO dto);
 	int count(DebtSearchDTO dto);
 	int insert(DebtDTO dto);
+	int update(DebtDTO dto);
 	
 }

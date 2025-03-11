@@ -59,7 +59,7 @@
 	      { header : "부대비용", name : "incidentailCost",  },
 	      { header : "공제항목", name : "deductionItem",  },
 				 */
-	      { header : "지급금액", name : "paymentAmount",  align: "center"
+	      { header : "지급금액", name : "paymentAmount",  align: "center",  formatter: function(ev){return numberFormat(ev.value);}
 	      },
 	      
 			],
@@ -70,7 +70,7 @@
 		        	paymentAmount : {
 		        		align: "center",
 		        		template: function(valueMap) {
-		        			return `총합: ${valueMap.sum}`
+		        			return `총합: ${ numberFormat(valueMap.sum)}`
 		        		}
 		        	}
 		        }

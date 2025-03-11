@@ -1,11 +1,16 @@
 package com.beauty1nside.accnut.service.Impl;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.beauty1nside.accnut.dto.DealBookDTO;
 import com.beauty1nside.accnut.dto.DebtDTO;
 import com.beauty1nside.accnut.dto.DebtSearchDTO;
+import com.beauty1nside.accnut.mapper.DealBookMapper;
 import com.beauty1nside.accnut.mapper.DebtMapper;
 import com.beauty1nside.accnut.service.DebtService;
 
@@ -20,6 +25,7 @@ import lombok.extern.log4j.Log4j2;
 public class DebtServiceImpl implements DebtService{
 	
 	private final DebtMapper debtMapper;
+	final DealBookMapper dealBookMapper;
 	
 	@Override
 	public DebtDTO info(String debtCode) {
@@ -43,6 +49,39 @@ public class DebtServiceImpl implements DebtService{
 	public int insert(DebtDTO dto) {
 		// TODO Auto-generated method stub
 		return debtMapper.insert(dto);
+	}
+	
+	@Override
+	@Transactional
+	public int update(List<DebtDTO> dtoList) {
+		// TODO Auto-generated method stub
+		int result = 0;
+		Long total = 0L;
+		int com = dtoList.get(0).getCompanyNum();
+		LocalDate now = LocalDate.now();
+		int month = now.getMonthValue() == 1 ? 12 : now.getMonthValue() - 1;
+		int year = month == 12 ? now.getYear() - 1 : now.getYear();
+		String text = year + "년 " + month + "월 분 미지급급";
+		
+		for(DebtDTO dto : dtoList) {
+			int co = debtMapper.update(dto);
+			total += dto.getAmount();
+			result += co;
+		}
+		
+		DealBookDTO deal = new DealBookDTO();
+		deal.setSection("EE02");
+		deal.setTypesOfTransaction("AC19");
+		deal.setAmount(total);
+		deal.setVatAlternative("N");
+		deal.setDealingsContents(text);
+		deal.setDealDate(Date.valueOf(now));
+		deal.setDepartment("DT001");
+		deal.setCompanyNum(com);
+				
+		dealBookMapper.insert(deal);
+				
+		return result;
 	}
 	
 }

@@ -10,4 +10,5 @@ public interface DebtService {
 	List<DebtDTO> list(DebtSearchDTO dto);
 	int count(DebtSearchDTO dto);
 	int insert(DebtDTO dto);
+	int update(List<DebtDTO> dtoList);
 }

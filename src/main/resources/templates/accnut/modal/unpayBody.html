@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8">
+<style>
+/* 푸터(합계 부분) 전체를 중앙 정렬 */
+.tui-grid-summary-area {
+    text-align: center !important;
+}
+
+/* 개별 셀 내 텍스트를 중앙 정렬 */
+.tui-grid-summary-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center !important;
+}
+
+</style>
+</head>
+<body>    
+    <div class="container">
+    	<!-- 그리드 들어올 부분 -->
+		<hr>
+		<h2 id="payString" style="text-align: center;">다음과 같이 지급하시겠습니까? <br></h2>
+	</div>
+<script type="text/javascript">
+	let html = "";
+	// 급여 처리 모달 열 때
+	document.querySelector('#unpayModal').addEventListener('shown.bs.modal', (e) => {
+		if(document.querySelector('#paygrid')){ document.querySelector('#paygrid').remove(); }
+		html += `<div id="paygrid"></div>`;
+		document.querySelector('#unpayModal').querySelector('.container').insertAdjacentHTML("afterbegin", html);
+		console.log(checkArray);
+		let total = 0;
+		
+		for(let i = 0; i < checkArray.length; i++){
+			total += checkArray[i].amount;
+		}
+		
+		const paygrid = new Grid({
+			el : document.querySelector('#paygrid'),
+			pageOptions: {
+				useClient : true,
+				perPage: 5,
+				},
+
+			columns: [
+				{ header : "거래 내용", name : "debtName",  },
+				{ header : "거래처", name : "creditor",  },
+	      //{ header : "지급예정일", name : "prearrangementDueDate", align: 'center'},
+	      { header : "금액", name : "amount", align: 'right', formatter: function(ev){return numberFormat(ev.value);}},
+	      
+			],
+			summary : {
+				height: 40,
+		        position: 'bottom', // or 'top
+		        columnContent: {
+		        	amount : {
+		        		align: "center",
+		        		template: function(valueMap) {
+		        			return `총합: ${numberFormat(valueMap.sum)}`
+		        		}
+		        	}
+		        }
+			},
+			data : checkArray
+		});
+
+		if(checkArray.length > 0) {
+			document.querySelector('#payString').insertAdjacentText("beforeend", `${checkArray[0].creditor} 외 ${checkArray.length - 1}건, ${total}원`);		
+		}
+		
+		paygrid.on("click",(ev)=>{
+			console.log(paygrid.getRow(ev.rowKey));
+		})
+		
+	});
+	
+	// 급여 처리 모달 닫을 때
+	document.querySelector('#unpayModal').addEventListener('hidden.bs.modal', (e) => {
+		document.querySelector('#unpayModal').querySelector('.container').querySelector('#paygrid').remove();
+		document.querySelector('#payString').innerHTML = '다음과 같이 지급하시겠습니까? <br>';
+		html = "";
+		//checkArray = [];
+	});
+	
+	
+</script>
+</body>
+</html>
