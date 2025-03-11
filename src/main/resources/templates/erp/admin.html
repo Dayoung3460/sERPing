@@ -1389,6 +1389,7 @@
 						      // 'Content-Type': 'application/x-www-form-urlencoded',
 						      'X-CSRF-TOKEN': document.querySelector('#csrfToken').value,
 						    },
+						credentials: "include",
 						body : JSON.stringify(requestData),
 					})
 					.then( result => result.text() )
@@ -1465,6 +1466,7 @@
 						      // 'Content-Type': 'application/x-www-form-urlencoded',
 						      'X-CSRF-TOKEN': document.querySelector('#csrfToken').value,
 						    },
+						credentials: "include",
 						body : JSON.stringify(requestData),
 					})
 					.then( result => result.text() )

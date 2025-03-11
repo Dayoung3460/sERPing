@@ -131,7 +131,6 @@ const grid = new tui.Grid({
             align: "center", 
             width: 120,
             formatter: ({ value }) => {
-                console.log("📌 [DEBUG] contractType 값:", value); // 디버깅용 로그 추가
                 if (value === "ET001") return "정규직";
                 if (value === "ET002") return "계약직";
                 return "알 수 없음"; // 예외 처리
@@ -192,7 +191,6 @@ function searchContracts(page = 1) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("📊 계약 데이터:", data);
         
         if (data.contracts.length > 0) {
             grid.resetData(data.contracts);
@@ -257,7 +255,6 @@ document.getElementById("searchContractType").addEventListener("change", functio
         this.value = "ET002";  // ✅ 계약직 선택 시 서버에 ET002로 전달
     }
 
-    console.log("📌 [DEBUG] 변경된 contractType 값:", this.value); // ✅ 디버깅 추가
 });
 
 

@@ -16,6 +16,7 @@ public class CorsConfig {
            ArrayList<String> allowedOriginPatterns = new ArrayList<>();
            allowedOriginPatterns.add("http://localhost:5000");
            allowedOriginPatterns.add("http://127.0.0.1:5500");
+           allowedOriginPatterns.add("http://serping.shop");
            configuration.setAllowedOrigins(allowedOriginPatterns);
 
            //허용하는 HTTP METHOD 지정

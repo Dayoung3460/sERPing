@@ -418,7 +418,6 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch(`/hr/rest/emp/list-by-company?companyNum=${companyNum}&searchKeyword=${searchKeyword}&page=${page}`)
             .then(response => response.json())
             .then(data => {
-                console.log("📊 사원 목록 데이터:", data);
 
                 if (data.employees && data.employees.length > 0) {
                     grid.resetData(data.employees); // Toast Grid에 데이터 넣기
@@ -442,7 +441,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
         // 데이터 확인 로그
-        console.log("📊 선택된 사원 데이터:", rowData);
 
         selectedEmployee = { 
                 employeeNum: rowData.employeeNum, 
@@ -516,7 +514,6 @@ function submitContract(event) {
             annualLeavePolicy: "근로기준법에 따라 자동 부여됩니다."
     };
 
-    console.log("📋 계약 등록 데이터:", contractData);
     
     // 유효성 검사 (필수 필드 체크)
     if (!contractData.employeeNum || !contractData.companyNum || !contractData.contractStartDate || !contractData.annualSalary) {

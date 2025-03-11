@@ -7,7 +7,6 @@ function loadDepartments() {
     fetch('/hr/rest/emp/departments/'+sessionData.companyNum)
         .then(response => response.json())
         .then(data => {
-			console.log("datadata",data);
             let departmentSelect = document.getElementById("modalDepartment");
             departmentSelect.innerHTML = '<option value="">선택</option>';
             data.forEach(dept => {
