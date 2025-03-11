@@ -1,12 +1,16 @@
 package com.beauty1nside.accnut.service.Impl;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.beauty1nside.accnut.dto.DealBookDTO;
 import com.beauty1nside.accnut.dto.SalaryBookDTO;
 import com.beauty1nside.accnut.dto.SalaryBookSearchDTO;
+import com.beauty1nside.accnut.mapper.DealBookMapper;
 import com.beauty1nside.accnut.mapper.SalaryBookMapper;
 import com.beauty1nside.accnut.service.SalaryBookService;
 
@@ -21,6 +25,7 @@ import lombok.extern.log4j.Log4j2;
 public class SalaryBookServiceImpl implements SalaryBookService{
 	
 	final SalaryBookMapper salaryBookMapper;
+	final DealBookMapper dealBookMapper;
 	
 	@Override
 	public SalaryBookDTO info(String salaryAccountBookCode) {
@@ -45,10 +50,30 @@ public class SalaryBookServiceImpl implements SalaryBookService{
 	public int update(List<SalaryBookDTO> dtoList) {
 		// TODO Auto-generated method stub
 		int result = 0;
+		Long total = 0L;
+		int com = dtoList.get(0).getCompanyNum();
+		LocalDate now = LocalDate.now();
+		int month = now.getMonthValue() == 1 ? 12 : now.getMonthValue() - 1;
+		int year = month == 12 ? now.getYear() - 1 : now.getYear();
+		String text = year + "년 " + month + "월 분 직원 급여"  ;
+		
 		for(SalaryBookDTO dto : dtoList) {
 			int co = salaryBookMapper.update(dto);
+			total += dto.getPaymentAmount();
 			result += co;
 		}
+		DealBookDTO deal = new DealBookDTO();
+		deal.setSection("EE02");
+		deal.setTypesOfTransaction("AC19");
+		deal.setAmount(total);
+		deal.setVatAlternative("N");
+		deal.setDealingsContents(text);
+		deal.setDealDate(Date.valueOf(now));
+		deal.setDepartment("DT001");
+		deal.setCompanyNum(com);
+				
+		dealBookMapper.insert(deal);
+		
 		return result;
 	}
 	

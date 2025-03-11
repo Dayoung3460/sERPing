@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8">
+</head>
+<body>    
+    
+    <button type="button" class="btn btn-primary payBtn" data-bs-dismiss="modal">지급</button>
+    <button type="button" class="btn btn-secondary cancelBtn" data-bs-dismiss="modal">취소</button>
+<script type="text/javascript">
+	var session = sessionData;
+	
+	document.querySelector('#unpayModal').addEventListener('shown.bs.modal', (ev) => {
+		document.querySelector('#unpayModal').querySelector('.payBtn').addEventListener('click', (e)=>{
+			console.log(checkArray);
+			
+			// 버튼 동작
+			const header = document.querySelector('meta[name="_csrf_header"]').content;
+            const token = document.querySelector('meta[name="_csrf"]').content;
+            
+            let newArray = [];
+            checkArray.forEach(check =>{
+            	let newCheck = {}
+            	newCheck.debtCode = check.debtCode;
+            	newCheck.debtName = check.debtName;
+            	newCheck.section = check.section;
+            	newCheck.registerDate = check.registerDate;
+            	newCheck.creditor = check.creditor;
+            	newCheck.amount = check.amount;
+            	newCheck.timeLimit = check.timeLimit;
+            	newCheck.prearrangementDueDate = check.prearrangementDueDate;
+            	newCheck.companyNum = session.companyNum;
+				newArray.push(newCheck);
+            })
+			
+			fetch("/accnut/rest/unpay/update", {
+				method: "PUT",
+				headers: {
+						 	'header': header,
+   			                "Content-Type": "application/json",
+   			                'X-CSRF-Token': token				
+				 		},
+				body: JSON.stringify(newArray) // newArray 배열을 JSON 형식으로 변환(JSON.parse는 JSON을 객체로 변환)
+			})
+			 .then(response => response.json())
+			 .then(data => { 
+				// console.log(data);
+				 	if(data.status == "success"){
+				 		showAlert('지급 처리 되었습니다.', 'success');				 		
+					 	grid.readData();
+					 	checkArray = [];
+					 	btndisabled();
+				 	} else {
+				 		showAlert('지급 처리에 실패하였습니다. 다시 시도해주세요.', 'danger');
+				 	}
+			 });
+			e.target.blur();
+		},{once : true});
+		
+		document.querySelector('#unpayModal').querySelector('.cancelBtn').addEventListener('click', (e)=>{
+			e.target.blur();
+		},{once : true});
+		
+	});
+
+	
+</script>
+</body>
+</html>

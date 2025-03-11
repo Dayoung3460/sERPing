@@ -43,7 +43,7 @@
 			AND TO_CHAR(prearrangement_due_date, 'yyyy-mm-dd') = #{prearrangementDueDate}
 		</if>
 		<if test="amount != null">
-			AND amount >= #{amount}
+			AND amount > #{amount}
 		</if>
 		
 	</sql>
@@ -67,6 +67,13 @@
 		)
 	
 	</insert>
+	
+	<update id="update" parameterType="com.beauty1nside.accnut.dto.DebtDTO">
+		UPDATE accnut_debt
+		SET amount = 0
+		WHERE debt_code = #{debtCode}
+	
+	</update>
 	
 
 </mapper>

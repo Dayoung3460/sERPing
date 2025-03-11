@@ -11,7 +11,7 @@ public class DealBookDTO {
 	String dealingsAccountBookCode;
 	String section;
 	String typesOfTransaction;
-	int amount;
+	Long amount;
 	String vatAlternative;
 	String dealingsContents;
 //	@DateTimeFormat(pattern = "yyyy-MM-dd")
