@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div th:fragment="ModalTemplate (modalId, modalSize, modalTitle, modalContent, modalFooter)">
+        <div class="modal fade" th:id="${modalId}" tabindex="-1">
+            <div class="modal-dialog" th:classappend="${modalSize}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:text="${modalTitle}"></h5>
+                    </div>
+                    <div class="modal-body">
+                        <th:replace th:replace="${modalContent}"></th:replace>
+                    </div>
+                    <div class="modal-footer">
+                        <th:replace th:replace="${modalFooter}"></th:replace>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>
