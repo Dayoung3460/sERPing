@@ -325,8 +325,6 @@ OrgChart.templates.subDepartment.ripple = {
     // ✅ 4. 전체 조직도 데이터 구성
     const nodes = [companyNode, ...topDepartments, ...subDepartments];
 
-    console.log("📌 조직도 노드 데이터:", nodes);
-
     // ✅ 5. OrgChart 생성
     let chart = new OrgChart(document.getElementById("orgChartList"), {
         compact: true, 

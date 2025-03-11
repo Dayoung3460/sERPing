@@ -31,7 +31,6 @@ const modalElement = document.getElementById("contractModal");
   const closeButton = modalElement.querySelector('[data-bs-dismiss="modal"]');
   if (closeButton) {
       closeButton.addEventListener("click", function () {
-          console.log("인쇄 모달 닫기 버튼 클릭됨!");
 
           try {
           	let modalInstance = bootstrap.Modal.getInstance("#contractModal") || new bootstrap.Modal("#contractModal");
@@ -58,7 +57,6 @@ const modalElement = document.getElementById("contractModal");
 	  document.getElementById('pdfDown').addEventListener('click', function() {
 		  // 다운로드 엔드포인트 URL 구성 (/purchs/report/reportDownload 엔드포인트 사용)
 		  const contractDownloadUrl = `/hr/rest/contract/report/down?employeeNum=${employeeNum}`;
-		  console.log("Download URL:", contractDownloadUrl);
 		  // 브라우저를 해당 URL로 이동시켜 파일 다운로드를 유도
 		  window.location.href = contractDownloadUrl;
 		});
@@ -207,7 +205,6 @@ function validateResidentNumber() {
 	document.body.addEventListener("click",function(event){
     if (event.target.classList.contains("contractBtn")) {
         employeeNum = event.target.getAttribute("data-id");
-        console.log("📌 선택된 employeeNum:", employeeNum);
 
         const contractUrl = `/hr/rest/contract/report?employeeNum=${employeeNum}`;
         const contractModalEl = document.querySelector("#contractModal");
@@ -216,7 +213,6 @@ function validateResidentNumber() {
         fetch(contractUrl, { method: 'HEAD' })
             .then(response => {
                 if (response.ok) {
-                    console.log("근로 계약서 존재함. PDF 렌더링 시작");
                     renderPDF(contractUrl);
                 } else {
                     console.warn("❌ 근로 계약서 없음!");
@@ -282,7 +278,6 @@ function validateResidentNumber() {
     
     if (registerBtn) {
         registerBtn.addEventListener("click", async function (event) {
-            console.log("🔍 등록 버튼 클릭됨!");
 
             // 🔹 입력값 검증 후 실행
             if (!validateEmployeeForm()) {
@@ -315,7 +310,6 @@ function validateResidentNumber() {
             registerEmployee();
         });
 
-        console.log("등록 버튼 이벤트 리스너 연결 완료!");
     } else {
         console.error("❌ registerBtn 요소를 찾을 수 없습니다!");
     }
@@ -331,7 +325,6 @@ function validateResidentNumber() {
     let resetBtn = document.getElementById("resetBtn");
     if (resetBtn) {
         resetBtn.addEventListener("click", resetEmployeeForm);
-        console.log("초기화 버튼 이벤트 연결 완료");
     } else {
         console.error("❌ resetBtn을 찾을 수 없습니다.");
     }
@@ -340,7 +333,6 @@ function validateResidentNumber() {
     let empRegisterModal = document.getElementById("empRegisterModal");
     if (empRegisterModal) {
         empRegisterModal.addEventListener("shown.bs.modal", resetEmployeeForm);
-        console.log("모달 이벤트 리스너 연결 완료");
     } else {
         console.error("❌ empRegisterModal을 찾을 수 없습니다.");
     }
@@ -443,10 +435,6 @@ function populateFilters() {
     const employmentTypeSelect = document.getElementById("employmentTypeFilter");
     const departmentSelect = document.getElementById("departmentFilter");
  
-	console.log("🔎 positionSelect:", document.getElementById("positionFilter"));
-	console.log("🔎 statusSelect:", document.getElementById("statusFilter"));
-	console.log("🔎 employmentTypeSelect:", document.getElementById("employmentTypeFilter"));
-	console.log("🔎 departmentSelect:", document.getElementById("departmentFilter")); 
 	    
     if (!positionSelect || !statusSelect || !employmentTypeSelect || !departmentSelect) {
         console.error("❌ populateFilters() 실행 실패! 필터 요소 중 일부가 존재하지 않습니다.");
@@ -530,7 +518,6 @@ if (selectedStatus === "on") selectedStatus = ""; // "전체" 선택 시 공백 
         params.subDepartmentNum = selectedSubDeptNum;
     }
 
-    console.log("getFilterParams() 결과:", params);
     return params;
 
 }
@@ -539,14 +526,11 @@ if (selectedStatus === "on") selectedStatus = ""; // "전체" 선택 시 공백 
 // Toast Grid 데이터 새로고침
 function searchEmployees(page = 1) {
     const params = getFilterParams(); // 검색 필터 적용
-    console.log("🔍 검색 요청 파라미터:", params);  // 파라미터 확인용 로그
     params.page = page; // 현재 페이지 값 추가
 
     // URLSearchParams 사용 (불필요한 중복 제거)
     const urlParams = new URLSearchParams(params);
     
-    console.log("🔍 API 요청 URL:", `/hr/rest/emp/list?${urlParams.toString()}`);
-
     // Toast Grid 검색 필터 적용 후 데이터 새로 불러오기
     grid.readData(page, params, true);
 }
@@ -568,9 +552,7 @@ function setupEventListeners() {
 
     if (searchKeywordInput) {
         searchKeywordInput.addEventListener("keyup", function (event) {
-            console.log("Key pressed:", event.key);
             if (event.key === "Enter") {
-                console.log("Enter pressed. Searching...");
                 searchEmployees();
             }
         });
@@ -755,83 +737,6 @@ function registerEmployee() {
 	formData.append("secondSsn",document.getElementById("secondSsn")?.value || "");
 	formData.append("authority",document.getElementById("modalAutority")?.value);
 		
-    
-/*    formData.append("employeeId", "20250227025");
-	formData.append("employeeName", "길동길동");
-	formData.append("email", "sdsds2233dsd@gmail.com");
-	formData.append("phone","01051005151");
-	formData.append("hireDate","2025-02-02");
-	formData.append("departmentNum" ,"3");
-	formData.append("position", "PO001");
-	formData.append("status","ST001");
-	formData.append("employmentType","ET001");
-	formData.append("bankName","국민은행");
-	formData.append("accountNum","202202020");
-	formData.append("zipCode","05222");
-	formData.append("address","대구");
-	formData.append("addressDetail","2층");
-	formData.append("memo","메모");
-	formData.append("parentDeptNum","1");
-	formData.append("companyNum", "1");
-	formData.append("firstSsn", "202202");
-	formData.append("secondSsn","2020222");
-	formData.append("authority","AU001");*/	
-		
-	console.log("file:::",file);
-	
-
-/*    let empData = {
-		employeeId: document.getElementById("employeeIdInput")?.value || "",
-        employeeName: document.getElementById("employeeName")?.value || "",
-        email: document.getElementById("email")?.value || "",
-        phone: document.getElementById("phone")?.value || "",
-        hireDate: document.getElementById("hireDate")?.value || "",
-        departmentNum: document.getElementById("modalSubDepartment")?.value || "",
-        position: document.getElementById("modalPosition")?.value || "",
-        status: "ST001",
-        employmentType: employmentValue || "",
-        bankName: document.getElementById("bankSelect")?.options[document.getElementById("bankSelect").selectedIndex].text.trim() || "",
-        accountNum: document.getElementById("accountNumber")?.value || "",
-        zipCode: document.getElementById("zipcode")?.value || "",
-        address: document.getElementById("address")?.value || "",
-        addressDetail: document.getElementById("addressDetail")?.value || "",
-        memo: document.getElementById("memo")?.value || "",
-        parentDeptNum: document.getElementById("modalDepartment")?.value || "",
-        companyNum: document.getElementById("companyNumSJ")?.value || "",
-        firstSsn: document.getElementById("firstSsn")?.value || "",
-        secondSsn: document.getElementById("secondSsn")?.value || "",
-        authority: document.getElementById("modalAutority")?.value || "",
-    };*/
-    
-/*    
-    	empData = {
-	    employeeId: "250220007",
-	    employeeName: "길동이",
-	    email: "seozzini@gmail.com",
-	    phone: "01000000000",
-	    hireDate: "2025-02-22",
-	    accountNum: "302015151210",
-	    address: "경기 성남시 분당구 서판교로 32",
-	    addressDetail: "10층",
-	    bankName: "KB국민은행",
-	    departmentNum: "7",         // 하위 부서
-	    parentDeptNum: "8",         // 상위 부서
-	    status: "ST001",
-	    memo: "메모메모메",
-	    phone: "01000000000",
-	    position: "PO013",
-	    salary: "50000000",
-	    employmentType: "ET002",
-	    zipCode: "13479",
-	    companyNum: "1",
-	    authority: "AU004",
-	    ssn: "910000-2000000"
-	    
-	};*/
-
-
-
-	//console.log("empData::::::",empData);
 
     fetch("/hr/rest/emp/register", {
         method: "POST",
@@ -929,7 +834,6 @@ let globalSubDepartments = [];
 
 // 모달 공통 코드 데이터 로드
 function populateModalData() {
-    console.log("🔹 모달 공통 코드 데이터 불러오는 중..."+sessionData.companyNum);
 	
     fetch("/hr/rest/emp/common-codes/"+sessionData.companyNum)
         .then(response => response.json())
@@ -939,28 +843,19 @@ function populateModalData() {
                 return;
             }
 
-            console.log("📥 불러온 공통 코드 데이터123123:", data);
-
             // 전역 변수에 부서 및 하위 부서 저장
             globalDepartments = data.departments.filter(dept => dept.PARENT_DEPARTMENT_NUM == 0 );  
-            console.log("globalDepartments",globalDepartments);
             
             let tag = `<option value="">선택</option>`;
             globalDepartments.forEach(glovalDept => {
-				console.log("glovalDept",glovalDept);
 				tag += `<option value="${glovalDept.DEPARTMENT_NUM}">${glovalDept.DEPARTMENT_NAME}</option>`;
 			})
             globalSubDepartments = data.departments.filter(dept => dept.PARENT_DEPARTMENT_NUM !== null); // 하위 부서만 저장
 
             // 부서 (Department) 선택 리스트 설정
             const departmentSelect = document.getElementById("modalDepartment");
-            console.log("tag",tag);
             departmentSelect.innerHTML = tag;
-/*             `
-                <option value="">선택</option>
-                <option value="1">본사</option>
-                <option value="8">지점</option>
-            `;*/
+
 
             // 하위 부서 초기화 (모든 하위 부서 표시)
             populateSubDepartments("");
@@ -969,7 +864,6 @@ function populateModalData() {
             departmentSelect.removeEventListener("change", handleDepartmentChange);
             departmentSelect.addEventListener("change", handleDepartmentChange);
 
-            console.log("부서 목록 업데이트 완료!");
         })
         .catch(error => console.error("❌ 모달 공통 코드 데이터 불러오기 실패:", error));
 }
@@ -977,7 +871,6 @@ function populateModalData() {
 // 부서 선택 변경 시 실행할 핸들러 함수
 function handleDepartmentChange() {
     const selectedDeptNum = document.getElementById("modalDepartment").value;
-    console.log("📌 선택한 부서:", selectedDeptNum);
     populateSubDepartments(selectedDeptNum);
 }
 
@@ -1005,10 +898,6 @@ function populateSubDepartments(selectedDeptNum) {
         );
     }
 
-    console.log("📌 선택한 부서:", selectedDeptNum);
-    console.log("📌 필터링된 하위 부서 목록:", filteredSubDepartments); // 🔥 콘솔에 확인
-    
-    
 
     // 하위 부서 옵션 추가 (실제 데이터 기반)
     filteredSubDepartments.forEach(subDept => {
@@ -1018,7 +907,6 @@ function populateSubDepartments(selectedDeptNum) {
         subDepartmentSelect.appendChild(option);
     });
 
-    console.log("하위 부서 목록 업데이트 완료!", subDepartmentSelect.innerHTML); // 🔥 콘솔에서 확인
 }
 
 // Daum 우편번호 API를 활용한 주소 검색 함수
@@ -1038,7 +926,6 @@ function openPostcode() {
 }
 
 
-console.log("file:::::",file);
 
 
 
@@ -1054,7 +941,6 @@ querySelector("#contractBtn").addEventListener("click", ()=>{
 	
 	  // PDF 로드
 	  pdfjsLib.getDocument(contractUrl).promise.then(pdf => {
-	    console.log('PDF loaded, total pages:', pdf.numPages);
 	    // 첫 페이지만 렌더링 (필요시 여러 페이지 지원 가능)
 	    pdf.getPage(1).then(page => {
 	      const scale = 1.5; // 확대/축소 비율
@@ -1069,7 +955,6 @@ querySelector("#contractBtn").addEventListener("click", ()=>{
 	        viewport: viewport
 	      };
 	      page.render(renderContext).promise.then(() => {
-	        console.log('Page rendered');
 	      });
 	    });
 	  }).catch(error => {

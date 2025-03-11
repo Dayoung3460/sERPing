@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let resetBtn = document.getElementById("resetBtn");
     if (resetBtn) {
         resetBtn.addEventListener("click", resetEmployeeForm);
-        console.log("✅ 초기화 버튼 이벤트 연결 완료");
     } else {
         console.error("❌ resetBtn을 찾을 수 없습니다.");
     }
@@ -19,38 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
     let empRegisterModal = document.getElementById("empRegisterModal");
     if (empRegisterModal) {
         empRegisterModal.addEventListener("shown.bs.modal", resetEmployeeForm);
-        console.log("✅ 모달 이벤트 리스너 연결 완료");
     } else {
         console.error("❌ empRegisterModal을 찾을 수 없습니다.");
     }
 
-
-    // ✅ 등록 버튼 이벤트 리스너 추가
-    /*    let registerBtn = document.getElementById("registerEmployeeBtn");
-        if (registerBtn) {
-            registerBtn.addEventListener("click", function (event) {
-                event.preventDefault(); // 기본 동작 방지
-    
-                Swal.fire({
-                    title: "📌 사원 등록",
-                    text: "정말 등록하시겠습니까?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "네, 등록합니다",
-                    cancelButtonText: "아니요, 취소",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        registerEmployee(); // ✅ 사원 등록 처리 함수 호출
-                        Swal.fire("✅ 등록 완료!", "사원이 성공적으로 등록되었습니다.", "success");
-                    } else {
-                        Swal.fire("🚫 등록 취소", "사원 등록이 취소되었습니다.", "error");
-                    }
-                });
-            });
-            console.log("✅ 등록 버튼 이벤트 리스너 연결 완료");
-        } else {
-            console.error("❌ registerEmployeeBtn 요소를 찾을 수 없습니다.");
-        }*/
 
 });
 
@@ -75,7 +46,6 @@ function checkAccountOwner() {
 
 // ✅ 모달 초기화 함수 (사원 등록 필드 초기화)
 function resetEmployeeForm() {
-    console.log("🟢 사원 등록 모달 초기화 실행됨");
 
     // 1️⃣ 모든 입력 필드 초기화
     document.querySelectorAll("#empRegisterModal input").forEach(input => {
@@ -115,8 +85,6 @@ function resetEmployeeForm() {
 
     // 6️⃣ 새 사원번호 가져오기
     fetchNewEmployeeId();
-
-    console.log("✅ 초기화 완료");
 }
 
 

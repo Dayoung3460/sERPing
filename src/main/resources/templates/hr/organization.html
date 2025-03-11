@@ -394,8 +394,6 @@
 	  
 	  // 모달 열기 함수 (전역 함수로 정의)
 	  function openEmployeeModal(mode, data) {
-		  console.log("📌 모달 데이터:", data); // 🔥 데이터 확인
-		  
 		  
 	    $("#employeeModalLabel").text(mode === "transfer" ? "인사 발령" : "사원 정보");
 	
@@ -419,7 +417,6 @@
 	    // ✅ 404 에러 발생 시 기본 이미지로 변경
 	    $("#modalProfileImage").on("error", function () {
 	        $(this).attr("src", "/file/image/mypage/profile/noProfileImg.jpg");
-	        console.log("📌 기본 프로필 이미지로 변경됨:", this.src);
 	    });
 		  
 	    if (mode === "transfer") {
@@ -462,7 +459,6 @@
 
 	    		    // ✅ 현재 선택된 부서 가져오기
 	    		    let selectedDeptNum = $(".selected-department").data("dept-id") || 0;
-	    		    console.log("📌 검색 중 선택된 부서:", selectedDeptNum);
 
 	    		    // ✅ 검색어와 부서 필터 적용
 	    		    grid.readData(1, { departmentNum: selectedDeptNum, searchKeyword: searchValue });
@@ -485,7 +481,6 @@
 	    	            departmentType: selectedParent.data("type") || "DT003",  // 기본값 설정
 	    	        };
 	
-	    	        console.log("📌 부서 추가 요청 데이터:", deptData);
 	
 	    	        $.ajax({
 	    	            url: "/hr/rest/dept/add",
@@ -530,7 +525,6 @@
 		        }
 	
 		        let departmentNum = selectedDept.val(); // 선택된 부서 ID 가져오기
-		        console.log("📌 선택된 부서 ID:", departmentNum); // 디버깅용
 	
 		        // ✅ 선택된 부서 정보 가져오기 (AJAX 요청)
 		        $.ajax({
@@ -541,7 +535,6 @@
 		                xhr.setRequestHeader(header, token); // CSRF 토큰 추가
 		            },
 		            success: function(response) {
-		                console.log("📌 부서 정보 응답:", response); // 디버깅용
 	
 		                // ✅ 부서 정보 모달에 채우기
 		                $("#editDeptId").val(response.departmentNum);  // 부서 ID
@@ -575,8 +568,6 @@
 			            url: `/hr/rest/dept/employees/${deptId}`, // 부서 내 사원 수 확인 API
 			            type: "GET",
 			            success: function(response) {
-			                console.log("📌 부서 직원 수:", response.employeeCount); // 디버깅
-			                console.log("📌 응답 데이터:", response); // 🔥 데이터 확인
 
 			                if (response.employeeCount > 0) {
 			                    Swal.fire({
@@ -589,7 +580,6 @@
 			                        $("#editDeptModal").modal("hide"); // ✅ 모달 닫기 추가
 			                    });
 			                } else {
-			                    console.log("📌 사원 없음 → 부서 비활성화 진행"); // 🔥 디버깅용 로그
 			                    updateDepartment(deptId, updatedDeptName, updatedDeptStatus);
 			                }
 			            },
@@ -709,7 +699,6 @@
 
 	        	    // ✅ 선택한 부서의 ID 가져오기
 	        	    let departmentNum = $(this).closest(".select-item").data("dept-id") || 0;
-	        	    console.log("📌 선택한 부서 ID:", departmentNum);
 
 	        	    // ✅ 해당 부서 사원 데이터 불러오기
 	        	    grid.readData(1, { departmentNum: departmentNum });

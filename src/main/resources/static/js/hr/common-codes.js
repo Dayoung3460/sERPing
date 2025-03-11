@@ -15,11 +15,9 @@ let authos = []; // 권한 저장
 
 // 공통 코드 데이터 불러오는 함수
 function loadCommonCodes() {
-	console.log("공통코드JS companyNum",sessionData.companyNum);
     fetch('/hr/rest/emp/common-codes/'+sessionData.companyNum)
         .then(response => response.json())
         .then(data => {
-            console.log("공통 코드 로드됨:", data); // 데이터 확인용
             if (!data || !data.departments) {
                 console.error("⚠ No department data received.");
                 return;
@@ -88,20 +86,17 @@ function populateSubDepartments(parentCode) {
         subDepartments = departments.filter(dept => String(dept.PARENT_DEPARTMENT_NUM) === String(parentCode));
     }
 
-    console.log(`📌 선택한 부서: ${parentCode}, 표시할 하위 부서:`, subDepartments);
 
     // ✅ 하위 부서 옵션 추가
     subDepartments.forEach(dept => {
         subDepartmentSelect.innerHTML += `<option value="${dept.DEPARTMENT_NUM}">${dept.DEPARTMENT_NAME}</option>`;
     });
 
-    console.log(`하위 부서 (${parentCode}) 목록:`, subDepartments);
     
     let lowDepartmentSelect = "";
     subDepartments.forEach(ele => {
 		lowDepartmentSelect += ` <option value="${ele.DEPARTMENT_NUM}">${ele.DEPARTMENT_NAME}</option>`;
 	});
-	console.log("lowDepartmentSelect:::",lowDepartmentSelect);
     document.getElementById("modalSubDepartment").innerHTML = lowDepartmentSelect;
 }
 
@@ -131,12 +126,10 @@ function populatePositionSelect(positions) {
         modalPositionSelect.innerHTML += optionTag;
     });
 
-    console.log("📌 직급 목록 로드 완료:", positions);
 }
 
 // 재직 상태 버튼 동적으로 추가
 function populateStatusButtons(statuses) {
-	console.log("📌 재직 상태 데이터:", statuses); // ✅ 디버깅
     const statusGroup = document.getElementById('statusGroup');
     statusGroup.innerHTML = ''; // 기존 버튼 초기화
 
@@ -170,7 +163,6 @@ function populateStatusButtons(statuses) {
 
 // ✅ 근무 유형 버튼 동적으로 추가 (검색 필터 & 모달용 구분)
 function populateEmploymentButtons(employmentTypes) {
-	console.log("📌 근무 유형 데이터:", employmentTypes); // ✅ 데이터 확인
     // ✅ 검색 필터용 (검색 화면)
     const searchEmploymentGroup = document.getElementById('employmentTypeGroup');
     if (!searchEmploymentGroup) {
@@ -186,8 +178,6 @@ function populateEmploymentButtons(employmentTypes) {
         return;
     }
     modalEmploymentGroup.innerHTML = ''; // 초기화
-
-    console.log("📌 근무 유형 데이터 확인:", employmentTypes); // 🔥 데이터 확인
 
     // ✅ 데이터가 없거나 배열이 아닐 경우 예외 처리
     if (!Array.isArray(employmentTypes) || employmentTypes.length === 0) {
@@ -226,13 +216,11 @@ function populateEmploymentButtons(employmentTypes) {
         modalEmploymentGroup.innerHTML += modalRadioTag;
     });
 
-    console.log("✅ 근무 유형 목록 로드 완료!");
 
     // ✅ 100ms 지연 후 이벤트 리스너 등록 (즉시 실행 시 요소를 못 잡을 수 있음)
     setTimeout(() => {
         document.querySelectorAll("input[name='employmentType']").forEach(btn => {
             btn.addEventListener("change", function () {
-                console.log("🔄 근무 유형 변경됨! 검색 필터 적용");
                 searchEmployees(); // ✅ 자동 필터링 실행
             });
         });
@@ -253,8 +241,6 @@ function populateAuthoritySelect(authorities) {
         let optionTag = `<option value="${auth.CMMNCODE}">${auth.CMMNNAME}</option>`;
         authoritySelect.innerHTML += optionTag;
     });
-
-    console.log("📌 권한 목록 로드 완료:", authorities);
     
     
     
