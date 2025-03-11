@@ -247,7 +247,7 @@
 	    <set>
 	    	subscription_update_date = sysdate,
 	        <if test="subscriptionEndDate != null and ! subscriptionEndDate.equals('')">
-	            subscription_end_date = #{subscriptionEndDate},
+	            subscription_end_date = to_date(#{subscriptionEndDate},'yyyy-mm-dd'),
 	        </if>
 	    </set>
 	    WHERE subscription_num = #{subscriptionNum}
@@ -264,7 +264,7 @@
 	    <set>
 	    	subscription_update_date = sysdate,
 	        <if test="subscriptionEndDate != null and ! subscriptionEndDate.equals('')">
-	            subscription_end_date = #{subscriptionEndDate},
+	            subscription_end_date = to_date(#{subscriptionEndDate},'yyyy-mm-dd'),
 	        </if>
 	    </set>
 	    WHERE company_num = #{companyNum}

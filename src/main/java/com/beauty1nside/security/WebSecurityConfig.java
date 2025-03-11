@@ -40,7 +40,7 @@ public class WebSecurityConfig {
     http
       .authorizeHttpRequests((requests) -> requests
         .requestMatchers("/error", "/favicon.ico", "/", "/common/**", "/css/**", "/docs/**", "/file/**", "/fonts/**", "/images/**", "/image/**", "/js/**", "/scss/**", "/templates/**", "/vendors/**", "/gulpfile.js", "/erp/**", "/login/**", "/chat/**", "/ws/**", "/ws", "/topic/**", "/app/**").permitAll()
-        //.requestMatchers("/erp/rest/**").permitAll()	//표하연이 또 추가함
+        .requestMatchers("/erp/rest/**").permitAll()	//표하연이 또 추가함
         .requestMatchers("/api/**").authenticated() // API 요청은 인증된 사용자만 가능
         .anyRequest().authenticated()
       )
@@ -62,7 +62,7 @@ public class WebSecurityConfig {
           response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         })
       )
-      //.csrf(csrf -> csrf.ignoringRequestMatchers("/erp/rest/**"))  // /erp/rest/**` 경로의 CSRF 보호 해제 표하연 202502181029 추가
+      .csrf(csrf -> csrf.ignoringRequestMatchers("/erp/rest/**"))  // /erp/rest/**` 경로의 CSRF 보호 해제 표하연 202502181029 추가
       .formLogin((form) -> form
         .loginPage("/login")
         .usernameParameter("employeeId")
