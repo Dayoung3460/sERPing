@@ -843,7 +843,6 @@ function populateModalData() {
             const departmentSelect = document.getElementById("modalDepartment");
             departmentSelect.innerHTML = tag;
 
-
             // 하위 부서 초기화 (모든 하위 부서 표시)
             populateSubDepartments("");
 
