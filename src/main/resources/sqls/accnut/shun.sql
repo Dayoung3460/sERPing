@@ -1,4 +1,4 @@
--- 2025-02-11
+2025-02-11
 
 -- 테이블 삭제 명령문
 select 'drop table'|| ' ' || table_name || ';'
@@ -806,3 +806,27 @@ select * from hr_department where company_num = 45 and parent_department_num is 
 update accnut_salary_account_book
 set bonus = 0;
 commit;
+
+
+select * from accnut_assets;
+
+select * from accnut_salary_account_book;
+
+update accnut_salary_account_book set payment_amount = salary - deduction_item where salary_account_book_code <= 24;
+commit;
+
+select '강동원, 김길동, 정은채, 유재석, 송지호, 유다현, 황예린' from dual;
+
+select he.employee_id, he.employee_name, he.department_num, hd.department_name, hec.bonus, hec.additional_pay, hec.monthly_salary, hec.social_insurance from hr_employee he JOIN hr_department hd ON (he.department_num = hd.department_num) LEFT JOIN hr_employee_contract hec ON (he.employee_num = hec.employee_num) where he.company_num = 45;
+
+
+select * from hr_department;
+select * from hr_employee_contract;
+
+select * from purchs_warehousing_header pwh join grpwr_vendor gv on (pwh.vendor_id = gv.vendor_id);
+select * from grpwr_vendor;
+
+select * from accnut_debt where company_num = 45;
+
+
+

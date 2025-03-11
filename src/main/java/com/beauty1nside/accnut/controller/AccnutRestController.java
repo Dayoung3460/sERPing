@@ -526,7 +526,38 @@ public class AccnutRestController {
 	    	// 급여통장에서 빠짐
 	    	NHService nh = new NHService();
 	    	// 급여통장 조회
-	    	AssetDTO assetDTO = assetService.info("급여", companyNum);
+	    	AssetDTO assetDTO = assetService.info("월급", companyNum);
+	    	// 급여통장 핀어카운트 조회
+	    	String finAcno = nh.getFinAcno(assetDTO);
+	    	nh.withdraw(finAcno, String.valueOf(total));
+	    	
+	        response.put("status", "success");
+	        response.put("message", "수정 성공");
+	        return ResponseEntity.ok(response); // JSON 형태 응답
+	    } catch (Exception e) {
+	        log.error("등록 실패", e);
+	        response.put("status", "error");
+	        response.put("message", "수정 실패");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
+	}
+	
+	@PutMapping("/unpay/update")
+	public ResponseEntity<Map<String, Object>> unpayUpdate(@RequestBody List<DebtDTO> dtoList) {
+		int total = 0;
+		int companyNum= dtoList.get(0).getCompanyNum();
+		
+		for(DebtDTO dto : dtoList) {
+			total += dto.getAmount();
+		}
+		
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	    	debtService.update(dtoList);
+	    	// 급여통장에서 빠짐
+	    	NHService nh = new NHService();
+	    	// 급여통장 조회
+	    	AssetDTO assetDTO = assetService.info("미지급", companyNum);
 	    	// 급여통장 핀어카운트 조회
 	    	String finAcno = nh.getFinAcno(assetDTO);
 	    	nh.withdraw(finAcno, String.valueOf(total));
@@ -543,8 +574,7 @@ public class AccnutRestController {
 	}
 	
 	
-	
-	// 금융 결제원 api
+	// 금융 결제원 api --------------------------------
 	@GetMapping("bank/your0770")
 	public Object getAccessToken() {
 		String tokenUrl = "https://openapi.openbanking.or.kr/oauth/2.0/token";
