@@ -94,22 +94,24 @@
 		let departmentNum = [[${session.departmentNum}]];
 		let branchOfficeId = "";
 		
-		function getDeptName() {
-			fetch(`/deptName/${departmentNum}`)
-	        .then(response => {
-	            return response.text(); // 서버에서 문자열(부서명) 응답을 받음
-	        })
-	        .then(data => {
-	        	// 부서명 필드에 값 넣기
-	            document.getElementById("branchOfficeId").value = data; 
-				branchOfficeId = document.querySelector('#branchOfficeId').value;
-	            
-				//비동기방식인 fetch가 끝나고 값을 가져와서 넣음(조회 쿼리 호출에 넣으면 값이 들어가지 않았느데 실행됨)
-				grid.setRequestParams({companyNum: sessioCompanyNum, branchOfficeId: branchOfficeId})
-				grid.readData();
-	        })
-	        .catch(error => console.error("부서명 가져오기 실패:", error)); 
-        }
+		if(departmentNum > 0){
+			function getDeptName() {
+				fetch(`/deptName/${departmentNum}`)
+		        .then(response => {
+		            return response.text(); // 서버에서 문자열(부서명) 응답을 받음
+		        })
+		        .then(data => {
+		        	// 부서명 필드에 값 넣기
+		            document.getElementById("branchOfficeId").value = data; 
+					branchOfficeId = document.querySelector('#branchOfficeId').value;
+		            
+					//비동기방식인 fetch가 끝나고 값을 가져와서 넣음(조회 쿼리 호출에 넣으면 값이 들어가지 않았느데 실행됨)
+					grid.setRequestParams({companyNum: sessioCompanyNum, branchOfficeId: branchOfficeId})
+					grid.readData();
+		        })
+		        .catch(error => console.error("부서명 가져오기 실패:", error)); 
+	        }
+		}
 		
 		// 현재 선택된 행을 추적
 		let selectedRowKey = null;
