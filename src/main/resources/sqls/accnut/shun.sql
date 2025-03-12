@@ -826,9 +826,14 @@ select * from hr_employee_contract;
 select * from purchs_warehousing_header pwh join grpwr_vendor gv on (pwh.vendor_id = gv.vendor_id);
 select * from grpwr_vendor;
 
+select fn_get_cmmn_name('AC19') from dual;
+
 select * from accnut_debt where company_num = 45;
 select * from bhf_closing;
-select * from accnut_dealings_account_book;
+select adab.* , fn_get_cmmn_name(types_of_transaction) from accnut_dealings_account_book adab where company_num = 45;
+update accnut_dealings_account_book set types_of_transaction = 'AC19' where dealings_account_book_code in ('241');
+commit;
+
 select * from cmmn where upper_cmmn_code = 'AC';
 select * from accnut_dealings_account_book;
 SELECT * FROM HR_DEPARTMENT;
