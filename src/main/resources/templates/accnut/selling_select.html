@@ -41,47 +41,61 @@
 			<!-- 검색창 -->
 			<div class="search-grid" id="custom-container">
 				<!-- 검색창 첫줄 -->
+					<!-- 데이트 피커 주기 변경
+					<div>
+					<span class="label-search col-4">주기</span>
+					<select name="perdate" id="perdate" class="col-8 input-box">
+						<option value="date" selected>일별</option>
+						<option value="month">월별</option>
+						<option value="year">년별</option>
+
+					</select>
+					</div>
+					 -->
+					<!-- 데이트 피커
+					<div>
+						<span class="label-search col-4">날짜</span>
+				        <div class="tui-datepicker-input tui-datetime-input tui-has-focus col-8">
+		            		<input type="text" id="datepicker-input" name="resultDate" aria-label="Date-Time" class="input-box">
+		            		<span class="tui-ico-date"></span>
+		        		</div>	
+		       			<div id="wrapper" style="margin-top: -1px; z-index: 100; position: static"></div>
+	       			</div>
+					  -->
 				<div class="row">
-					<!-- 자산명 인풋 -->
+					<!-- 지점 인풋 -->
 					<div class="col-md-2 mt-1 mb-1">
 						<label class="form-label">지점</label>
 						<select name="officeId" id="officeId" class="form-control input-box">
 							<option value="" selected>전체</option>
 						</select>
 					</div>
-					<!-- 구분 인풋 -->
-					<div class="col-md-2 mt-1 mb-1">
-						<label class="form-label">시작일</label>
-						<input type="date" name="startDate" id="startDate" class="form-control input-box">
-						<!-- 데이트 피커 주기 변경
-						<span class="label-search col-4">주기</span>
-						<select name="perdate" id="perdate" class="col-8 input-box">
-							<option value="date" selected>일별</option>
-							<option value="month">월별</option>
-							<option value="year">년별</option>
-	
-						</select>
-						 -->
-					</div>
-					<!-- 검색창 두번째 줄 -->
-					<!-- 금융기관 인풋 -->
+					<!-- 상품 인풋 -->
 					<div class="col-md-2 mt-1 mb-1">
 						<label class="form-label">상품</label>
 						<input type="text" name="optCode" id="optCode" class="form-control input-box" data-bs-toggle="modal" data-bs-target="#optSearchModal">
 					</div>
 					
+					<!-- 날짜 인풋 -->
+					<div class="col-md-4 mt-1 mb-1">
+				    	<label class="form-label">조회일자</label>
+				        <div class="input-group">
+				        	<input type="date" id="startDate" class="form-control input-box">
+				        	<span class="input-group-text">~</span>
+				        	<input type="date" id="endDate" class="form-control input-box">
+				        </div>
+				    </div>
+					<!-- 
+					<div class="col-md-2 mt-1 mb-1">
+						<label class="form-label">시작일</label>
+						<input type="date" name="startDate" id="startDate" class="form-control input-box">
+					</div>
+					
 					<div class="col-md-2 mt-1 mb-1">
 						<label class="form-label">종료일</label>
 						<input type="date" name="endDate" id="endDate" class="form-control input-box">
-						<!-- 데이트 피커
-						<span class="label-search col-4">날짜</span>
-					        <div class="tui-datepicker-input tui-datetime-input tui-has-focus col-8">
-			            		<input type="text" id="datepicker-input" name="resultDate" aria-label="Date-Time" class="input-box">
-			            		<span class="tui-ico-date"></span>
-			        		</div>	
-			       			<div id="wrapper" style="margin-top: -1px; z-index: 100; position: static"></div>
-						  -->
 					</div>
+					 -->
 					<!-- 검색 버튼 줄 -->
 					<div class="col-md-2"></div>
 					<div class="col-md-2 mt-4 mb-2">
