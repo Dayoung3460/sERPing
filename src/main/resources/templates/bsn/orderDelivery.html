@@ -561,10 +561,10 @@ rowHeaders: ['rowNum',
 columns: [
 	
     
-    { header: "LOT번호", name: "goodsLotNum", width:'auto'},
+    { header: "LOT번호", name: "goodsLotNum", width:'auto' },
     { header: "유통기한", name: "goodsConsumptionDate", formatter: ({ value }) => formatDate(value, 'order'), width: 'auto', sortable : true, align: "center",},
-    { header: "예약가능수량(box)", name: "deliveryPossibleQnt", align: "right",  },
-    { header: "LOT예약수량(box)", name: "deliveryQnt", align: "right",  editor: 'text',},
+    { header: "예약가능수량", name: "deliveryPossibleQnt", align: "right",  },
+    { header: "LOT예약수량", name: "deliveryQnt", align: "right",  editor: 'text',},
     
 
 ],
@@ -792,8 +792,6 @@ function modifyLot(dlvyDTO) {
 //출고 확정
 function confirmDelivery() {
 	//출고 확정지을 주문ID : selectDlivyId
-	//console.log("출고 확정지을 주문ID: " + selectDlivyId);
-	//const deliveryDetailData = deliveryDetailGrid.getData();
 	
 	const header = document.querySelector('meta[name="_csrf_header"]').content;
     const token = document.querySelector('meta[name="_csrf"]').content;

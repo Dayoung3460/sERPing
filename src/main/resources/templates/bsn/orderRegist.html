@@ -248,7 +248,6 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 				useClient: false,
 				perPage: 10,
 			},
-			//rowHeaders: ['checkbox'],
 			columns: [ 
 				{ header : "주문코드", name : "orderCode", align: "left",},
 				{ header : "지점", name : "branchOfficeId", align: "left",},
@@ -384,7 +383,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 			REnodata();
 		    REDnodata();
 			
-		    search();  // DOMContentLoaded 이벤트 후 자동으로 검색 실행
+		    search();
 		    
 		});
 
