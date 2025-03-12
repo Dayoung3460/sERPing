@@ -60,7 +60,7 @@
 			<form action="login" method="post" name="login_form" id="login_form">
 			<input type="hidden" id="csrfToken" name="_csrf" th:value="${_csrf != null ? _csrf.token : ''}">
 			<div class="d-flex flex-column" style="width: 300px;">
-				<img src="/file/image/erp/serpinglogo.png"/>
+				<a href="/login"><img src="/file/image/erp/serpinglogo.png"/></a>
 			    <div class="form-floating mb-3">
 				  <input type="text" class="form-control" id="employeeId" name="employeeId" placeholder="사원번호" autocomplete="off" value="ceo890302">
 				  <label for="floatingInput">ID(사원번호)</label>
