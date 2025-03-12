@@ -71,7 +71,7 @@ public class DebtServiceImpl implements DebtService{
 		
 		DealBookDTO deal = new DealBookDTO();
 		deal.setSection("EE02");
-		deal.setTypesOfTransaction("AC19");
+		deal.setTypesOfTransaction("AC08");
 		deal.setAmount(total);
 		deal.setVatAlternative("N");
 		deal.setDealingsContents(text);

@@ -827,6 +827,66 @@ select * from purchs_warehousing_header pwh join grpwr_vendor gv on (pwh.vendor_
 select * from grpwr_vendor;
 
 select * from accnut_debt where company_num = 45;
+select * from bhf_closing;
+select * from accnut_dealings_account_book;
+select * from cmmn where upper_cmmn_code = 'AC';
+select * from accnut_dealings_account_book;
+SELECT * FROM HR_DEPARTMENT;
+select * from purchs_warehousing_header;
+select * from accnut_assets where section = 'AC02';
+select * from accnut_debt;
+select * from grpwr_vendor;
+
+alter table accnut_debt add ware_num number;
 
 
+create or replace function fn_get_vendor_name(p_vendor_id varchar2)
+return varchar2
+is
+    v_result varchar2(1000);
+begin
+    select vendor_name
+    into v_result
+    from grpwr_vendor
+    where vendor_id = p_vendor_id;
+    
+    return v_result;
+end;
+/
 
+
+select TO_DATE(TO_CHAR(ADD_MONTHS(sysdate, 1), 'YYYY-MM') || '-10', 'YYYY-MM-DD') from dual;
+
+create or replace trigger tr_warehousing
+    after 
+    insert or update on purchs_warehousing_header
+    for each row
+declare
+begin
+    if inserting then
+        insert into accnut_debt(debt_code, debt_name, section, register_date, creditor, amount, interest, time_limit, prearrangement_due_date, company_num, ware_num)
+        values (accnut_debt_seq.nextval, TO_CHAR(:new.warehousing_date, 'YYYY-MM-DD') || ' ' || fn_get_vendor_name(:new.vendor_id) || ' 미지급금' , 'AC08', :new.warehousing_date , fn_get_vendor_name(:new.vendor_id), :new.warehousing_total_amount , 0, null , TO_DATE(TO_CHAR(ADD_MONTHS(:new.warehousing_date, 1), 'YYYY-MM') || '-10', 'YYYY-MM-DD'), :new.company_num, :new.warehousing_header_num);
+    elsif updating then
+        update accnut_debt
+        set amount = :new.warehousing_total_amount
+        where ware_num = :old.warehousing_header_num;
+    end if;
+end;
+/
+
+create or replace trigger tr_closing
+  after
+  insert on bhf_closing -- 마감정산 삽입시
+  for each row
+declare
+begin
+    if inserting then
+    
+        -- 총합 매출
+        insert into accnut_dealings_account_book (dealings_account_book_code, section, types_of_transaction, amount, vat_alternative, dealings_contents, deal_date, department, company_num  )
+        values (accnut_dealings_book_seq.nextval, 'EE01', 'AC02', :new.sale_amount, 'Y', TO_CHAR(:new.closing_date, 'YYYY-MM-DD') || ' ' || :new.branch_office_id || ' 마감정산', :new.closing_date, 'DT004', :new.company_num );
+        
+    end if;
+    
+end;
+/
