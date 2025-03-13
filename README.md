@@ -14,7 +14,7 @@
 ## **Team Members & Responsibilities**
 | Name | Role |
 |------|------|
-| **Kim Da-young** | Login & Groupware Integration | 👩
+| **Kim Da-young 👩** | Login & Groupware Integration | 
 | **Pyo Ha-yeon** | ERP Administrator |
 | **Choi Si-hoon** | Accounting & Statistics |
 | **Bae Seo-jin** | Human Resources |
@@ -33,8 +33,8 @@
 | **Final Presentation** | `2025.03.13` |
 
 ## **Technology Stack**
-- **Frontend:** Thymeleaf / Toast UI /   
-- **Backend:** Spring Boot / Websocket 
+- **Frontend:** Thymeleaf / Toast UI
+- **Backend:** Spring Boot / Websocket / Jaspersoft
 - **Database:** Oracle  
 - **Authentication:** Spring Security  
 - **Deployment:** AWS / Docker / Jenkins
